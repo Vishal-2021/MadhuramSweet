@@ -143,6 +143,7 @@
     <Content Include="Report\DataSet1.xsc">
       <DependentUpon>DataSet1.xsd</DependentUpon>
     </Content>
+    <Content Include="App_Data\AccountDb.bak" />
     <None Include="Properties\PublishProfiles\FTPProfile.pubxml" />
     <None Include="Report\DataSet1.xsd">
       <SubType>Designer</SubType>
@@ -182,47 +183,6 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202110110545441_First.cs" />
-    <Compile Include="Migrations\202110110545441_First.Designer.cs">
-      <DependentUpon>202110110545441_First.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202110110809027_wearhouseTableAdded.cs" />
-    <Compile Include="Migrations\202110110809027_wearhouseTableAdded.Designer.cs">
-      <DependentUpon>202110110809027_wearhouseTableAdded.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202110111111545_WearhousValidation.cs" />
-    <Compile Include="Migrations\202110111111545_WearhousValidation.Designer.cs">
-      <DependentUpon>202110111111545_WearhousValidation.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202110120537293_wearhouseforeignkey.cs" />
-    <Compile Include="Migrations\202110120537293_wearhouseforeignkey.Designer.cs">
-      <DependentUpon>202110120537293_wearhouseforeignkey.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202110120953461_wearhousekey.cs" />
-    <Compile Include="Migrations\202110120953461_wearhousekey.Designer.cs">
-      <DependentUpon>202110120953461_wearhousekey.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202110121642350_wearhouseforeignkey1.cs" />
-    <Compile Include="Migrations\202110121642350_wearhouseforeignkey1.Designer.cs">
-      <DependentUpon>202110121642350_wearhouseforeignkey1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202110130745083_requiredtowearhousekey.cs" />
-    <Compile Include="Migrations\202110130745083_requiredtowearhousekey.Designer.cs">
-      <DependentUpon>202110130745083_requiredtowearhousekey.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202110131117253_requiredtowearhousekey1.cs" />
-    <Compile Include="Migrations\202110131117253_requiredtowearhousekey1.Designer.cs">
-      <DependentUpon>202110131117253_requiredtowearhousekey1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202110131201499_wearhousekeyremove.cs" />
-    <Compile Include="Migrations\202110131201499_wearhousekeyremove.Designer.cs">
-      <DependentUpon>202110131201499_wearhousekeyremove.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202110131240042_wearhousekeyremove1.cs" />
-    <Compile Include="Migrations\202110131240042_wearhousekeyremove1.Designer.cs">
-      <DependentUpon>202110131240042_wearhousekeyremove1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountDetailsDBContext.cs" />
     <Compile Include="Models\ActivationStatus.cs" />
     <Compile Include="Models\AdminLogin.cs" />
@@ -404,7 +364,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AdminLTE-master\" />
-    <Folder Include="App_Data\" />
     <Folder Include="Logo\FeedbackImg\" />
     <Folder Include="Logo\Slider\" />
     <Folder Include="StoreProductImgs\" />
@@ -412,36 +371,6 @@
     <Folder Include="UploadedFiles\" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\202110110545441_First.resx">
-      <DependentUpon>202110110545441_First.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202110110809027_wearhouseTableAdded.resx">
-      <DependentUpon>202110110809027_wearhouseTableAdded.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202110111111545_WearhousValidation.resx">
-      <DependentUpon>202110111111545_WearhousValidation.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202110120537293_wearhouseforeignkey.resx">
-      <DependentUpon>202110120537293_wearhouseforeignkey.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202110120953461_wearhousekey.resx">
-      <DependentUpon>202110120953461_wearhousekey.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202110121642350_wearhouseforeignkey1.resx">
-      <DependentUpon>202110121642350_wearhouseforeignkey1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202110130745083_requiredtowearhousekey.resx">
-      <DependentUpon>202110130745083_requiredtowearhousekey.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202110131117253_requiredtowearhousekey1.resx">
-      <DependentUpon>202110131117253_requiredtowearhousekey1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202110131201499_wearhousekeyremove.resx">
-      <DependentUpon>202110131201499_wearhousekeyremove.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202110131240042_wearhousekeyremove1.resx">
-      <DependentUpon>202110131240042_wearhousekeyremove1.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Report\Registrations.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>Registrations.cs</LastGenOutput>
