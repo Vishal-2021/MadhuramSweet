@@ -1,0 +1,350 @@
+﻿@{
+
+
+    if (Session["Role"] != null)
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    }
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Product_Category</title>
+
+</head>
+<body>
+
+
+    <div id="fieldsets">
+        <fieldset class="box mt-2">
+            <legend class="box">Product Category Report !</legend>
+
+            <div id="myRadioGroup" style="margin-bottom:20px">
+                <b style="font-weight:600">Select searching options : </b>
+                <input type="radio" name="cars" value="1" />  Category
+                <input type="radio" name="cars" value="2" />  Category & Stock
+                <input type="radio" name="cars" value="3" /> Product
+            </div>
+
+            <script>
+                    $(document).ready(function () {
+                        $("input[name$='cars']").click(function () {
+                            var test = $(this).val();
+                            $("div.desc").hide();
+                            $("#Cars" + test).show();
+                        });
+                    });
+            </script>
+
+
+
+
+
+
+            <form action="/Admin/Product_Category" method="post">
+                <div class="form-row desc" id="Cars1" style="display: none;">
+
+                    <input type="hidden" name="Billno" id="Billno" value="" class="form-control" required />
+
+                    <div class="form-group col-md-3">
+                        <div class="">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">
+                                        <i class="far fa-list-alt" style="font-size:24px;padding-left:1px;padding-right:5px"></i>
+                                    </span>
+                                </div>
+                                @Html.DropDownList("CatID", ViewBag.CategoryList as SelectList, "-- Select Category --", new { @class = "form-control", required = "required" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        <div class="">
+                            <input type="submit" id="BtnSubmit" value="Search" class="btn btn-info" />
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <form action="/Admin/Product_Category" method="post">
+                <div class="form-row desc" id="Cars2" style="display: none;">
+
+                    <input type="hidden" name="Billno" id="Billno" value="" class="form-control" required />
+
+                    <div class="form-group col-md-3">
+                        <div class="">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">
+                                        <i class="far fa-list-alt" style="font-size:24px;padding-left:1px;padding-right:5px"></i>
+                                    </span>
+                                </div>
+                                @Html.DropDownList("CatID", ViewBag.CategoryList as SelectList, "-- Select Category --", new { @class = "form-control", required = "required" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-3">
+                        <div class="">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-calculator" style="font-size:24px;padding-left:1px;padding-right:5px"></i>
+                                    </span>
+                                </div>
+                                @Html.TextBox("StkCount","", new { @class = "form-control", required = "required",placeholder="Under Stock Count",type="number" })
+                             </div>
+                        </div>
+                    </div>
+                   <div class="form-group col-md-2">
+                        <div class="">
+                            <input type="submit" id="BtnSubmit" value="Search" class="btn btn-info" />
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+
+            <form action="/Admin/Product_Category" method="post">
+
+                <div class="form-row desc" id="Cars3" style="display: none;">
+
+                   
+
+                    <div class="form-group col-md-3">
+                        <div class="">
+                            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">
+                        <span class="fab fa-product-hunt"></span>
+                    </span>
+                </div>
+
+                            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+                            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+
+                            <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+
+                            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+
+
+                            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.min.css">
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+
+                            <script type="text/javascript">
+                        	$(function() {
+                                $('.selectpicker').selectpicker();
+                             });
+                            </script>
+
+
+                            <select name="PDID" class="form-control selectpicker" id="select-country" data-live-search="true">
+
+                                @foreach (var item in ViewBag.ProductsList as SelectList)
+                                {
+                                    <option value="@item.Value" data-tokens="@item.Text">@item.Text</option>
+                                }
+
+                            </select>
+
+
+
+                            </div>
+                       </div>
+                        </div>
+                        <div class="form-group col-md-2">
+                            <div class="">
+                                <input type="submit" id="BtnSubmit" value="Search" class="btn btn-info" />
+                            </div>
+                        </div>
+
+
+                    </div>
+            </form>
+
+          </fieldset>
+
+    </div>
+
+   <style>
+        fieldset {
+            border: 1px solid #ddd;
+            border-left: 1px solid #ddd;
+            padding: 6px;
+            margin-bottom: 5px;
+            width: 100%;
+        }
+
+        legend {
+            width: auto;
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        #main:hover .box {
+            border-color: #1b76c4;
+        }
+    </style>
+
+   
+
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div style="width:50%;margin-top:30px;margin-bottom:30px;">
+        <button type="button" id="Btnhide" class="btn btn-info btn-md mr-2" onclick="window.print()"><i class="fas fa-print"></i> PDF</button>
+    </div>
+
+    <div class="print" id="printableArea">
+
+        <div style="border:2px solid;padding:10px">
+
+            <h4 class="text-center">Product Category Report</h4>
+
+
+            <table class="ProductTbl text-center" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>
+                            Category Name
+                        </th>
+                        <th>
+                            Product Name
+                        </th>
+                        <th>
+                            Current Stock
+                        </th>
+
+                    </tr>
+                </thead>
+
+                <tbody>
+              
+                    @if (ViewBag.ProductList != null)
+                    {
+                        int Cnt = ViewBag.ProductList.Count;
+                        int u_cnt = 0;
+                        foreach (var item in ViewBag.ProductList)
+                        {
+
+
+                            <tr>
+                               @if (u_cnt == 0)
+                               {
+                                <td rowspan="@Cnt">
+                                      <b>@item.Product_Catagory.Category_Name</b>
+                                </td>
+                                }
+                                <td>
+                                    @item.ProductDetails.ProductName
+                                </td>
+                                <td>
+                                    @item.ProductDetails.Opening_Stock_Qty
+                                </td>
+                            </tr>
+                            u_cnt++;
+                        }
+                    } 
+
+               </tbody>
+            </table>
+     
+
+        
+           
+        </div>
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+    <style type="text/css">
+        @@media print {
+
+            #Btnhide, #fieldsets {
+                display: none;
+            }
+        }
+
+        table, td, th {
+            border: 1px solid;
+        }
+
+        table {
+            width: 100%;
+        }
+    </style>
+
+
+
+
+
+
+
+</body>
+</html>

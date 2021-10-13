@@ -1,0 +1,295 @@
+﻿
+@model Accounting_Final_Details.Models.CustomerSlider
+
+@{
+    ViewBag.Title = "CustomerProductSlider";
+    //  Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    if (Session["Role"] != null)
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    }
+}
+
+
+
+<main>
+    <div class="container-fluid">
+        <h2 class="mt-4">Customer Product Slider !</h2>
+        @*<ol class="breadcrumb mb-4">
+            <li class="breadcrumb-item"><a href="index">Dashboard</a></li>
+
+        </ol>*@
+
+        <hr />
+        <section class="section alert-section">
+            <div class="alert alert-info" style="background:#29d2e4;">
+                <div class="alert-container">
+
+                    <i class="fa fa-info-circle"></i>
+                    <b class="alert-info" style="background:#29d2e4">Info alert:</b> You've got some friends nearby, stop looking at your phone and find them...
+                </div>
+            </div>
+        </section>
+
+
+
+
+
+        <div class="form-row">
+            <div class="col">
+                <div class="alert alert-success" id="success-alert" style="display:none" role="alert">
+                    <i class="far fa-check-circle"></i> @TempData["CPMsg"]
+                </div>
+            </div>
+
+            <div class="col text-right" style="padding-top:10px;padding-bottom:10px">
+                <button type="button" onclick="Create()" class="btn btn-info "><i class="fa fa-plus"></i> Add</button>
+            </div>
+
+        </div>
+
+
+        @if (TempData["CPMsg"] != null)
+        {
+            <script>
+                $("#success-alert").fadeTo(2000, 500).slideUp(500, function () {
+                    $("#success-alert").slideUp(500);
+                });
+            </script>
+        }
+
+
+
+        @*<div class="container text-right" style="margin-bottom:10px;">
+
+        </div>*@
+
+        <div class="card mb-4">
+            <div class="card-header"><i class="fas fa-table mr-1"></i>Customer Product Slider !</div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+
+                                <th>
+                                    ID
+                                </th>
+                                <th>
+                                    Name
+                                </th>
+                                <th>
+                                    Description
+                                </th>
+                                <th>
+                                    Photo
+                                </th>
+                                <th style="padding-right:80px">
+                                    Actions
+                                </th>
+
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+
+                                <th>
+                                    ID
+                                </th>
+                                <th>
+                                    Name
+                                </th>
+                                <th>
+                                    Description
+                                </th>
+                                <th>
+                                    Photo
+                                </th>
+                                <th style="padding-right:80px">
+                                    Actions
+                                </th>
+
+                            </tr>
+                        </tfoot>
+                        <tbody>
+
+                            @foreach (var item in ViewBag.PSliderLst)
+                            {
+                                <tr>
+                                    <td>
+                                        @item.CS_ID
+                                    </td>
+                                    <td>
+                                        @item.CS_ProductName
+                                    </td>
+                                    <td>
+                                        @item.CS_ProductDesc
+                                    </td>
+                                    <td>
+
+                                        <img src="/Logo/Slider/@item.CS_ImgPath" alt="Alternate Text" style="height:50px;width:50px" />
+                                    </td>
+
+                                    <td>
+
+
+                                        <a class="text-info" href="#" onclick="Edit(@item.CS_ID)"> <i class="fa fa-edit" style="font-size:23px"></i></a> &nbsp;
+
+                                        <a class="text-danger" href="/Admin/ProductSlider_Delete/@item.CS_ID" onclick="return confirm('Are you sure?')"><i class="fas fa-trash-alt" style="font-size:23px"></i></a>
+
+                                    </td>
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+
+@*Model Of Insert Update Delete*@
+
+<div class="modal fade" id="ShowModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+
+                <h4 class="Create" style="display:none;">Add Slider Product</h4>
+                <h4 class="Edit" style="display:none;">Edit Slider Product</h4>
+
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+
+
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("ProductSlider_AddUpdate", "Admin", FormMethod.Post, new { enctype = "multipart/form-data" }))
+
+                {
+
+
+                    @Html.HiddenFor(m => m.CS_ID, new { @class = "form-control RID", @name = "RID", })
+
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <span class="fab fa-product-hunt"></span>
+                                </span>
+                            </div>
+                            @Html.EditorFor(model => model.CS_ProductName, new { htmlAttributes = new { @class = "form-control Name", placeholder = "Product Name" } })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.CS_ProductName, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <span class="fas fa-info-circle"></span>
+                                </span>
+                            </div>
+                            @Html.EditorFor(model => model.CS_ProductDesc, new { htmlAttributes = new { @class = "form-control Name", placeholder = "Product Description" } })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.CS_ProductDesc, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <span class="far fa-file-image"></span>
+                                </span>
+                            </div>
+                            <input type="file" class="form-control" name="PImg" value="" id="ProdImag" placeholder="Product photo" />
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-group">
+                        <button class="btn btn-info form-control Create" type="submit" id="myWish" style="display:none;"><i class="glyphicon glyphicon-registration-mark"></i> Submit</button>
+                        <button class="btn btn-info form-control Edit" type="submit" style="display:none;"><i class="glyphicon glyphicon-registration-mark"></i> Update</button>
+                    </div>
+
+                    @*</form>*@
+
+                }
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@*End of the modal*@
+
+
+
+<script>
+    function Create() {
+        $("#ShowModal").modal();
+        $(".Edit").hide();
+        $(".Create").show();
+
+
+        $("#ProdImag").prop('required', true);
+
+
+        $('#CS_ID').val("");
+        $('#CS_ProductName').val("");
+        $('#CS_ProductDesc').val("");
+        $('#CS_ImgPath').val("");
+        
+    }
+    function Edit(ID) {
+
+        $("#ShowModal").modal();
+        $(".Create").hide();
+        $(".Edit").show();
+
+
+        $("#ProdImag").prop('required', false);
+
+
+
+        $.ajax({
+
+            url: "/Admin/ProductSlider_Fetch/" + ID,
+
+            typr: "GET",
+
+            contentType: "application/json;charset=UTF-8",
+
+            dataType: "json",
+
+
+
+            success: function (result) {
+         
+                $('#CS_ID').val(result.CS_ID);
+                $('#CS_ProductName').val(result.CS_ProductName);
+                $('#CS_ProductDesc').val(result.CS_ProductDesc);
+                $('#CS_ImgPath').val(result.CS_ImgPath);
+
+            },
+
+
+        });
+
+        return false;
+
+    }
+
+
+
+
+
+</script>
+

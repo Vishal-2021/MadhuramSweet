@@ -1,0 +1,1698 @@
+﻿@model Accounting_Final_Details.Models.CreditNotes
+
+
+
+@{
+    ViewBag.Title = "AddSaleGst";
+    // Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+
+    if (Session["Role"] != null)
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    }
+
+    // Layout = null;
+}
+
+
+
+
+<script src="~/AutoSuggestion/jquery-1.10.0.min.js"></script>
+
+<script src="~/AutoSuggestion/jquery-ui.js"></script>
+<link href="~/AutoSuggestion/jquery-ui.css" rel="stylesheet" />
+
+
+
+
+<div aria-live="polite" aria-atomic="true" style="position: relative;">
+    <div class="toast" style="position: absolute; top: 5px; right: 5px;">
+
+        <div class="toast-body alert-success">
+            Data saved inserted <strong>Successfully!</strong>
+
+        </div>
+
+
+    </div>
+</div>
+
+
+
+
+<script>
+    $(document).ready(function () {
+        var msg = "@ViewBag.MsgSave";
+       //  $(".Btnpos").css({ position: 'relative' });
+        //  $(".Btnpos").css({position: 'absolute' });
+        if (msg != "") {
+            $(".Btnpos").css({ position: 'initial' });
+            $(".toast").toast({ delay: 3000 });
+            $(".toast").toast('show');
+           // $(".Btnpos").css({ position: 'relative' });
+
+        }
+
+});
+</script>
+
+
+
+
+
+
+
+@{
+    int Update_Id = Convert.ToInt32(ViewBag.UpdateMsg);
+}
+
+
+
+<h4 class="p-2">
+    Add Credit Notes !
+
+    @Html.ActionLink("<< Back to List", "ListSaleGst", null, new { @Class = "btn btn-info btn-sm float-right Btnpos", style = "position: sticky;" })
+
+</h4>
+
+
+
+@using (Html.BeginForm())
+{
+    <div class="form-horizontal border p-2">
+
+
+
+        @Html.AntiForgeryToken()
+
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        @Html.HiddenFor(m => m.CreditNotes_ID, new { @class = "form-control", })
+
+        <div class="form-row">
+            <div class="form-group col-md-3">
+                <div class="">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <span class="fas fa-file-invoice"></span>
+                            </span>
+                        </div>
+                        @Html.EditorFor(model => model.CreditNotes_BillNo, new
+                   {
+                       htmlAttributes = new
+                       {
+                           @class = "form-control CreditNotes_SaleWithGSTBillNo",
+                           placeholder = "Bill No",
+                           //  onchange = "BillnoExistorNot()",
+                           @readonly = "readonly",
+                         //  disabled = "true",
+                           required = "required"
+                       }
+                   })
+                        @Html.HiddenFor(m => m.CreditNotes_BillNo, new { @class = "form-control CreditNotes_SaleWithGSTBillNo" })
+                    </div>
+                    @Html.ValidationMessageFor(model => model.CreditNotes_BillNo, "", new { @class = "text-danger" })
+                </div>
+
+
+
+            </div> @*column1 End*@
+
+            <div class="form-group col-md-3">
+                <div class="">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <span class="fa fa-user"></span>
+                            </span>
+                        </div>
+                        @*@Html.EditorFor(model => model.TempSaleGST_SplrCustName, new { htmlAttributes = new { @class = "form-control", placeholder = "Select Supplier/Cutomer", onchange = "generate()" } })    @*onchange = "TempOrgNameExistorNot()"*@
+
+                        @Html.DropDownListFor(model => model.CreditNotes_SuppCustId, ViewBag.CustNameList as SelectList, "-- Select supplier --", new
+                        {
+                            @class = "form-control",
+                            disabled = "true",@*@readonly = "readonly",*@
+required = "required"
+})
+
+                    </div>
+                    @*@Html.ValidationMessageFor(model => model.TempSaleGST_SplrCustName, "", new { @class = "text-danger" })*@
+                </div>
+
+            </div> @*column1 End*@
+
+
+
+            <div class="form-group col-md-3">
+                <div class="">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <span class="fas fa-file-invoice"></span>
+                            </span>
+                        </div>
+                        @Html.EditorFor(model => model.CreditNotes_SaleWithGSTBillNo, new
+                   {
+                       htmlAttributes = new
+                       {
+                           @class = "form-control",
+                           placeholder = "Sale Bill No.",
+                           //  onchange = "BillnoExistorNot()",
+                           @readonly = "readonly",
+                         //  disabled = "true",
+                           required = "required"
+                       }
+                   })
+                        @Html.HiddenFor(m => m.CreditNotes_SaleWithGSTBillNo, new { @class = "form-control", })
+                    </div>
+                    @*@Html.ValidationMessageFor(model => model.CreditNotes_SaleWithGSTBillNo, "", new { @class = "text-danger" })*@
+                </div>
+            </div>@*column1 End*@
+
+            <div class="form-group col-md-3">
+                <div class="">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <i class="fa fa-calendar"></i>
+                            </span>
+                        </div>
+                        @if (Model.CreditNotes_Date != DateTime.MinValue)
+                        {
+                            <input class="form-control" type="date" id="CreditNotes_Date" name="CreditNotes_Date" value="@Convert.ToDateTime(Model.CreditNotes_Date).ToString("yyyy-MM-dd")" required />
+                        }
+                        else
+                        {
+                            DateTime dt = DateTime.Now;
+                            <input class="form-control" type="date" id="CreditNotes_Date" name="CreditNotes_Date" value="@dt.ToString("yyyy-MM-dd")" required />
+                        }
+
+
+                    </div>
+                    @Html.ValidationMessageFor(model => model.CreditNotes_Date, "", new { @class = "text-danger" })
+                </div>
+            </div>@*column1 End*@
+
+
+
+
+        </div>@*form-row End*@
+
+        <div class="form-row">
+            <div class="form-group col-md-3">
+                <div class="">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <i class="fab fa-product-hunt" style="font-size:24px;padding-left:1px;padding-right:5px"></i>
+                            </span>
+                        </div>
+                        @Html.EditorFor(model => model.TempSaleGST_ProductSelection, new { htmlAttributes = new { @class = "form-control ProductSelection", placeholder = "Select Product Name", onchange = "GetProductDetailsByName()" } })
+                    </div>
+                    @Html.ValidationMessageFor(model => model.TempSaleGST_ProductSelection, "", new { @class = "text-danger" })
+                </div>
+            </div>@*column1 End*@
+
+
+            @*<div class="form-group col-md-3">
+                    <div class="">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <i class="fas fa-chart-line" style="font-size:24px;padding-left:1px;padding-right:5px"></i>
+                                </span>
+                            </div>
+                            @Html.EditorFor(model => model.OpeningStock, new { htmlAttributes = new { @class = "form-control", placeholder = "Opening Stock", disabled = "true" } })
+
+                            @Html.HiddenFor(model => model.OpeningStock, new { @class = "form-control OpeningStock" })
+
+                        </div>
+                        @Html.ValidationMessageFor(model => model.OpeningStock, "", new { @class = "text-danger" })
+                    </div>
+                </div>*@
+
+            @*column1 End*@
+
+
+
+
+        </div>
+
+        <fieldset class="box">
+            <legend class="box">Product Details !</legend>
+
+
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <div class="">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <span class="fas fa-clipboard-list"></span>
+                                </span>
+                            </div>
+                            @Html.DropDownListFor(model => model.TempSaleGST_Goodtypes, ViewBag.TypeOfGoodsList as SelectList, "-- Select Product Type --", new { @class = "form-control", disabled = "true" })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.TempSaleGST_Goodtypes, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group col-md-4">
+                    <div class="">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <i class="fas fa-rupee-sign" style="font-size:24px;padding-left:1px;padding-right:5px"></i>
+                                </span>
+                            </div>
+                            @Html.EditorFor(model => model.TempSaleGST_ProductRates, new { htmlAttributes = new { @class = "form-control Prate", placeholder = "Product Rate", disabled = "true" } })
+
+                            @*@Html.EditorFor(m => m.ProductRate, new { @class = "form-control " })*@
+
+                            @Html.HiddenFor(model => model.TempSaleGST_ProductRates, new { @class = "form-control Prate FPrate", placeholder = "Product Rate", disabled = "true", })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.TempSaleGST_ProductRates, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group col-md-4">
+                    <div class="">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <i class="fas fa-money-check-alt" style="font-size:24px;padding-left:1px;padding-right:5px"></i>
+                                </span>
+                            </div>
+                            @Html.DropDownListFor(model => model.TempSaleGST_ProductGst, ViewBag.ProductGst as SelectList, "-- Select Product Gst % --", new { @class = "form-control", disabled = "true" })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.TempSaleGST_ProductGst, "", new { @class = "text-danger" })
+                    </div>
+                </div>@*column1 End*@
+
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <div class="">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <i class="fas fa-calculator" style="font-size:24px;padding-left:1px;padding-right:5px"></i>
+                                </span>
+                            </div>
+                            @Html.EditorFor(model => model.CreditNotes_Quantity, new { htmlAttributes = new { @class = "form-control", placeholder = "Product Quntity", required = "false", onchange = "OpeningStock()" } })
+                        </div>
+                        @*@Html.ValidationMessageFor(model => model.CreditNotes_Quantity, "", new { @class = "text-danger" })*@
+                    </div>
+                </div>@*column1 End*@
+
+
+
+                @*Qantity Column*@
+                <div class="form-group col-md-4">
+                    <div class="">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <span class="fas fa-percentage"></span>
+                                </span>
+                            </div>
+                            @Html.EditorFor(model => model.CreditNotes_PDiscount, new { htmlAttributes = new { @class = "form-control", placeholder = "Product Discount", required = "false", onchange = "ProductDisc()" } })
+                        </div>
+                        @*@Html.ValidationMessageFor(model => model.CreditNotes_PDiscount, "", new { @class = "text-danger" })*@
+                    </div>
+                </div>
+
+                <div class="form-group col-md-4">
+                    <a @*type="submit"*@ href="#" class="btn btn-info Create" onclick="AddEditSaleGst(1)"><i class="fas fa-plus" style="font-size:15px"></i> Add</a>
+                    &nbsp;  <a @*type="submit"*@ href="#" class="btn btn-info Edit" onclick="AddEditSaleGst(2)"><i class="far fa-edit"></i> Update</a>
+                    &nbsp;  <a class="btn btn-info Edit" href="/Admin/ListProductDeatails"> <i class="fas fa-plus" style="font-size:15px"></i> Product</a>
+                </div>
+
+
+
+            </div>@*Row End*@
+
+
+        </fieldset>
+
+
+        <style>
+            fieldset {
+                border: 1px solid #ddd;
+                border-left: 1px solid #ddd;
+                padding: 6px;
+                margin-bottom: 5px;
+                width: 100%;
+            }
+
+
+
+
+            legend {
+                /*padding: 0.2em 0.5em;
+              border: 2px solid #333;*/
+                width: auto;
+                font-size: 15px;
+                font-weight: 500;
+                /*margin-left: 10px;
+                            color: #333;
+                            font-size: 90%;
+                            font-weight: bold;
+                            text-align: left;
+                            border-bottom-left-radius: 5px;
+                            border-top-right-radius: 5px;*/
+            }
+
+
+
+            #main:hover .box {
+                border-color: #1b76c4;
+            }
+        </style>
+        <style>
+            table, th, td {
+                border: 1px solid #ddd;
+            }
+        </style>
+
+        <div class="table-responsive">
+            <div style="overflow-y: auto; height:150px; border:1px solid #ddd;padding:5px">
+
+                <table class="" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>
+                                Bill No
+
+                            </th>
+                            <th>
+                                Supplier/Customer Name
+                            </th>
+                            <th>
+                                Product Name
+                            </th>
+                            <th>
+                                Product Rate
+                            </th>
+                            <th>
+                                Gst (%)
+                            </th>
+                            <th>
+                                Quantity
+                            </th>
+                            <th>
+                                Discount (%)
+                            </th>
+                            <th>
+                                Gst (Rs.)
+                            </th>
+                            <th>
+                                Total
+                            </th>
+                            <th>
+                                Date
+
+                            </th>
+                            <th style="padding-right:50px">
+                                Actions
+                            </th>
+
+                        </tr>
+                    </thead>
+
+                    <tbody class="tbody"></tbody>
+                </table>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="container pt-1">
+            <b>No of Items : <b class="RowCunt"></b></b>
+            <div class="form-row">
+                <div class="form-group col-md-9">
+
+
+
+                    <div class="form-row">
+                        <div class="form-group col-md-3">
+                            <div class="">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <span class="fas fa-percentage"></span>
+                                        </span>
+                                    </div>
+                                    @Html.EditorFor(model => model.TempSaleGST_DiscPer, new { htmlAttributes = new { @class = "form-control", placeholder = "Discount (%)", onchange = "AddDiscount()" } })
+
+                                </div>
+                                @Html.ValidationMessageFor(model => model.TempSaleGST_DiscPer, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <div class="">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <span class="fas fa-rupee-sign"></span>
+                                        </span>
+                                    </div>
+                                    @Html.EditorFor(model => model.TempSaleGST_DiscRs, new { htmlAttributes = new { @class = "form-control", placeholder = "Rs. Discount", onchange = "AddDiscount()" } })
+
+                                </div>
+                                @Html.ValidationMessageFor(model => model.TempSaleGST_DiscRs, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <div class="">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <span class="fas fa-list"></span>
+                                        </span>
+                                    </div>
+                                    @Html.EditorFor(model => model.TempSaleGST_ChargesName, new { htmlAttributes = new { @class = "form-control", placeholder = "Charges Name", onchange = "AddDiscount()" } })
+
+                                </div>
+                                @Html.ValidationMessageFor(model => model.TempSaleGST_ChargesName, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <div class="">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <span class="fas fa-shipping-fast"></span>
+                                        </span>
+                                    </div>
+                                    @Html.EditorFor(model => model.TempSaleGST_ChargesAmt, new { htmlAttributes = new { @class = "form-control", placeholder = "Charges Amt.", onchange = "AddDiscount()" } })
+                                </div>
+                                @Html.ValidationMessageFor(model => model.TempSaleGST_ChargesAmt, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+
+                        <div class="form-group col-md-4">
+                            <div class="">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <span class="far fa-sticky-note"></span>
+                                        </span>
+                                    </div>
+                                    @Html.TextAreaFor(model => model.TempSaleGST_Notes, new { @class = "form-control", placeholder = "Notes" })
+                                </div>
+                                @Html.ValidationMessageFor(model => model.TempSaleGST_Notes, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            <button class="btn btn-info form-control" type="submit" onclick="AddDiscount()"><i class="fas fa-plus" style="font-size:15px"></i> Add</button>
+                        </div>
+                    </div>
+
+
+                    @*<div class="form-group col-md-9">
+                            <div class="">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <span class="fas fa-info-circle"></span>
+                                        </span>
+                                    </div>
+                                    @Html.DropDownListFor(model => model.SalBilWiGSTTCID, ViewBag.TermsnConditions as SelectList, "--- Select Terms & Conditions ---", new { @class = "form-control" })
+                                </div>
+                                @Html.ValidationMessageFor(model => model.SalBilWiGSTTCID, "", new { @class = "text-danger" })
+                            </div>
+                        </div>*@
+
+
+                    @*@using (Html.BeginForm("SaleWiGstTnC", "Admin", FormMethod.Post, new { id = "formId" }))
+                        {*@
+                    <form id="formId" method="post">
+                        <input type="hidden" id="autoBillno" name="autoBillno" value="" />
+
+
+                        @*@foreach (var item in ViewBag.TermsnConditions)
+                            {
+                                <input type="checkbox" id="ID" name="ID" value="@item.TCID" />
+                                <label for="vehicle1"> @item.TurCon</label> <br />
+                            }*@
+
+
+
+                        @foreach (var item in ViewBag.TermsnConditions)
+                        {
+                            bool asp = false;
+                            int Id = item.TCID;
+
+                            if (ViewBag.TncInfo != null)
+                            {
+                                foreach (var item2 in ViewBag.TncInfo)
+                                {
+                                    int InfoID = item2.CreditNotesTnC_TCID;
+
+                                    if (Id == InfoID)
+                                    {
+                                        asp = true;
+                                    }
+                                }
+                            }
+
+                            if (asp)
+                            {
+
+                                <input type="checkbox" id="ID" name="ID" value="@item.TCID" checked />
+                                @item.TurCon
+                                <br />
+
+
+                            }
+                            else
+                            {
+                                <input type="checkbox" id="ID" name="ID" value="@item.TCID" />
+                                @item.TurCon
+                                <br />
+                            }
+
+                        }
+
+
+                    </form>
+                    @*}*@
+
+
+                </div>
+
+                @*<div class="form-group col-md-3">
+
+                    <div class="form-row border">
+                        <div class="form-group col-md-12">
+                            <button class="btn btn-info form-control" type="submit" onclick="AddDiscount()"><i class="fas fa-plus" style="font-size:15px"></i> Add</button>
+                        </div>
+                     </div>
+                    </div>*@
+
+                <div class="form-group col-md-3">
+                    <div class="form-row">
+
+                        <div class="form-group col-md-12 border p-2">
+
+                            @*<b style="font-weight:600">
+                                    Quantity : <b class="Qnt"> </b> <br />
+                                    Total Rate (Rs.) : <b class="ProRate"></b> <br />
+                                    Total Discount (%) : <b class="TotalDisRate"></b>
+                                </b>*@
+
+                            <b style="font-weight:600">
+                                Grand Total (Rs.) :
+                                @Html.HiddenFor(model => model.TempSaleGST_GrandTot, new { @class = "form-control", id = "GrandTot" })
+                                <b class="GrndTtl">
+
+                                </b>
+                            </b> <br />
+
+                            @Html.HiddenFor(model => model.CreditNotes_GstRs, new { @class = "form-control", id = "GstTot" })
+                            <b style="font-weight:600">
+                                GST Total (Rs.) :  <b class="TtlGst"></b>
+
+                            </b> <br />
+                            @Html.HiddenFor(model => model.TempSaleGST_FTotalAmt, new { @class = "form-control", id = "FTot" })
+                            <b style="font-weight:600">Final Total (Rs.):  <b class="FTotal"></b>         </b>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        @*<div class="row">
+                <div class="col-10"></div>
+                <div class="col-2">
+                    <div class="float-right m-2">
+                        <div class="form-group">
+                            <button class="btn btn-info form-control Create" id="postBtn" type="submit" onclick="AfterSaveRedirect()"><i class="far fa-save"></i> Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>*@
+
+
+
+        <div class="row">
+            <div class="col-9"></div>
+            <div class="col-3">
+                <div class="form-row">
+
+                    <div class="col">
+                        <a class="btn btn-danger form-control" href="/Admin/Trash_TempCreditNotes" onclick="return confirm('Are you sure?')"><i class="fas fa-trash-alt"></i> Clear</a>
+                    </div>
+                    <div class="col">
+                        <button class="btn btn-info form-control Create" id="postBtn" type="submit" onclick="AfterSaveRedirect()"><i class="far fa-save"></i> Save</button>
+                    </div>
+
+
+
+
+
+                </div>
+            </div>
+        </div> @*Main div tag*@
+
+
+
+
+
+
+    </div> @*Main div tag*@
+}
+
+
+
+
+
+
+
+@*Model Of Message*@
+
+<div class="modal fade bd-example-modal" id="ShowModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header border-0" style="padding:5px;padding-left:15px ;margin:0;">
+                <h4 class="text-success">Save Successfully ...!</h4>
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+            </div>
+            <div class="modal-body">
+
+                <div class="alert alert-warning" role="alert">
+                    If you want to do payment of Supplier then click yes, other wise no.
+                </div>
+
+                @using (Html.BeginForm())
+                {
+
+                    @*@Html.HiddenFor(m => m.TempSaleGST_SuppCustId, new { @class = "form-control OrgID", @name = "OrgID", id = "Custidmsg" })
+
+                        @Html.HiddenFor(m => m.TempSaleGST_BillNo, new { @class = "form-control OrgID", id = "Billnomsg" })
+
+                        @Html.HiddenFor(m => m.TempSaleGST_TotalAmt, new { @class = "form-control OrgID", id = "TotalAmtmsg" })
+
+                        @Html.HiddenFor(m => m.TempSaleGST_Existance, new { @class = "form-control OrgID", id = "Existancemsg" })*@
+
+                    <div class="form-group">
+                        <button class="btn btn-info form-control col-2" type="submit" formaction="/Admin/SalesGst_Payment"><i class=""></i> Yes</button>
+                        @*<button class="btn btn-danger form-control col-2" type="submit" formaction="/Admin/ListSaleGst" ><i class=""></i> No</button>*@
+                        <a class="btn btn-danger form-control col-2" href="/Admin/ListSaleGst/@Update_Id"><i class=""></i> No</a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@*End of message*@
+
+
+
+<script>
+
+    function generate()
+    {
+
+     $.ajax({
+
+         url: "/Admin/BillNoGenerator_CreditBillNo",
+
+         typr: "GET",
+
+         contentType: "application/json;charset=UTF-8",
+
+         dataType: "json",
+
+         success: function (result) {
+
+             $(".CreditNotes_SaleWithGSTBillNo").val("00" + result);
+          //   $("#CreditNotes_BillNo").val("00" + rslt);  // this for checkbox of terms and conditions
+
+         },
+
+         error: function (errormessage) {
+
+             //  alert(errormessage.responseText);
+
+         }
+
+     });
+
+
+
+
+    }
+    // save Grand Total And final Total for reportin purpose
+
+
+    function SaveGraFinTotl() {
+
+        var GraTotl = $('.GrndTtl').text();
+        var FinTotl = $('.FTotal').text();
+        var BillNo = $('#TempSaleGST_BillNo').val();
+        var Dates = $('#TempSaleGST_Date').val();
+
+
+        var empObj = {
+            TempSaleGST_BillNo: BillNo,
+            TempSaleGST_Date: Dates,
+            TempSaleGST_GrandTot: GraTotl,
+            TempSaleGST_TotalAmt: FinTotl
+
+          };
+
+        $.ajax({
+
+            url: "/Admin/SaleGst_Reports",
+
+            data: JSON.stringify(empObj),
+
+            type: "POST",
+
+            contentType: "application/json;charset=utf-8",
+
+            dataType: "json",
+
+            success: function (result) {
+
+
+            },
+
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+
+        });
+
+    }
+    // end
+    // Add Discount Button
+
+
+    function AddDiscount() {
+
+      var GrndTtl = $("#GrandTot").val();
+      var dscper = $("#TempSaleGST_DiscPer").val();
+      var disRs = $("#TempSaleGST_DiscRs").val();
+      var charges = $("#TempSaleGST_ChargesAmt").val();
+
+      var TtlGst = $(".TtlGst").text();
+
+      var FTotal = $(".FTotal").text();
+
+
+      var DiscGrandTol = GrndTtl * dscper / 100; // Discount on Grand
+
+      var GrandTotal = GrndTtl - DiscGrandTol;  // Final Grand Total
+
+      var FGrandTotal = GrandTotal - disRs; // Grand Total + +charges
+
+
+      $('.GrndTtl').empty().append(FGrandTotal);
+
+      var FinalTot = FGrandTotal + parseFloat(TtlGst);
+
+
+      $('.FTotal').empty().append(FinalTot + +charges);
+
+
+  //var empObj = {
+
+  //    TempSaleGST_BillNo: $('#TempSaleGST_BillNo').val(),
+  //    TempSaleGST_DiscPer: $('#TempSaleGST_DiscPer').val(),
+  //    TempSaleGST_DiscRs: $('#TempSaleGST_DiscRs').val(),
+  //    TempSaleGST_ChargesName: $('#TempSaleGST_ChargesName').val(),
+  //    TempSaleGST_ChargesAmt: $('#TempSaleGST_ChargesAmt').val()
+
+  //};
+
+  //$.ajax({
+
+  //    url: "/Admin/AddSalesGst_ChargeDisc",
+
+  //    data: JSON.stringify(empObj),
+
+  //    type: "POST",
+
+  //    contentType: "application/json;charset=utf-8",
+
+  //    dataType: "json",
+
+  //    success: function (result) {
+
+  //         // alert("Successfull");
+  //        //loadData();
+  //        //Clear();
+
+  //    },
+
+  //    error: function (errormessage) {
+
+  //      //  alert(errormessage.responseText);
+
+  //    }
+
+  //});
+
+}
+    // End Discount Button
+
+    function ProductDisc() {
+        var Prate = $(".FPrate").val();
+
+        var PurDisc = $("#CreditNotes_PDiscount").val();
+
+        var PDiscRate = Prate * PurDisc / 100;
+
+        var FPDiscRate = Prate - PDiscRate;
+
+        $("#TempSaleGST_ProductRates").val(FPDiscRate);
+
+
+    }
+
+
+
+    function AfterSaveRedirect() {
+
+
+        $.ajax({
+
+            url: "/Admin/Check_TempSaleGSTEmpty",
+
+            typr: "GET",
+
+            contentType: "application/json;charset=UTF-8",
+
+            dataType: "json",
+
+            success: function (result) {
+
+                var res1 = validation_AfterSave(); // text box validation
+                var res2 = true;
+
+                if (result == 0) {
+                    alert("Your Table is Empty");
+                    res2 = false;
+                }
+
+
+                if (res1 == true && res2 == true) {
+
+                  //  AddDiscount();
+                    $("#ShowModal").modal();
+
+                       $.ajax({
+
+                            url: "/Admin/Redirect_To_SalesGst_Payment",
+
+                            typr: "GET",
+
+                            contentType: "application/json;charset=UTF-8",
+
+                            dataType: "json",
+
+                        success: function (result) {
+
+                            var BillNo =  $("#TempSaleGST_BillNo").val();
+
+                            $('#Custidmsg').val(result.TempSaleGST_SuppCustId);
+
+                            $('#Billnomsg').val(BillNo);
+
+                            var totamt = $('.FTotal').text();
+                            $('#TotalAmtmsg').val(totamt);
+
+                            $('#Existancemsg').val("23");
+
+                            var BillNo_TnC = $("#TempSaleGST_BillNo").val();
+
+                            $("#autoBillno").val(BillNo_TnC);
+
+
+                            TermsNConditons();
+                            AddDiscount();
+                            SaveGraFinTotl();
+                            SaveTableData();
+
+
+
+
+                         },
+
+                 });
+                }
+            },
+            error: function () {
+                alert('Error occured');
+            }
+        });
+
+        return false;
+
+    }
+
+
+
+
+
+
+    //function AfterSaveRedirect() {
+
+    //    $.ajax({
+
+    //                    url: "/Admin/AfterSaveRedirect",
+
+    //                    typr: "GET",
+
+    //                    contentType: "application/json;charset=UTF-8",
+
+    //                    dataType: "json",
+
+    //                    success: function (result) {
+
+    //                        $('#Custidmsg').val(result.TempPurSuppCustName);
+    //                        $('#Billnomsg').val(result.TempPurBillNo);
+
+    //                        var totamt = $('.FTotal').text();
+    //                        $('#TotalAmtmsg').val(totamt);
+
+    //                        $('#Existancemsg').val("23");
+
+
+    //                        SaveGraFinTotl()
+    //                        SaveTableData();
+
+    //                    },
+
+
+    //                });
+
+    //    return false;
+    //}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    function TermsNConditons() {
+        // $('#formId').submit();
+        var form = $("#formId").serialize();
+        $.ajax({
+            type: 'POST',
+            url: "/Admin/SaleGst_TnC",
+            data: form,
+            dataType: 'json',
+            success: function (data) {
+                if (data.result == "Error") {
+                    alert(data.message);
+                }
+            }
+        });
+    }
+
+
+
+    function SaveTableData() {
+
+        obj = {
+
+            BillNo: $("#TempSaleGST_BillNo").val()
+        }
+
+        $.ajax({
+
+            url: "/Admin/SaleGst_Add_From_TempSaleGst",
+
+            typr: "GET",
+
+            data: obj,
+
+            contentType: "application/json;charset=UTF-8",
+
+            dataType: "json",
+
+            success: function (result) {
+                loadData();
+            },
+        });
+
+        return false;
+    }
+
+    // validation
+    function validation()
+    {
+        var isvalid = true;
+
+
+        if ($('#CreditNotes_BillNo').val().trim() == "") {
+            $('#CreditNotes_BillNo').css('border-color', 'Red')
+            isvalid = false;
+        }
+        else {
+            $('#CreditNotes_SuppCustId').css('border-color', 'lightgrey')
+        }
+
+        if ($('#CreditNotes_SuppCustId').val().trim() == "") {
+            $('#CreditNotes_SuppCustId').css('border-color', 'Red')
+            isvalid = false;
+        }
+        else {
+            $('#CreditNotes_SuppCustId').css('border-color', 'lightgrey')
+        }
+
+        if ($('#TempSaleGST_ProductSelection').val().trim() == "") {
+            $('#TempSaleGST_ProductSelection').css('border-color', 'Red')
+            isvalid = false;
+        }
+        else {
+            $('#TempSaleGST_ProductSelection').css('border-color', 'lightgrey')
+        }
+
+
+        if ($('#TempSaleGST_Goodtypes').val().trim() == "") {
+            $('#TempSaleGST_Goodtypes').css('border-color', 'Red')
+            isvalid = false;
+        }
+        else {
+            $('#TempSaleGST_Goodtypes').css('border-color', 'lightgrey')
+        }
+
+        if ($('#TempSaleGST_ProductRates').val().trim() == "") {
+            $('#TempSaleGST_ProductRates').css('border-color', 'Red')
+            isvalid = false;
+        }
+        else {
+            $('#TempSaleGST_ProductRates').css('border-color', 'lightgrey')
+        }
+
+        if ($('#TempSaleGST_ProductGst').val().trim() == "") {
+            $('#TempSaleGST_ProductGst').css('border-color', 'Red')
+            isvalid = false;
+        }
+        else {
+            $('#TempSaleGST_ProductGst').css('border-color', 'lightgrey')
+        }
+
+        if ($('#CreditNotes_SaleWithGSTBillNo').val().trim() == "") {
+            $('#CreditNotes_SaleWithGSTBillNo').css('border-color', 'Red')
+            isvalid = false;
+        }
+        else {
+            $('#CreditNotes_SaleWithGSTBillNo').css('border-color', 'lightgrey')
+        }
+
+        if ($('#CreditNotes_Quantity').val().trim() == "") {
+            $('#CreditNotes_Quantity').css('border-color', 'Red')
+            isvalid = false;
+        }
+        else {
+            $('#CreditNotes_Quantity').css('border-color', 'lightgrey')
+        }
+
+        if ($('#CreditNotes_Date').val().trim() == "") {
+            $('#CreditNotes_Date').css('border-color', 'Red')
+            isvalid = false;
+        }
+        else {
+            $('#CreditNotes_Date').css('border-color', 'lightgrey')
+        }
+
+        return isvalid;
+
+    }
+
+
+
+    function validation_AfterSave()
+    {
+        var isvalid = true;
+
+
+        if ($('#TempSaleGST_SplrCustName').val().trim() == "") {
+            $('#TempSaleGST_SplrCustName').css('border-color', 'Red')
+            isvalid = false;
+        }
+        else {
+            $('#TempSaleGST_SplrCustName').css('border-color', 'lightgrey')
+        }
+
+
+        if ($('#TempSaleGST_BillNo').val().trim() == "") {
+            $('#TempSaleGST_BillNo').css('border-color', 'Red')
+            isvalid = false;
+        }
+        else {
+            $('#TempSaleGST_BillNo').css('border-color', 'lightgrey')
+        }
+
+        return isvalid;
+    }
+
+    // Exist or not
+
+    function TempOrgNameExistorNot() {
+
+        var ID = $('#SplrCustName').val();
+
+        $.ajax({
+
+            url: "/Admin/TempOrgNameExistorNot/" + ID,
+
+            typr: "GET",
+
+            contentType: "application/json;charset=UTF-8",
+
+            dataType: "json",
+
+            success: function (result) {
+
+
+
+                if (result == 1) {
+
+                }
+                if(result == 2)
+                {
+                    $('#SplrCustName').val("");
+                    alert("You can not use other Customer/Supplier Name after adding Customer/Supplier Name");
+                }
+
+
+            },
+
+
+        });
+
+        return false;
+
+    }
+
+    function BillnoExistorNot() {
+
+    var ID =    $('#PurBillNo').val();
+
+    $.ajax({
+
+            url: "/Admin/BillnoExistorNot/" + ID,
+
+            typr: "GET",
+
+            contentType: "application/json;charset=UTF-8",
+
+            dataType: "json",
+
+            success: function (result) {
+
+                if (result == 1) {
+                    $('#PurBillNo').val("");
+                    alert("Bill Number Already Exist");
+                  }
+                else {
+
+                }
+
+            },
+
+
+        });
+
+        return false;
+
+    }
+
+    function GetTotal() {
+
+        $.ajax({
+
+            url: "/Admin/TotalSaleGstLists",
+
+            type: "GET",
+
+            contentType: "application/json;charset=utf-8",
+
+            dataType: "json",
+
+            success: function (result) {
+
+                 $('.Qnt').empty().append(result[0]);
+                 $('.RowCunt').empty().append(result[1]);
+                 $('.ProRate').empty().append(result[2]);
+                 $('.GrndTtl').empty().append(result[3]);
+                 $('.TtlGst').empty().append(result[4]);
+                 $('.FTotal').empty().append(result[5]);
+                 $('.TotalDisRate').empty().append(result[6]);
+
+                 $("#GrandTot").val(result[3]);
+                 AddDiscount();
+            },
+
+            error: function (errormessage) {
+
+                //  alert(errormessage.responseText);
+
+                $('.Qnt').empty().append(0);
+                $('.RowCunt').empty().append(0);
+                $('.ProRate').empty().append(0);
+                $('.GrndTtl').empty().append(0);
+                $('.TtlGst').empty().append(0);
+                $('.FTotal').empty().append(0);
+
+
+            }
+
+        });
+
+    }
+
+    function loadData() {
+
+        $.ajax({
+
+            url: "/Admin/ListTempCreditNotes",
+
+            type: "GET",
+
+            contentType: "application/json;charset=utf-8",
+
+            dataType: "json",
+
+            success: function (result) {
+
+                var html = '';
+                var Gtotal = 0;
+                var GstRstotal = 0;
+                var Ftotal = 0;
+                var RowCount = 0;
+                $.each(result, function (key, item) {
+
+
+
+                    html += '<tr>';
+
+                    html += '<td> <input type="hidden" name="HidBillNo" id ="hiddBillNo" value="' + item.TempCreditNotes.TempCreditNotes_BillNo + '" /> ' + item.TempCreditNotes.TempCreditNotes_BillNo + '</td>';
+                    html += '<td>' + item.CustDtl.CustName + '</td>';
+                    html += '<td>' + item.ProductDetails.ProductName + '</td>';
+                    html += '<td>' + item.TempCreditNotes.TempCreditNotes_ProductRate + '</td>';
+                    html += '<td>' + item.ProductGST.ProdGst + '</td>';
+                    html += '<td>' + item.TempCreditNotes.TempCreditNotes_Quantity + '</td>';
+                    html += '<td>' + item.TempCreditNotes.TempCreditNotes_PDiscount + '</td>';
+                    html += '<td>' + item.TempCreditNotes.TempCreditNotes_GstRs + '</td>';
+                    html += '<td>' + item.TempCreditNotes.TempCreditNotes_Total + '</td>';
+
+                    var jsonDate = new Date(+item.TempCreditNotes.TempCreditNotes_Date.replace(/\/Date\((\d+)\)\//, '$1'));
+
+                    // best for date formating
+                    var d = new Date(jsonDate);
+                    var day = d.getDate();
+                    var month = d.getMonth() + 1;
+                    var year = d.getFullYear();
+                    if (day < 10) {
+                        day = "0" + day;
+                    }
+                    if (month < 10) {
+                        month = "0" + month;
+                    }
+                    var date = day + "/" + month + "/" + year;
+                    // End Date formating
+
+                    html += '<td>' + date + '</td>';
+
+                    html += '<td> &nbsp; <a class="text-info" href="#" onclick="Edit(' + item.TempCreditNotes.TempCreditNotes_ID + ')"> <i class="fa fa-edit" style="font-size:17px"></i></a> &nbsp;&nbsp; <a class="text-danger"  onclick="DeleteTempSalesGst(' + item.TempCreditNotes.TempCreditNotes_ID + ')"><i class="fas fa-trash-alt" style="font-size:17px"></i></a>';
+
+                    html += '</tr>';
+
+                    GstRstotal += item.TempCreditNotes.TempCreditNotes_GstRs;
+                    Gtotal += item.TempCreditNotes.TempCreditNotes_Total;
+
+                    Ftotal = GstRstotal + Gtotal;
+
+                    RowCount++;
+
+                });
+
+                $('.tbody').html(html);
+
+
+                $('.RowCunt').empty().append(RowCount);
+
+
+
+                $('.GrndTtl').empty().append(Gtotal);
+                $("#GrandTot").val(Gtotal);
+
+                $('.TtlGst').empty().append(GstRstotal);
+                $("#GstTot").val(GstRstotal);
+
+                $('.FTotal').empty().append(Ftotal);
+                $("#FTot").val(Ftotal);
+
+
+               //   GetTotal();
+
+            },
+
+            error: function (errormessage) {
+
+                alert(errormessage.responseText);
+
+            }
+
+        });
+
+    }
+
+    $("#TempSaleGST_SplrCustName").autocomplete({
+        source: function (request, response) {
+               $.ajax({
+                    url: '@Url.Action("AutoCustOrgName", "Admin")',
+                    dataType: "json",
+                    data: { search: $("#TempSaleGST_SplrCustName").val() },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return { label: item.Name, value: item.Name };
+                        }));
+                    },
+                    error: function (xhr, status, error) {
+                        alert("Error");
+                    }
+                });
+
+        }
+    });
+
+
+    $("#TempSaleGST_ProductSelection").autocomplete({
+        source: function (request, response) {
+            $.ajax({
+                url: '@Url.Action("AutoProductName", "Admin")',
+                dataType: "json",
+                data: { search: $("#TempSaleGST_ProductSelection").val() },
+                success: function (data) {
+                    response($.map(data, function (item) {
+                        return { label: item.Name, value: item.Name };
+                    }));
+                },
+                error: function (xhr, status, error) {
+                    alert("Error");
+                }
+            });
+        }
+    });
+
+
+
+    $(document).ready(function () {
+      //  $(".Create").show();
+
+
+
+
+    // var billno = $("#TempSaleGST_BillNo").val();
+
+    // if (billno == "") {
+         generate();
+    // }
+
+
+
+
+        loadData();
+
+        //$('#postBtn').click(function() {
+        //   // $('#formId').submit();
+        //    var form = $("#formId").serialize();
+        //    $.ajax({
+        //        type: 'POST',
+        //        url: "/Admin/SaleGst_TnC",
+        //        data: form,
+        //        dataType: 'json',
+        //        success: function (data) {
+        //         if (data.result == "Error") {
+        //                alert(data.message);
+        //            }
+        //        }
+        //    });
+        //})
+
+     //   AddDiscount();
+
+    });
+
+
+    // bind value to textbox
+    function GetProductDetailsByName() {
+
+        var empObj = {
+            ProductSelection: $('#TempSaleGST_ProductSelection').val(),
+        };
+
+        $.ajax({
+            url: "/Admin/FetchProductDetailByName",
+            data: JSON.stringify(empObj),
+            type: "POST",
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            success: function (result) {
+
+
+              //  $('#OpeningStock').val(result.Opening_Stock_Qty);
+              //  $('.OpeningStock').val(result.Opening_Stock_Qty);
+
+                $('#TempSaleGST_ProductRate').val(result.ProductPurchaseRate);
+
+                $('.Prate').val(result.ProductPurchaseRate);
+
+
+                $('#TempSaleGST_Goodtypes').val(result.PDTypeGoods);
+
+                $('#TempSaleGST_ProductGst').val(result.GstPercent);
+
+            },
+        });
+    }
+
+
+
+    function Clear()
+    {
+
+        $('#TempSaleGST_ProductSelection').val("");
+        $('#TempSaleGST_Goodtypes').val("");
+        $('#TempSaleGST_ProductRates').val("");
+        $('#TempSaleGST_ProductGst').val("");
+        $('#CreditNotes_Quantity').val(1);
+        $('#CreditNotes_PDiscount').val(0);
+
+    }
+
+
+
+
+
+
+
+
+    function AddEditSaleGst(ID) {
+
+        var res = validation();
+
+        var sal = 0;
+
+        if (ID == 2) {
+            sal = $('#CreditNotes_ID').val();
+       }
+
+
+
+       if (res == true) {
+
+           var empObj = {
+
+               //  PurID: $('#PurID').val(),
+
+               CreditNotes_ID: sal,
+             //  CreditNotes_ID: $('#CreditNotes_ID').val(),
+               CreditNotes_SuppCustId: $("#CreditNotes_SuppCustId").val(),
+               CreditNotes_SaleWithGSTBillNo: $('#CreditNotes_SaleWithGSTBillNo').val(),
+               CreditNotes_Date: $('#CreditNotes_Date').val(),
+               TempSaleGST_ProductSelection: $('#TempSaleGST_ProductSelection').val(),
+               TempSaleGST_Goodtypes: $('#TempSaleGST_Goodtypes').val(),
+               TempSaleGST_ProductRates: $('#TempSaleGST_ProductRates').val(),
+               TempSaleGST_ProductGst: $('#TempSaleGST_ProductGst').val(),
+               CreditNotes_Quantity: $('#CreditNotes_Quantity').val(),
+               CreditNotes_PDiscount: $('#CreditNotes_PDiscount').val()
+
+           };
+
+           $.ajax({
+
+               url: "/Admin/AddEditTempCreditNotes",
+
+               data: JSON.stringify(empObj),
+
+               type: "POST",
+
+               contentType: "application/json;charset=utf-8",
+
+               dataType: "json",
+
+               success: function (result) {
+
+                   loadData();
+                   Clear();
+                 //  SaveGraFinTotl();
+
+               },
+
+               error: function (errormessage) {
+
+                   alert(errormessage.responseText);
+
+               }
+
+           });
+        } // end validation
+   }
+
+    function DeleteTempSalesGst(ID) {
+
+        $.ajax({
+
+            url: "/Admin/DeleteCreditNotes/" + ID,
+
+            typr: "GET",
+
+            contentType: "application/json;charset=UTF-8",
+
+            dataType: "json",
+
+            success: function (result) {
+
+                loadData();
+            },
+
+
+        });
+
+        return false;
+
+    }
+
+    function Edit(ID) {
+
+        $.ajax({
+
+            url: "/Admin/FetchCreditNotes/" + ID,
+
+            typr: "GET",
+
+            contentType: "application/json;charset=UTF-8",
+
+            dataType: "json",
+
+            success: function (result) {
+
+
+              //  $('#OpeningStock').val(result.ProductDetails.Opening_Stock_Qty);
+              //  $('.OpeningStock').val(result.ProductDetails.Opening_Stock_Qty);
+
+                $('#CreditNotes_ID').val(result.TempCreditNotes.TempCreditNotes_ID);
+
+
+              //  $('#TempSaleGST_SplrCustName').val(result.CustDtl.CustName);
+
+                $('#TempSaleGST_ProductSelection').val(result.ProductDetails.ProductName);
+                $('#TempSaleGST_Goodtypes').val(result.ProductDetails.PDTypeGoods);
+
+                // $('.Prate').val(result.ProductDetails.ProductPurchaseRate);
+
+                $('.Prate').val(result.ProductDetails.ProductPurchaseRate);
+                var Prate = result.ProductDetails.ProductPurchaseRate;
+                var PurDisc = result.TempCreditNotes.TempCreditNotes_PDiscount;
+
+
+
+                $('#TempSaleGST_ProductGst').val(result.ProductDetails.GstPercent);
+
+             //   $('.SalBilWiGSTBillNo').val(result.TempCreditNotes.TempSaleGST_BillNo);
+
+                $('#CreditNotes_Quantity').val(result.TempCreditNotes.TempCreditNotes_Quantity);
+
+
+
+
+
+                $('#CreditNotes_PDiscount').val(result.TempCreditNotes.TempCreditNotes_PDiscount);
+
+                var TotDisc = Prate * PurDisc / 100;
+
+                $('#TempSaleGST_ProductRates').val(Prate - TotDisc);
+
+
+
+
+                var jsonDate = new Date(+result.TempCreditNotes.CreditNotes_Date.replace(/\/Date\((\d+)\)\//, '$1'));
+
+                // best for date formating
+                var d = new Date(jsonDate);
+                var day = d.getDate();
+                var month = d.getMonth() + 1;
+                var year = d.getFullYear();
+                if (day < 10) {
+                    day = "0" + day;
+                }
+                if (month < 10) {
+                    month = "0" + month;
+                }
+                var date = year + "-" + month + "-" + day;
+                // End Date formating
+
+            //    $('#TempSaleGST_Date').val(date);
+
+            },
+
+        });
+
+        return false;
+
+    }
+
+
+
+</script>
+
+
+
+
+
+
+
+
+

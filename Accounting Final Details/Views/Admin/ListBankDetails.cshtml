@@ -1,0 +1,485 @@
+﻿
+@model Accounting_Final_Details.Models.BankDetails
+
+@{
+    ViewBag.Title = "ListBankDetails";
+    // Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+
+
+
+    if (Session["Role"] != null)
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    }
+
+}
+
+
+
+
+
+
+
+
+<main>
+  
+
+
+    <div class="container-fluid">
+        <h2 class="mt-4">Bank !</h2>
+        @*<ol class="breadcrumb mb-4">
+            <li class="breadcrumb-item"><a href="index">Dashboard</a></li>
+
+        </ol>*@
+
+
+        <hr />
+        <section class="section alert-section">
+            <div class="alert alert-info" style="background:#29d2e4;">
+                <div class="alert-container">
+
+                    <i class="fa fa-info-circle"></i>
+                    <b class="alert-info" style="background:#29d2e4">Info alert:</b> You've got some friends nearby, stop looking at your phone and find them...
+                </div>
+            </div>
+        </section>
+
+
+
+        @*<div class="container text-right" style="margin-bottom:10px;">
+            <button type="button" onclick="Create()" class="btn btn-info"><i class="fa fa-plus"></i> Add</button>
+        </div>*@
+
+        <div class="form-row">
+            <div class="col">
+                <div class="alert alert-success" id="success-alert" style="display:none" role="alert">
+                    <i class="far fa-check-circle"></i> @TempData["SaveRegMsg"] @TempData["UpdatRegMsg"]
+                </div>
+            </div>
+
+            <div class="col text-right" style="padding-top:10px;padding-bottom:10px">
+                <button type="button" onclick="Create()" class="btn btn-info"><i class="fa fa-plus"></i> Add</button>
+            </div>
+
+        </div>
+
+        <script>
+            $(document).ready(function () {
+
+                var SaveMsg = "@TempData["SaveRegMsg"]";
+
+                var UpdateMsg = "@TempData["UpdatRegMsg"]";
+
+
+                if (SaveMsg != "") {
+                    $("#success-alert").fadeTo(2000, 500).slideUp(500, function () {
+                        $("#success-alert").slideUp(500);
+                    });
+                }
+
+                if (UpdateMsg != "") {
+                    $("#success-alert").fadeTo(2000, 500).slideUp(500, function () {
+                        $("#success-alert").slideUp(500);
+                    });
+                }
+
+            });
+        </script>
+
+
+
+
+
+        <div class="card mb-4">
+            <div class="card-header"><i class="fas fa-table mr-1"></i>Bank</div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+
+
+                                <th>
+                                    @Html.DisplayNameFor(model => model.OrgName)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.BnkName)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.BnkBranchName)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.BnkAddress)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.BnkIFSCNumber)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.BnkAccountNumber)
+                                </th>
+
+
+                                <th>
+                                    Actions
+                                </th>
+
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+
+                                <th>
+                                    @Html.DisplayNameFor(model => model.OrgName)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.BnkName)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.BnkBranchName)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.BnkAddress)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.BnkIFSCNumber)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.BnkAccountNumber)
+                                </th>
+                                <th>
+                                    Actions
+                                </th>
+
+
+
+
+
+
+                            </tr>
+                        </tfoot>
+                        <tbody>
+
+
+
+                            @foreach (var item in ViewBag.ListBnkDtl)
+                            {
+                                <tr>
+                                    <td>
+                                        @item.OrganizationDetails.OrgName
+                                    </td>
+                                    <td>
+                                        @item.BankDetails.BnkName
+                                    </td>
+                                    <td>
+                                        @item.BankDetails.BnkBranchName
+                                    </td>
+                                    <td>
+                                        @item.BankDetails.BnkAddress
+                                    </td>
+                                    <td>
+                                        @item.BankDetails.BnkIFSCNumber
+                                    </td>
+                                    <td>
+                                        @item.BankDetails.BnkAccountNumber
+                                    </td>
+
+                                    <td>
+                                        <a class="text-info" href="#" onclick="Edit(@item.BankDetails.BnkDID)"> <i class="fa fa-edit" style="font-size:23px"></i></a> &nbsp; <a class="text-danger" onclick="return confirm('Are you sure?')" href="/Admin/DeleteBankDetail/@item.BankDetails.BnkDID"><i class="fas fa-trash-alt" style="font-size:23px"></i></a>
+                                    </td>
+                                </tr>
+                            }
+
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+
+
+
+
+
+
+@*Model Of Insert Update Delete*@
+
+<div class="modal fade" id="ShowModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="Create" style="display:none;">Add Bank</h4>
+                <h4 class="Edit" style="display:none;">Edit Bank </h4>
+
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+
+
+
+            </div>
+            <div class="modal-body">
+        
+
+@using (Html.BeginForm())
+{
+    @*@Html.HiddenFor(model => model.OrgID, new { htmlAttributes = new { @class = "form-control OrgID", placeholder = "Organization Name" } })*@
+
+    @Html.HiddenFor(m => m.BnkDID, new { @class = "form-control BnkDID", @name = "BnkDID", })
+
+
+
+    <div class="form-group">
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text">
+                    <span class="far fa-building"></span>
+                </span>
+            </div>
+
+
+
+            @*@Html.EditorFor(model => model.OrgName, new { htmlAttributes = new { @class = "form-control OrgName", id = "Tejas", placeholder = "Organization Name", onchange = "GetOrgId()" } })*@
+          
+            @Html.DropDownListFor(model => model.OrgID,ViewBag.OrgList as SelectList, "Select Organization Name", new { @class = "form-control" } )
+
+     </div>
+        @Html.ValidationMessageFor(model => model.OrgName, "", new { @class = "text-danger" })
+    </div>
+
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <span class="fas fa-university"></span>
+                                </span>
+                            </div>
+                            @Html.EditorFor(model => model.BnkName, new { htmlAttributes = new { @class = "form-control", placeholder = "Bank Name" } })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.BnkName, "", new { @class = "text-danger" })
+                    </div>
+
+
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <i class="fa fa-building"></i>
+                                </span>
+                            </div>
+                            @Html.EditorFor(model => model.BnkBranchName, new { htmlAttributes = new { @class = "form-control", placeholder = "Bank Branch Name" } })
+                            @*<input class="form-control" type="date" name="PurchaseDate" required />*@
+                        </div>
+                        @Html.ValidationMessageFor(model => model.BnkBranchName, "", new { @class = "text-danger" })
+                    </div>
+
+
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <span class="fa fa-address-card"></span>
+                                </span>
+                            </div>
+                            @Html.EditorFor(model => model.BnkAddress, new { htmlAttributes = new { @class = "form-control", placeholder = "Bank Address" } })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.BnkAddress, "", new { @class = "text-danger" })
+                    </div>
+
+
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <i class="fa fa-qrcode"></i>
+                                </span>
+                            </div>
+                            @Html.EditorFor(model => model.BnkIFSCNumber, new { htmlAttributes = new { @class = "form-control", placeholder = "Bank IFSC Number" } })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.BnkIFSCNumber, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <i class="fa fa-user"></i>
+
+                                </span>
+                            </div>
+                            @Html.EditorFor(model => model.BnkAccountNumber, new { htmlAttributes = new { @class = "form-control", placeholder = "Bank Account Number" } })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.BnkAccountNumber, "", new { @class = "text-danger" })
+
+                    </div>
+
+                    <div class="form-group">
+                        <button class="btn btn-info form-control Create" type="submit" formaction="/Admin/CreateBankDetails" style="display:none;"><i class="glyphicon glyphicon-registration-mark"></i> Submit</button>
+                        <button class="btn btn-info form-control Edit" type="submit" formaction="/Admin/EditBankDetails"  style="display:none;"><i class="glyphicon glyphicon-registration-mark"></i> Update</button>
+                    </div>
+
+}
+
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@*End of the modal*@
+
+
+
+
+
+<script>
+    function Create() {
+        $("#ShowModal").modal();
+        $(".Edit").hide();
+        $(".Create").show();
+
+
+
+
+                       $('#BnkDID').val("");
+                      $('#OrgName').val("");
+                      $('#BnkName').val("");
+                $('#BnkBranchName').val("");
+                   $('#BnkAddress').val("");
+                $('#BnkIFSCNumber').val("");
+             $('#BnkAccountNumber').val("");
+             $('#OrgID').val("");
+
+
+
+    }
+
+
+    function Edit(ID) {
+
+        $("#ShowModal").modal();
+        $(".Create").hide();
+        $(".Edit").show();
+
+
+
+
+        $.ajax({
+
+            url: "/Admin/FetchBankDetails/" + ID,
+
+            typr: "GET",
+
+            contentType: "application/json;charset=UTF-8",
+
+            dataType: "json",
+
+
+
+            success: function (result) {
+
+
+
+                $('#BnkDID').val(result.BankDetails.BnkDID);
+                $('#OrgID').val(result.OrganizationDetails.OrgID);
+                $('#BnkName').val(result.BankDetails.BnkName);
+                $('#BnkBranchName').val(result.BankDetails.BnkBranchName);
+                $('#BnkAddress').val(result.BankDetails.BnkAddress);
+                $('#BnkIFSCNumber').val(result.BankDetails.BnkIFSCNumber);
+                $('#BnkAccountNumber').val(result.BankDetails.BnkAccountNumber);
+                $('#OrgID').val(result.OrganizationDetails.OrgID);
+
+
+
+
+            },
+
+
+        });
+
+        return false;
+
+    }
+
+    //function GetOrgId() {
+
+    //    var empObj = {
+    //        OrgName: $('.OrgName').val(),
+    //    };
+
+    //    $.ajax({
+    //        url: "/Admin/GetOrgID",
+    //        data: JSON.stringify(empObj),
+    //        type: "POST",
+    //        contentType: "application/json;charset=utf-8",
+    //        dataType: "json",
+    //        success: function (result) {
+
+
+
+
+    //                $('#OrgID').val(result.OrgID);
+
+    //        },
+    //        error: function (ts) {
+    //            $('.OrgName').val("");
+    //            alert("Organization name not exist");
+    //        }
+
+    //    });
+    //}
+
+
+   
+
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+</script>
+
+<script>
+    $("#Tejas").autocomplete({
+        source: function (request, response) {
+            $.ajax({
+                url: '@Url.Action("GetSearchValue", "Admin")',
+                dataType: "json",
+                data: { search: $("#Tejas").val() },
+                success: function (data) {
+                    response($.map(data, function (item) {
+                        return { label: item.CityName, value: item.CityName };
+                    }));
+                },
+                error: function (xhr, status, error) {
+                    alert("Error");
+                }
+            });
+        }
+    });
+</script>
+
+
+
+
+
+
+@*<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>*@

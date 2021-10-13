@@ -1,0 +1,443 @@
+﻿@model Accounting_Final_Details.Models.CustSupTransaction
+
+@{
+    ViewBag.Title = "ListCustSupTransaction";
+    //   Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+
+    if (Session["Role"] != null)
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    }
+}
+
+
+
+
+
+
+<main>
+    <div class="container-fluid">
+        <h2 class="mt-4">Customer / Supplier transaction !</h2>
+        @*<ol class="breadcrumb mb-4">
+            <li class="breadcrumb-item"><a href="index">Dashboard</a></li>
+
+        </ol>*@
+
+
+        <hr />
+        <section class="section alert-section">
+            <div class="alert alert-info" style="background:#29d2e4;">
+                <div class="alert-container">
+
+                    <i class="fa fa-info-circle"></i>
+                    <b class="alert-info" style="background:#29d2e4">Info alert:</b> You've got some friends nearby, stop looking at your phone and find them...
+                </div>
+            </div>
+        </section>
+
+
+
+
+
+
+        @*<div class="container text-right" style="margin-bottom:10px;">
+            <button type="button" onclick="Create()" class="btn btn-info"><i class="fa fa-plus"></i> Add</button>
+        </div>*@
+
+        <div class="form-row">
+            <div class="col">
+                <div class="alert alert-success" id="success-alert" style="display:none" role="alert">
+                    <i class="far fa-check-circle"></i> @TempData["SaveRegMsg"] @TempData["UpdatRegMsg"]
+                </div>
+            </div>
+
+            <div class="col text-right" style="padding-top:10px;padding-bottom:10px">
+                <button type="button" onclick="Create()" class="btn btn-info"><i class="fa fa-plus"></i> Add</button>
+            </div>
+
+        </div>
+
+        <script>
+            $(document).ready(function () {
+
+                var SaveMsg = "@TempData["SaveRegMsg"]";
+
+                var UpdateMsg = "@TempData["UpdatRegMsg"]";
+
+
+                if (SaveMsg != "") {
+                    $("#success-alert").fadeTo(2000, 500).slideUp(500, function () {
+                        $("#success-alert").slideUp(500);
+                    });
+                }
+
+                if (UpdateMsg != "") {
+                    $("#success-alert").fadeTo(2000, 500).slideUp(500, function () {
+                        $("#success-alert").slideUp(500);
+                    });
+                }
+
+            });
+        </script>
+
+
+
+
+
+
+        @{ decimal outstandAmt = 0;
+            if (!(ViewBag.SumOfReciAmt is DBNull))
+            {
+
+                decimal BillAmt, SumReciAmt;
+                BillAmt = ViewBag.BillAmt;
+                SumReciAmt = ViewBag.SumOfReciAmt;
+
+                outstandAmt = BillAmt - SumReciAmt;
+
+
+                <h6>Bill Amt :- @BillAmt </h6>
+                <h6>Total Recived Amt :-  @SumReciAmt </h6>
+                <h6>
+                    Outstanding Amt :-
+                    @if (outstandAmt <= 0)
+                    {
+                        <b style="font-weight:600;color:green">@outstandAmt</b>
+                    }
+                    else
+                    {
+                        <b style="font-weight:600;color:red">@outstandAmt</b>
+                    }
+
+                </h6>
+
+            }
+            else
+            {
+                <h6>Bill Amt :- @ViewBag.BillAmt </h6>
+            }
+        }
+
+        <div class="card mb-4">
+            <div class="card-header"><i class="fas fa-table mr-1"></i>Customer Supplier Transaction</div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+
+                            <tr>
+                                <th>
+                                    TranId
+                                </th>
+                                <th>
+                                    CustSuppName
+                                </th>
+                                <th>
+                                    TranReciAmt
+                                </th>
+                                <th>
+                                    Payment Method
+                                </th>
+                                <th>
+                                    Cheque No.
+                                </th>
+                                <th>
+                                    TranNote
+                                </th>
+                                <th>
+                                    TranDate
+                                </th>
+
+                                <th>
+                                    Action
+                                </th>
+                            </tr>
+
+
+                        </thead>
+
+                        <tbody>
+
+                            @foreach (var item in ViewBag.ListCustSupTransaction)
+                            {
+                                <tr>
+                                    <td>
+                                        @item.CustSupTransaction.TranId
+                                    </td>
+                                    <td>
+                                        @item.CustDtl.CustName
+                                    </td>
+                                    <td>
+                                        @item.CustSupTransaction.TranReciAmt
+                                    </td>
+                                    <td>
+                                        @item.PaymentMethod.PayMName
+                                    </td>
+                                    <td>
+                                        @item.CustSupTransaction.ChequeNo
+                                    </td>
+                                    <td>
+                                        @item.CustSupTransaction.TranNote
+                                    </td>
+                                    <td>
+                                        @Convert.ToDateTime(item.CustSupTransaction.TranDate).ToString("dd/MM/yyyy")
+                                    </td>
+
+                                    <td>
+                                        <a class="text-info" href="#" onclick="Edit(@item.CustSupTransaction.TranId)"> <i class="fa fa-edit" style="font-size:23px"></i></a> &nbsp;
+
+                                        <a class="text-danger" href="/Admin/DeleteCustSuppTransaction/@item.CustSupTransaction.TranId" onclick="return confirm('Are you sure?')"><i class="fas fa-trash-alt" style="font-size:23px"></i></a>
+                                    </td>
+                                </tr>
+                            }
+
+
+
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+
+
+
+
+
+
+@*Model Of Insert Update Delete*@
+
+<div class="modal fade" id="ShowModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="Create" style="display:none;">Add Cust/Supp Transaction</h4>
+                <h4 class="Edit" style="display:none;">Edit Cust/Supp Transaction</h4>
+
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+
+
+
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm())
+                {
+
+
+                    @Html.HiddenFor(m => m.TranId, new { @class = "form-control RID", @name = "RID", })
+                    @Html.HiddenFor(m => m.TranBillNo, new { @class = "form-control RID", @name = "RID", })
+                    @Html.HiddenFor(m => m.CustSuppId, new { @class = "form-control RID", @name = "RID", })
+
+
+
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <span class="fas fa-sort-amount-down"></span>
+                                </span>
+                            </div>
+                            @Html.EditorFor(model => model.TranReciAmt, new { htmlAttributes = new { @class = "form-control Name", placeholder = "Recieved Amt" } })
+
+
+                        </div>
+                        @Html.ValidationMessageFor(model => model.TranReciAmt, "", new { @class = "text-danger" })
+
+
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <i class="fas fa-list"></i>
+                                </span>
+                            </div>
+                            @Html.DropDownListFor(model => model.TranPayMethod, ViewBag.ListPaymentMethod as SelectList, "Select Payment Method", new { @class = "form-control", onchange = "ChequeBoxEffect()" })
+
+                        </div>
+                        @Html.ValidationMessageFor(model => model.TranPayMethod, "", new { @class = "text-danger" })
+
+                    </div>
+
+                    <div class="form-group EffectChequeNo" style="display:none">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <span class="far fa-sticky-note"></span>
+                                </span>
+                            </div>
+                            @Html.EditorFor(model => model.ChequeNo, new { htmlAttributes = new { @class = "form-control", placeholder = "Cheque Number" } })
+
+                        </div>
+                        @Html.ValidationMessageFor(model => model.ChequeNo, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <span class="far fa-sticky-note"></span>
+                                </span>
+                            </div>
+                            @Html.TextAreaFor(model => model.TranNote, new { @class = "form-control Contact", placeholder = "Note" })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.TranNote, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <span class="far fa-sticky-note"></span>
+                                </span>
+                            </div>
+                            @*@Html.TextAreaFor(model => model.TranNote, new { @class = "form-control Contact", placeholder = "Note" })*@
+                           
+                            @{
+                                DateTime dt = DateTime.Now;
+                            }
+                            
+                             <input type="date" name="TranDate" id="TranDate" value="@dt.ToString("yyyy-MM-dd")" class="form-control" />
+                        </div>
+                        @Html.ValidationMessageFor(model => model.TranNote, "", new { @class = "text-danger" })
+                    </div>
+
+
+
+
+                    <div class="form-group">
+                        <button class="btn btn-info form-control Create" type="submit" formaction="/Admin/AddCustSuppTransaction" style="display:none;"><i class="glyphicon glyphicon-registration-mark"></i> Submit</button>
+                        <button class="btn btn-info form-control Edit" type="submit" formaction="/Admin/UpdateCustSuppTransaction" style="display:none;"><i class="glyphicon glyphicon-registration-mark"></i> Update</button>
+
+                    </div>
+
+                    @*</form>*@
+
+                }
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@*End of the modal*@
+
+
+
+
+
+
+
+
+<script>
+
+    function Create() {
+        $("#ShowModal").modal();
+        $(".Edit").hide();
+        $(".Create").show();
+
+
+    }
+
+    function ChequeBoxEffect()
+    {
+     var TranPayMethod = $("#TranPayMethod").val();
+     if (TranPayMethod == 2) {
+         $(".EffectChequeNo").fadeIn();
+     }
+     else
+     {
+         $(".EffectChequeNo").fadeOut();
+     }
+
+
+    }
+
+
+
+
+    function Edit(ID) {
+
+        $("#ShowModal").modal();
+        $(".Create").hide();
+        $(".Edit").show();
+
+
+
+        $.ajax({
+
+            url: "/Admin/FetchCustSuppTransaction/" + ID,
+
+            typr: "GET",
+
+            contentType: "application/json;charset=UTF-8",
+
+            dataType: "json",
+
+
+            success: function (result) {
+
+                $('#TranId').val(result.CustSupTransaction.TranId);
+                $('#CustSuppId').val(result.CustSupTransaction.CustSuppId);
+                $('#TranReciAmt').val(result.CustSupTransaction.TranReciAmt);
+                $('#TranPayMethod').val(result.CustSupTransaction.TranPayMethod);
+
+             var PaymentMethodId =   result.CustSupTransaction.TranPayMethod;
+             if (PaymentMethodId == 2) {
+                 $(".EffectChequeNo").fadeIn();
+             }
+             else
+             {
+                 $(".EffectChequeNo").hide();
+             }
+
+             
+             $('#ChequeNo').val(result.CustSupTransaction.ChequeNo);
+
+              $('#TranNote').val(result.CustSupTransaction.TranNote);
+
+                var jsonDate = new Date(+result.CustSupTransaction.TranDate.replace(/\/Date\((\d+)\)\//, '$1'));
+
+
+
+
+                // best for date formating
+                var d = new Date(jsonDate);
+                var day = d.getDate();
+                var month = d.getMonth() + 1;
+                var year = d.getFullYear();
+                if (day < 10) {
+                    day = "0" + day;
+                }
+                if (month < 10) {
+                    month = "0" + month;
+                }
+                var date = year + "-" + month + "-" + day;
+                // End Date formating
+
+
+                $('#TranDate').val(date);
+
+
+                $('#TranBillNo').val(result.CustSupTransaction.TranBillNo);
+            },
+
+
+        });
+
+        return false;
+
+
+    }
+
+
+</script>

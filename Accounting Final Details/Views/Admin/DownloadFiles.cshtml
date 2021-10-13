@@ -1,0 +1,26 @@
+﻿
+@{
+    ViewBag.Title = "DownloadFiles";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<br />
+
+<h4>DownloadFiles</h4>
+
+<br />
+
+
+
+
+    @foreach (var item in ViewBag.DownloadFilesList)
+    {
+        <div class="row btn-light mb-1 p-2 border">
+          
+                <a href="~/UploadedFiles/@item.Utb_Name" style="text-decoration:none" download><i class="far fa-file"></i> <b style="font-weight:600">@item.Utb_Name </b> </a>
+           
+
+        </div>
+
+    }
+      

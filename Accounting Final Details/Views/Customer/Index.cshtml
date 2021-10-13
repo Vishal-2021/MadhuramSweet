@@ -1,0 +1,514 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_LayoutCustomer.cshtml";
+    ViewBag.Title = "Index";
+}
+
+
+
+
+<div class="container pt-4">
+    <div class="section-heading">
+        <h4 class="heading-title"><span class="heading-circle"></span> Trending Products</h4>
+    </div>
+
+</div>
+
+<div class="container">
+
+
+
+
+
+    <div id="carouselExampleSlidesOnly" class="carousel slide" data-ride="carousel">
+
+
+
+        <div class="carousel-inner">
+            @*always set height N width here*@
+
+            @{
+                int cnt = 0;
+            }
+
+            @foreach (var item in ViewBag.SliderLst)
+            {
+
+                if (cnt == 0)
+                {
+                    <div class="carousel-item active">
+
+
+
+
+
+
+                        <div class="mt-2 p-3 rounded" style="background:#fffff7;border:1px solid #ddd">
+
+
+
+                            <div class="row">
+                                <div class="col-sm-6 col-md-6 text-center">
+
+                                    <div class="mb-2">
+
+                                        <h2 class="text-black-50">
+                                            @item.CS_ProductName
+                                        </h2>
+                                        <h6 class="text-black-50">
+                                            (   @item.CS_ProductDesc )
+                                        </h6>
+
+                                        <a href="/Customer/productlist" class="btn btn-success mt-5">Shop now >> </a>
+
+                                    </div>
+
+
+
+                                </div>
+                                <div class="col-sm-6 col-md-6 text-center">
+
+                                    <div class="row">
+                                        <div class="col-md-6  col-lg-10">
+
+                                            <div>
+                                                @*always set height N width here*@
+
+                                                <img class="d-block w-100 img-fluid img-thumbnail rounded" src="/Logo/Slider/@item.CS_ImgPath" alt="No Image">
+
+                                            </div>
+
+                                        </div>
+                                        <div class="col-md-6 col-lg-2"></div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                }
+                else
+                {
+
+                    <div class="carousel-item">
+
+
+
+
+
+
+                        <div class="mt-2 p-3 rounded" style="background:#fffff7;border:1px solid #ddd">
+
+
+
+                            <div class="row">
+                                <div class="col-sm-6 col-md-6 text-center">
+
+                                    <div class="mb-2">
+
+                                        <h2 class="text-black-50">
+                                            @item.CS_ProductName
+                                        </h2>
+                                        <h6 class="text-black-50">
+                                            (   @item.CS_ProductDesc )
+                                        </h6>
+
+                                        <a href="/Customer/productlist" class="btn btn-success mt-5">Shop now >> </a>
+
+                                    </div>
+
+
+
+                                </div>
+                                <div class="col-sm-6 col-md-6 text-center">
+
+                                    <div class="row">
+                                        <div class="col-md-6  col-lg-10">
+
+                                            <div>
+                                                @*always set height N width here*@
+
+                                                <img class="d-block w-100 img-fluid img-thumbnail rounded" src="/Logo/Slider/@item.CS_ImgPath" alt="No Image">
+
+                                            </div>
+
+                                        </div>
+                                        <div class="col-md-6 col-lg-2"></div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                }
+
+
+                cnt++;
+            }
+
+
+
+
+
+
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--<div id="carouselExampleSlidesOnly" class="carousel slide" data-ride="carousel">
+
+
+
+    <div class="carousel-inner" style="height: 400px">-->
+@*always set height N width here*@
+<!--<div class="carousel-item active">
+            <img class="d-block w-100 img-fluid" src="~/scripts/customerhomeslider/img/slider1.jpg" alt="First slide">
+        </div>
+        <div class="carousel-item">
+            <img class="d-block w-100 img-fluid" src="~/scripts/customerhomeslider/img/slider2.jpg" alt="Second slide">
+        </div>
+        <div class="carousel-item">
+            <img class="d-block w-100 img-fluid" src="~/scripts/customerhomeslider/img/slider3.png" alt="Third slide">
+        </div>
+    </div>
+
+
+</div>-->
+<!-- trending product-section start -->
+
+<div class="container pt-4">
+    <div class="section-heading">
+        <h4 class="heading-title"><span class="heading-circle"></span> Trending Products</h4>
+    </div>
+
+</div>
+
+<!-- trending product-section end -->
+@*<div class="main-content-area">*@
+
+
+<!-- page-content -->
+<section class="page-content section-ptb-90">
+    <div class="container">
+        <div class="row">
+
+            <div class="col-lg-12 order-lg-first">
+                <div class="row product-list PList">
+
+
+
+
+
+
+
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+
+
+
+<!-- page-content -->
+@*</div>*@
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        //   LoadCart();
+
+        LoadProductList();
+        setInterval(function () {
+            LoadProductList();
+        }, 20000);
+
+    });
+
+
+    function LoadProductList() {
+
+
+
+        $.ajax({
+            url: "/Customer/LoadProductList",
+            type: "GET",
+            //  data: JSON.stringify(empObj),
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+
+            success: function (result) {
+
+                var html = '';
+
+                $.each(result, function (key, item) {
+
+
+                    html += '  <div class="col-sm-6 col-xl-3">                                                                                                                                                            ';
+                    html += '          <div class="product-item">                                                                                                                                                         ';
+                    html += '              <div class="product-thumb">                                                                                                                                                    ';
+                    html += '                  <a><img class="img-fluid" src="/StoreProductImgs/' + item.Store_AddProduct.Sp_PImageName + '" alt="product"></a>                                                           ';
+                    html += '              </div>                                                                                                                                                                         ';
+                    html += '              <div class="product-content">                                                                                                                                                  ';
+                    html += '                  <a href="#" class="cata">' + item.Product_Catagory.Category_Name + '</a>                                                                                                                            ';
+                    html += '                  <h6><a href="#" class="product-title">' + item.Store_AddProduct.Sp_ProductName + '</a></h6>                                                                                      ';
+                    html += '                   <div class="d-flex justify-content-between align-items-center">                                                                                                           ';
+                    html += '                      <div class="price"> &#8377; ' + item.Store_AddProduct.Sp_Rate + '</div>                                                                                                                        ';
+                    html += '                      <div class="cart-btn-toggle" onclick="cartopen()">                                                                                                                     ';
+                    html += '                               <button class="btn btn-block btn-outline-success btn-sm" onclick="AddtoCartTrand(' + item.Store_AddProduct.Sp_ID + ')"> <i class="fas fa-shopping-cart"></i> Cart</button>            ';
+                    html += '                      </div>                                                                                                                                                                 ';
+                    html += '                  </div>                                                                                                                                                                     ';
+                    html += '                  <p class="mb-0">                                                                                                                                                           ';
+                    html += '                      <a class="" data-toggle="collapse" href="#PLDsc_' + item.Store_AddProduct.Sp_ID + '" role="button" aria-expanded="false" aria-controls="PLDsc_' + item.Store_AddProduct.Sp_ID + '">                                    ';
+                    html += '                          Description                                                                                                                                                        ';
+                    html += '                      </a>                                                                                                                                                                   ';
+                    html += '                  </p>                                                                                                                                                                       ';
+                    html += '                  <div class="collapse mt-0" id="PLDsc_' + item.Store_AddProduct.Sp_ID + '">                                                                                                                         ';
+                    html += '                      <div class="card card-body p-0 border-0">                                                                                                                              ';
+                    html += '                          ' + item.Store_AddProduct.Sp_Description + '                                                                                                                                               ';
+                    html += '                      </div>                                                                                                                                                                 ';
+                    html += '                  </div>                                                                                                                                                                     ';
+                    html += '              </div>                                                                                                                                                                         ';
+                    html += '          </div>                                                                                                                                                                             ';
+                    html += '      </div>                                                                                                                                                                                 ';
+
+                });
+
+
+                html += '<div class="col-12 text-center mt-4">';
+                html += '<a href="/Customer/productlist" class="loadMore">Load More</a>';
+                html += '</div>';
+
+                $('.PList').html(html);
+
+            },
+
+
+        });
+
+    }
+
+
+    function FilterProductByPName() {
+
+        var PName = $("#SearchProductName").val();
+
+        //   alert(PName);
+
+        $.ajax({
+
+            type: 'POST',
+            dataType: 'JSON',
+            url: '/Customer/FilterProductListByPName',
+            data: { ProductName: PName },
+
+
+            success: function (result) {
+
+                var html = '';
+
+                $.each(result, function (key, item) {
+
+
+                    html += '  <div class="col-sm-6 col-xl-3">                                                                                                                                                            ';
+                    html += '          <div class="product-item">                                                                                                                                                         ';
+                    html += '              <div class="product-thumb">                                                                                                                                                    ';
+                    html += '                  <a><img class="img-fluid" src="/StoreProductImgs/' + item.Store_AddProduct.Sp_PImageName + '" alt="product"></a>                                                           ';
+                    html += '              </div>                                                                                                                                                                         ';
+                    html += '              <div class="product-content">                                                                                                                                                  ';
+                    html += '                  <a href="#" class="cata">' + item.Product_Catagory.Category_Name + '</a>                                                                                                                            ';
+                    html += '                  <h6><a href="#" class="product-title">' + item.Store_AddProduct.Sp_ProductName + '</a></h6>                                                                                      ';
+                    html += '                   <div class="d-flex justify-content-between align-items-center">                                                                                                           ';
+                    html += '                      <div class="price"> &#8377; ' + item.Store_AddProduct.Sp_Rate + '</div>                                                                                                                        ';
+                    html += '                      <div class="cart-btn-toggle" onclick="cartopen()">                                                                                                                     ';
+                    html += '                               <button class="btn btn-block btn-outline-success btn-sm" onclick="AddtoCartTrand(' + item.Store_AddProduct.Sp_ID + ')"> <i class="fas fa-shopping-cart"></i> Cart</button>            ';
+                    html += '                      </div>                                                                                                                                                                 ';
+                    html += '                  </div>                                                                                                                                                                     ';
+                    html += '                  <p class="mb-0">                                                                                                                                                           ';
+                    html += '                      <a class="" data-toggle="collapse" href="#PLDsc_' + item.Store_AddProduct.Sp_ID + '" role="button" aria-expanded="false" aria-controls="PLDsc_' + item.Store_AddProduct.Sp_ID + '">                                    ';
+                    html += '                          Description                                                                                                                                                        ';
+                    html += '                      </a>                                                                                                                                                                   ';
+                    html += '                  </p>                                                                                                                                                                       ';
+                    html += '                  <div class="collapse mt-0" id="PLDsc_' + item.Store_AddProduct.Sp_ID + '">                                                                                                                         ';
+                    html += '                      <div class="card card-body p-0 border-0">                                                                                                                              ';
+                    html += '                          ' + item.Store_AddProduct.Sp_Description + '                                                                                                                                               ';
+                    html += '                      </div>                                                                                                                                                                 ';
+                    html += '                  </div>                                                                                                                                                                     ';
+                    html += '              </div>                                                                                                                                                                         ';
+                    html += '          </div>                                                                                                                                                                             ';
+                    html += '      </div>                                                                                                                                                                                 ';
+
+                });
+                html += '<div class="col-12 text-center mt-4">';
+                html += '<a href="/Customer/productlist" class="loadMore">Load More</a>';
+                html += '</div>';
+                $('.PList').html(html);
+
+            },
+        });
+
+
+
+    }
+
+
+    function FilterProductByPNameMob() {
+
+        var PName = $("#SearchProductNameMob").val();
+
+        //   alert(PName);
+
+        $.ajax({
+
+            type: 'POST',
+            dataType: 'JSON',
+            url: '/Customer/FilterProductListByPName',
+            data: { ProductName: PName },
+
+
+            success: function (result) {
+
+                var html = '';
+
+                $.each(result, function (key, item) {
+
+
+                    html += '  <div class="col-sm-6 col-xl-3">                                                                                                                                                            ';
+                    html += '          <div class="product-item">                                                                                                                                                         ';
+                    html += '              <div class="product-thumb">                                                                                                                                                    ';
+                    html += '                  <a><img class="img-fluid" src="/StoreProductImgs/' + item.Store_AddProduct.Sp_PImageName + '" alt="product"></a>                                                           ';
+                    html += '              </div>                                                                                                                                                                         ';
+                    html += '              <div class="product-content">                                                                                                                                                  ';
+                    html += '                  <a href="#" class="cata">' + item.Product_Catagory.Category_Name + '</a>                                                                                                                            ';
+                    html += '                  <h6><a href="#" class="product-title">' + item.Store_AddProduct.Sp_ProductName + '</a></h6>                                                                                      ';
+                    html += '                   <div class="d-flex justify-content-between align-items-center">                                                                                                           ';
+                    html += '                      <div class="price"> &#8377; ' + item.Store_AddProduct.Sp_Rate + '</div>                                                                                                                        ';
+                    html += '                      <div class="cart-btn-toggle" onclick="cartopen()">                                                                                                                     ';
+                    html += '                               <button class="btn btn-block btn-outline-success btn-sm" onclick="AddtoCartTrand(' + item.Store_AddProduct.Sp_ID + ')"> <i class="fas fa-shopping-cart"></i> Cart</button>            ';
+                    html += '                      </div>                                                                                                                                                                 ';
+                    html += '                  </div>                                                                                                                                                                     ';
+                    html += '                  <p class="mb-0">                                                                                                                                                           ';
+                    html += '                      <a class="" data-toggle="collapse" href="#PLDsc_' + item.Store_AddProduct.Sp_ID + '" role="button" aria-expanded="false" aria-controls="PLDsc_' + item.Store_AddProduct.Sp_ID + '">                                    ';
+                    html += '                          Description                                                                                                                                                        ';
+                    html += '                      </a>                                                                                                                                                                   ';
+                    html += '                  </p>                                                                                                                                                                       ';
+                    html += '                  <div class="collapse mt-0" id="PLDsc_' + item.Store_AddProduct.Sp_ID + '">                                                                                                                         ';
+                    html += '                      <div class="card card-body p-0 border-0">                                                                                                                              ';
+                    html += '                          ' + item.Store_AddProduct.Sp_Description + '                                                                                                                                               ';
+                    html += '                      </div>                                                                                                                                                                 ';
+                    html += '                  </div>                                                                                                                                                                     ';
+                    html += '              </div>                                                                                                                                                                         ';
+                    html += '          </div>                                                                                                                                                                             ';
+                    html += '      </div>                                                                                                                                                                                 ';
+
+                });
+                html += '<div class="col-12 text-center mt-4">';
+                html += '<a href="/Customer/productlist" class="loadMore">Load More</a>';
+                html += '</div>';
+                $('.PList').html(html);
+
+            },
+        });
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+    LoadCart();
+
+    var RegistrationMsg = "@TempData["RegSucess"]";
+
+
+    if (RegistrationMsg != "") {
+
+        alert("Registration Successfull...!");
+    }
+
+
+
+
+});
+
+
+
+
+
+
+
+</script>

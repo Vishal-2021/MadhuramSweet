@@ -1,0 +1,1094 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Madhuram Farsan</title>
+
+
+
+
+        <link rel="shortcut icon" type="image/png" href="~/Logo/Logo.jpeg" />
+
+        <link rel="stylesheet" href="~/template/assets/css/bootstrap.min.css">
+        <link rel="stylesheet" href="~/template/assets/css/all.min.css">
+        <link rel="stylesheet" href="~/template/assets/css/animate.css">
+        <link rel="stylesheet" href="~/template/assets/css/swiper.min.css">
+        <link rel="stylesheet" type="~/template/text/css" href="~/template/assets/css/slick.css">
+        <link rel="stylesheet" type="~/template/text/css" href="~/template/assets/css/slick-theme.css">
+        <link rel="stylesheet" href="~/template/assets/css/custom-select.css">
+        <link rel="stylesheet" href="~/template/assets/css/style.css">
+
+
+
+
+
+
+</head>
+<body id="top-page" class="sticky-sidebar-home">
+
+
+
+
+
+
+
+
+    <!-- admin Modal -->
+    <!--siteinfo Modal -->
+    <div class="modal fade" id="siteinfo1" tabindex="-1" aria-labelledby="siteinfo1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="header-top-action-dropdown">
+                        <ul>
+                            <li class="site-phone"><a href="tel:000-000-000"><i class="fas fa-phone"></i> 000 000 000</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--search Modal -->
+    <div class="modal fade" id="search-select-id" tabindex="-1" aria-labelledby="search-select-id" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="select-search-option">
+                        @*<div class="flux-custom-select">
+                                <select>
+                                    <option value="0">Select Catagory</option>
+                                    <option value="1">Vegetables</option>
+                                    <option value="2">Fruits</option>
+                                    <option value="3">Salads</option>
+                                    <option value="4">Fish & Seafood</option>
+                                    <option value="5">Fresh Meat</option>
+                                    <option value="6">Health Product</option>
+                                    <option value="7">Butter & Eggs</option>
+                                    <option value="8">Oils & Venegar</option>
+                                    <option value="9">Frozen Food</option>
+                                    <option value="10">Jam & Honey</option>
+                                </select>
+                            </div>*@
+                        <div class="search-form">
+
+                            <input type="text" name="search" placeholder="Search for Products" id="SearchProductNameMob" oninput="FilterProductByPNameMob()" style="border:1px solid #ededed">
+                            <button class="submit-btn" onclick="FilterProductByPNameMob()" data-dismiss="modal"><i class="fas fa-search"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- menu modal -->
+    <div class="modal fade" id="menu-id" tabindex="-1" aria-labelledby="menu-id" aria-hidden="true">
+        <div class="modal-dialog  modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <ul class="menu d-xl-flex flex-wrap pl-0 list-unstyled">
+                        <li>
+                            <a href="#"> Profile </a>
+                        </li>
+                        <li><a href="/Customer/productlist">Shop Products</a></li>
+                        <li><a href="/Customer/OrderHistory">Orders</a></li>
+                        <li><a href="/Customer/Logout">Sign Out</a></li>
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <!-- sidebar-cart -->
+    <div id="sitebar-cart" class="sitebar-cart" style="height:100%">
+        <div class="sc-head d-flex justify-content-between align-items-center">
+            <div class="cart-count">
+                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                     width="20px" height="20px" viewBox="0 0 472.337 472.336" style="enable-background:new 0 0 472.337 472.336;"
+                     xml:space="preserve"><path d="M406.113,126.627c0-5.554-4.499-10.05-10.053-10.05h-76.377V91.715C319.684,41.143,278.543,0,227.969,0
+                   c-50.573,0-91.713,41.143-91.713,91.715v24.862H70.45c-5.549,0-10.05,4.497-10.05,10.05L3.914,462.284
+                   c0,5.554,4.497,10.053,10.055,10.053h444.397c5.554,0,10.057-4.499,10.057-10.053L406.113,126.627z M156.352,91.715
+                   c0-39.49,32.13-71.614,71.612-71.614c39.49,0,71.618,32.13,71.618,71.614v24.862h-143.23V91.715z M146.402,214.625
+                   c-9.92,0-17.959-8.044-17.959-17.961c0-7.269,4.34-13.5,10.552-16.325v17.994h14.337v-18.237
+                   c6.476,2.709,11.031,9.104,11.031,16.568C164.363,206.586,156.319,214.625,146.402,214.625z M310.484,214.625
+                   c-9.922,0-17.959-8.044-17.959-17.961c0-7.269,4.341-13.495,10.548-16.325v17.994h14.338v-18.241
+                   c6.478,2.714,11.037,9.108,11.037,16.568C328.448,206.586,320.407,214.625,310.484,214.625z" /></svg>
+                <span class="CartItemCount">0 Item </span>
+            </div>
+            <span onclick="cartclose()" class="close-icon"><i class="fas fa-times"></i></span>
+        </div>
+
+        <div class="cart-product-container">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        </div>
+
+        <div class="cart-footer">
+            @*<div class="product-other-charge">
+                    <p class="d-flex justify-content-between">
+                        <span>Delevery charge</span>
+                        <span>$8.00</span>
+                    </p>
+                    <a href="#">Do you have a voucher?</a>
+                </div>*@
+
+            <div class="cart-total">
+                @*<p class="saving d-flex justify-content-between">
+                        <span>Total Savings</span>
+                        <span>$11.00</span>
+                    </p>*@
+                <p class="total-price d-flex justify-content-between">
+                    <span>Total</span>
+                    <span class="CartTotal">0 </span>
+                </p>
+                <a href="/Customer/checkoutCart" class="procced-checkout">Prosecced Checkout</a>
+            </div>
+        </div>
+
+    </div>
+    <!-- header section start -->
+    <header class="header">
+        <div class="header-top container-fluid">
+            <div class="mobile-header d-flex justify-content-between align-items-center d-xl-none">
+                <!-- <div class="d-flex align-items-center">
+                    <div class="all-catagory-option mobile-device">
+                        <a class="bar-btn"><i class="fas fa-bars"></i>All Catagories</a>
+                        <a class="close-btn"><i class="fas fa-times"></i>All Catagories</a>
+                    </div>
+                    <a href="index.html" class="logo"><img src="assets/images/logo.png" alt="logo"></a>
+                </div> -->
+                @*<div class="all-catagory-option mobile-device" id="cattoggle">
+                        <a class="bar-btn"><i class="fas fa-bars"></i><span class="ml-2 d-none d-md-inline">All Catagories</span></a>
+                        <a class="close-btn"><i class="fas fa-times"></i><span class="ml-2 d-none d-md-inline">All Catagories</span></a>
+                    </div>*@
+
+                <a href="index.html" class="logo"><img src="~/Logo/Logo.jpeg" alt="logo"></a>
+
+                <!-- search select -->
+                <div class="text-center mobile-search">
+                    <button type="button" data-toggle="modal" data-target="#search-select-id"><i class="fas fa-search"></i></button>
+                </div>
+
+                <!-- menubar -->
+                <div>
+                    @if (Session["CustName"] != null)
+                    {
+                        <button class="menu-bar" type="button" data-toggle="modal" data-target="#menu-id">
+                            @Session["CustName"]<i class="fas fa-caret-down"></i>
+                        </button>
+                    }
+                    else
+                    {
+                        <button class="menu-bar" type="button" onclick="OpenSignUpForm()"> Sign In </button>
+
+                    }
+
+
+                </div>
+
+            </div>
+            <div class="d-none d-xl-flex row align-items-center header-bottom" style="border:none">
+                <div class="col-5 col-md-2">
+                    <a href="#" class="logo"><img class="img-fluid" style="height:100px" src="~/Logo/Logo.jpeg" alt="logo"></a>
+                </div>
+                <div class="col-5 col-md-9 col-lg-5">
+
+                    <div class="select-search-option d-none d-md-flex">
+                        @*<div class="flux-custom-select">
+                                <select>
+                                    <option value="0">Select Catagory</option>
+                                    <option value="1">Vegetables</option>
+                                    <option value="2">Fruits</option>
+                                    <option value="3">Salads</option>
+                                    <option value="4">Fish & Seafood</option>
+                                    <option value="5">Fresh Meat</option>
+                                    <option value="6">Health Product</option>
+                                    <option value="7">Butter & Eggs</option>
+                                    <option value="8">Oils & Venegar</option>
+                                    <option value="9">Frozen Food</option>
+                                    <option value="10">Jam & Honey</option>
+                                </select>
+                            </div>*@
+                        <form action="#" id="SearchProduct" class="search-form">
+                            <input type="text" name="search" placeholder="Search for Products" id="SearchProductName" oninput="FilterProductByPName()" style="border:1px solid #ededed">
+                            <button class="submit-btn"><i class="fas fa-search"></i></button>
+                        </form>
+                    </div>
+                </div>
+
+
+                <div class="col-2 col-md-1 col-lg-3">
+
+                    <ul class="site-action d-none d-lg-flex align-items-center justify-content-between  ml-auto">
+                        <li class="site-phone"></li>
+
+                        <li id="signout" class="my-account d-none">
+                            <a class="dropdown-toggle" href="#" role="button" id="myaccount" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-user mr-1"></i> @Session["CustName"]</a>
+                            <ul class="submenu dropdown-menu" aria-labelledby="myaccount">
+                                <li><a href="profile.html">Profile</a></li>
+                                <li><a href="/Customer/productlist">shop products</a></li>
+                                <li><a href="/Customer/OrderHistory">Orders</a></li>
+
+                                <li><a href="/Customer/CustomerFeedback">Feedback</a></li>
+
+                                
+                                <li><a href="/Customer/Logout">Sign Out</a></li>
+                            </ul>
+                        </li>
+                        <li id="signin" class="signin-option"><a onclick="OpenSignUpForm()" href="#"><i class="fas fa-user mr-2"></i>Sign In</a></li>
+                    </ul>
+
+                </div>
+
+
+
+
+                <div class="col-1 col-md-1 col-lg-2">
+
+
+                    <div class="menu-area d-none d-xl-flex justify-content-between align-items-center">
+
+                        @*<ul class="menu d-xl-flex flex-wrap list-unstyled"></ul>*@
+
+
+                        <ul class="menu-action d-none d-lg-block">
+                            <li class="cart-option">
+                                <a onclick="cartopen()" href="#"><span class="cart-icon"><i class="fas fa-shopping-cart"></i><span class="count CartItemCounthead">0 </span></span> <span class="cart-amount CartTotalhead">0</span></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+
+    </header>
+    <!-- header section end -->
+
+
+    <div class="">
+
+
+
+
+
+        <div class="main-content-area border" onclick="cartclose()">
+
+            @RenderBody()
+
+
+            <!-- footer section -->
+            <footer class="footer border-top">
+                <div class="container">
+
+
+                    <div class="footer-bottom">
+                        <div class="row">
+                            <div class="col-md-6 text-center text-md-left mb-3 mb-md-0">
+                                <p class="copyright">Copyright &copy; @DateTime.Now.Year <a href="https://www.madhuramsweet.in/">madhuramsweet</a>. All Rights Reserved.</p>
+                            </div>
+
+                            <div class="col-md-6 d-flex justify-content-center justify-content-md-end">
+                                <ul class="footer-menu d-flex flex-wrap">
+                                    <li><a href="#">Privacy policies</a></li>
+                                    <li><a href="#">Coockies</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+            <!-- footer section -->
+        </div>
+    </div>
+
+
+
+
+
+    <!-- product-details-popup start -->
+    <!-- product-details-popup end -->
+    <!-- login-area -->
+    <section id="login-area" class="login-area">
+        <div onclick="CloseSignUpForm()" class="overlay"></div>
+        <div class="login-body-wrapper">
+            <div class="login-body">
+                <div class="close-icon" onclick="CloseSignUpForm()">
+                    <i class="fas fa-times"></i>
+                </div>
+                <div class="login-header">
+                    <h4>Create Your Account</h4>
+                    <p>Login with your email & password</p>
+                </div>
+                <div class="login-content">
+
+                    @if (TempData["Msgss"] != null)
+                    {
+                        <script>alert("@TempData["Msgss"]")</script>
+                    }
+
+                    <form action="#" id="ForgetPass" class="login-form" style="display:none">
+
+                        <input type="email" id="FrgtEmail" name="FrgtEmail" placeholder="Email-ID" required>
+
+
+
+                        <button type="submit" formaction="/Customer/Forgetpassword" class="submit">Forget Password</button>
+                    </form>
+
+
+
+
+
+
+                    <form action="#" id="Login" class="login-form" style="display:none">
+
+                        <input type="email" id="emailid" name="Cust_EmailID" placeholder="Email-ID" required>
+                        <input type="password" id="pass11" name="Password" placeholder="Password" required>
+
+
+
+                        <div class="row">
+                            <div class="col-sm-1 p-0 text-right pr-1 rembrMe1">
+                                <input id="remember" type="checkbox" style="width:auto" onclick="RememberMe()">
+                            </div>
+                            <div class="col-sm p-0 pl-1 rembrMe2">
+                                <div style="cursor: pointer;width:100px" onclick="RememberMeText()"> Remember me</div>
+                            </div>
+                        </div>
+
+                        <button type="submit" formaction="/Customer/Login" class="submit">Sign Up</button>
+                    </form>
+
+
+
+
+                    <style>
+                        @@media screen and (max-width: 680px) {
+                            .rembrMe1 {
+                                width: 10px;
+                                margin-left: 20px;
+                            }
+
+                            .rembrMe2 {
+                                width: 10px;
+                                margin-left: 5px;
+                            }
+
+                            .logo {
+                                height: 100%;
+                                width: 25%;
+                            }
+                        }
+                    </style>
+
+
+
+
+                    <form action="/Home/Registration" method="post" id="Registration" class="login-form" style="display:none">
+                        <input type="text" id="CustName" name="Cust_Name" placeholder="Full Name" required>
+
+                        <input type="text" id="CustContact" name="Cust_Contact" placeholder="Contact Number" required>
+
+                        <input type="email" id="emailids" name="Cust_EmailID" placeholder="Email-ID" onchange="CheckEmailIdExistorNot()" required>
+
+                        <input type="password" id="pass1" name="Password" placeholder="Password" required>
+
+                        <input type="password" id="pass2" onchange="ConfirmPass()" name="ConfirmPassword" placeholder="ConfirmPassword" required>
+
+                        <button type="submit" class="submit">Sign Up</button>
+                    </form>
+
+                    <div class="text-center dont-account py-4">
+                        <p class="mb-0">Don't have any account <a href="#" onclick="RegHideShow()">Sing Up</a></p>
+                        <p class="mb-0">Already have a account <a href="#" onclick="LogHideShow()">Login</a></p>
+
+                    </div>
+                </div>
+            </div>
+            <div class="forgot-password text-center">
+                <p>forgot Passowrd? <a href="#" onclick="ForgHideShow()">Reset It</a></p>
+            </div>
+        </div>
+
+
+
+    </section>
+    <!-- login-area -->
+    <!-- mobile-footer -->
+    <div class="mobile-footer d-flex justify-content-between align-items-center d-xl-none">
+        <button class="info" type="button" data-toggle="modal" data-target="#siteinfo1"><i class="fas fa-info-circle"></i></button>
+
+        <div class="footer-cart">
+            <a onclick="cartopen()" href="#" class="d-flex align-items-center"><span class="cart-icon"><i class="fas fa-shopping-cart"></i><span class="count CartItemCounthead">3</span></span> <span class="cart-amount ml-2 CartTotalhead"></span></a>
+        </div>
+
+        <div class="footer-admin-area">
+            <!-- <span class="user-admin">
+                <i class="fas fa-user"></i>
+            </span> -->
+            @if (Session["CustName"] == null)
+            {
+                <button class="user-admin" type="button" onclick="OpenSignUpForm()"><i class="fas fa-user"></i></button>
+            }
+        </div>
+    </div>
+    <!-- mobile-footer -->
+
+    @{
+        ViewBag.EmailID = "";
+        ViewBag.Pass = "";
+
+        if (Request.Cookies["EmailID"] != null)
+        {
+
+            ViewBag.EmailID = Request.Cookies["EmailID"].Value;
+            ViewBag.Pass = Request.Cookies["Pass"].Value;
+
+
+        }
+
+
+
+
+
+    }
+
+
+
+
+    <a href="#top-page" class="to-top js-scroll-trigger"><span><i class="fas fa-arrow-up"></i></span></a>
+
+    <script src='~/template/assets/js/jquery.min.js'></script>
+    <script src='~/template/assets/js/bootstrap.bundle.min.js'></script>
+    <script src='~/template/assets/js/swiper.min.js'></script>
+    <script src="~/template/assets/js/slick.js"></script>
+    <script src='~/template/assets/js/jquery-easeing.min.js'></script>
+    <script src='~/template/assets/js/scroll-nav.js'></script>
+    <script src="~/template/assets/js/jquery.elevatezoom.js"></script>
+    <script src='~/template/assets/js/price-range.js'></script>
+    <script src='~/template/assets/js/custom-select.js'></script>
+    <script src='~/template/assets/js/fly-cart.js'></script>
+    <script src='~/template/assets/js/multi-countdown.js'></script>
+    <script src='~/template/assets/js/theia-sticky-sidebar.js'></script>
+    <script src='~/template/assets/js/functions.js'></script>
+
+
+
+
+
+
+
+    <script>
+        // product list load more
+        $('.product-list>.col-sm-6').hide();
+        $('.product-list>.col-sm-6').slice(0,9).show();
+        $('.loadMore').on("click",function(){
+            $('.product-list>.col-sm-6:hidden').slice(0,3).show();
+            if($('.product-list>.col-sm-6:hidden').length ==0){
+                $(this).hide();
+            }
+        })
+
+
+
+
+
+
+
+
+
+
+
+        function RememberMe() {
+
+           var EmailID = "@ViewBag.EmailID";
+            var Pasw = "@ViewBag.Pass";
+
+
+
+
+            $("#emailid").val(EmailID);
+            $("#pass11").val(Pasw);
+
+        }
+
+        function RememberMeText() {
+
+
+            $('#remember').prop('checked', true);
+
+            var EmailID = "@ViewBag.EmailID";
+            var Pasw = "@ViewBag.Pass";
+
+
+
+
+
+            $("#emailid").val(EmailID);
+            $("#pass11").val(Pasw);
+        }
+
+
+
+
+
+
+       function RegistrationTexboxClear() {
+
+
+            $("#pass11").val("");
+            $("#emailid").val("");
+
+
+           $("#CustName").val("");
+           $("#CustContact").val("");
+
+
+           $("#emailids").val("");
+           $("#pass1").val("");
+           $("#pass2").val("");
+
+       }
+
+
+
+
+       function ConfirmPass()
+        {
+
+           var pass1 = $("#pass1").val();
+           var pass2 = $("#pass2").val();
+
+
+
+           if (pass1 != pass2) {
+               $("#pass2").css("border", "1px solid red");
+               $("#pass2").val("");
+           }else
+           {
+               $("#pass2").css("border", "1px solid #ddd");
+           }
+
+       }
+
+       function CheckEmailIdExistorNot() {
+        var em = $('#emailids').val();
+
+       // alert(em);
+
+           var empObj = {
+               Cust_EmailID: $('#emailids').val(),
+           };
+           if (em != "") {
+
+
+           $.ajax({
+               url: "/Home/EmailIDExistOrNot",
+               data: JSON.stringify(empObj),
+               type: "POST",
+               contentType: "application/json;charset=utf-8",
+               dataType: "json",
+               success: function (result) {
+
+                   if (result == 0) {
+                       //$('.EmailID').val('');
+                       //$('#Valid').hide();
+                       //$('#Invalid').show();
+
+                       //$('#wrong').show();
+
+                       $('#emailids').val("");
+
+
+                     //  alert("User Name already Exist ...!");
+
+                   }
+                   else {
+                       //$('#wrong').hide();
+                       //$('#Invalid').hide();
+                       //$('#Valid').show();
+
+
+
+                   }
+               },
+           });
+           }
+       }
+
+
+       $(document).ready(function () {
+
+           RegistrationTexboxClear();
+
+
+           LoadCart();
+           CheckoutLoadCart()
+
+           CheckoutCartCutDtl();
+
+           LogHideShow();
+
+           var title = "@ViewBag.Title";
+
+           if (title == "productlist") {
+
+           }
+
+        //   var msg = "@TempData["Msg"]";
+
+           var msgss = "@Session["CustName"]";
+           //if (msg != "") {
+           //    alert(msg);
+           //}
+
+           if (msgss != "") {
+               $("#signin").attr("class","signin-option d-none");
+               $("#signout").attr("class", "my-account");
+           }
+           else {
+               $("#signin").attr("class", "signin-option");
+               $("#signout").attr("class", "my-account d-none");
+
+
+
+
+           }
+
+
+
+       });
+
+
+       function LogHideShow()
+       {
+           $("#ForgetPass").hide();
+           $("#Registration").hide();
+           $("#Login").show();
+       }
+       function RegHideShow() {
+
+           $("#ForgetPass").hide();
+           $("#Login").hide();
+           $("#Registration").show();
+       }
+
+        function ForgHideShow() {
+            $("#Registration").hide();
+            $("#Login").hide();
+            $("#ForgetPass").show();
+
+        }
+
+
+        // cart Loading.... function
+
+
+       function LoadCart() {
+
+
+           var id = "@Session["CustId"]";
+
+           if (id != null) {
+                $.ajax({
+               url: "/Customer/CartData/" + id,
+               type: "POST",
+               //  data: JSON.stringify(empObj),
+               contentType: "application/json;charset=utf-8",
+               dataType: "json",
+               success: function (result) {
+
+
+                   var html = '';
+                   var CartTotal = 0;
+                   var CartItemCount = 0;
+                   $.each(result, function (key, item) {
+
+
+
+
+
+
+
+                       html += '<div class="cart-product-item">';
+                       html += '<div class="close-item"><i class="fas fa-times" onclick="RemoveCartItem(' + item.Crt_Id + ')"></i></div>';
+                       html += '         <div class="row align-items-center">                                                                                            ';
+                       html += '         <div class="col-6 p-0">                                                                                                         ';
+                       html += '         <div class="thumb">                                                                                                             ';
+                     //  html += '             <a href="#"><img class="img-fluid" src=" ' + item.Sp_PImageStr + ' " alt="products"></a>                                    ';
+
+                       html += '             <a href="#"><img class="img-fluid" src="/StoreProductImgs/' + item.Sp_PImageName + ' " alt="products"></a>                                    ';
+
+
+                       html += '         </div>                                                                                                                          ';
+                       html += '         </div>                                                                                                                          ';
+                       html += '         <div class="col-6">                                                                                                             ';
+                       html += '             <div class="product-content">                                                                                               ';
+                       html += '                 <a href="#" class="product-title">' + item.Sp_ProductName + '</a>                                                                    ';
+                       html += '                 <div class="product-cart-info">                                                                                         ';
+
+                       html += '                 </div>                                                                                                                  ';
+                       html += '             </div>                                                                                                                      ';
+                       html += '         </div>                                                                                                                          ';
+                       html += '         </div>                                                                                                                          ';
+                       html += '        <div class="row" style="margin-top:5px">                                                                      ';
+                       html += '            <div class="col-6">                                                                                                          ';
+
+
+
+
+                //      html += '<button class="btn btn-sm btn-default rounded-circle border" onclick="increment(' + item.Crt_Id + ')">+</button>        ';
+                //      html += '                 <input class="form-control form-control-sm col-6"  type="number" name="name"  id="CQnt_' + item.Crt_Id + '"     onchange="EditCartQty(' + item.Crt_Id + ')" value="' + item.Crt_PQty + '" min="1"/>                          ';
+                //      html += '<button class="btn btn-sm btn-default rounded-circle border" onclick="decrement(' + item.Crt_Id + ')">-</button>        ';
+
+
+                   html += '<div class="row">                                                                                                             ';
+                   html += '<div class="col-sm-2 p-1 "><button class="btn btn-sm btn-default rounded-circle border" style="padding-left:11px;padding-right:11px" onclick="decrement(' + item.Crt_Id + ')">-</button></div>   ';
+
+
+                   html += '<div class="col-sm-8 p-1 pl-3 "><input class="form-control form-control-sm"  type="number" name="name"  id="CQnt_' + item.Crt_Id + '"     onchange="EditCartQty(' + item.Crt_Id + ')" value="' + item.Crt_PQty + '" min="1"/></div>                        ';
+
+
+
+                       html += '<div class="col-sm-2 p-1 "><button class="btn btn-sm btn-default rounded-circle border" style="padding-left:10px;padding-right:10px" onclick="increment(' + item.Crt_Id + ')">+</button></div>    ';
+                   html += '</div>                                                                                                                        ';
+
+
+
+
+                       html += '           </div>                                                                                                                        ';
+                       html += '            <div class="col-6">                                                                                                          ';
+                       html += '                <div class="product-price">                                                                                              ';
+                       html += '                   <span class="ml-4">price &#8377; ' + item.Sp_Rate + '</span>                                                                          ';
+                       html += '                </div>                                                                                                                   ';
+                       html += '            </div>                                                                                                                       ';
+                       html += '        </div>                                                                                                                           ';
+                       html += '    </div>                                                                                                                               ';
+
+
+
+
+
+                       CartItemCount++;
+
+                       CartTotal += item.Crt_PQty * item.Sp_Rate;
+
+                   });
+
+                   $('.cart-product-container').html(html);
+
+                   $('.CartItemCount').html(CartItemCount + " Item");
+                   $('.CartTotal').html("&#8377; " + CartTotal);
+
+
+                   $('.CartItemCounthead').html(CartItemCount);
+                   $('.CartTotalhead').html("&#8377; " + CartTotal);
+
+               },
+           });
+           }
+
+       }
+
+
+
+        function CheckoutLoadCart() {
+
+
+            var id = "@Session["CustId"]";
+
+            if (id != null) {
+                $.ajax({
+                    url: "/Customer/CartData/" + id,
+                    type: "POST",
+                    //  data: JSON.stringify(empObj),
+                    contentType: "application/json;charset=utf-8",
+                    dataType: "json",
+                    success: function (result) {
+
+
+                        var html = '';
+                        var CartTotal = 0;
+                        var CartItemCount = 0;
+                        $.each(result, function (key, item) {
+
+
+                            html += '         <div style="border-bottom:1px solid #ddd">                                                             ';
+                            html += '        <div class="row text-center p-1">                                                           ';
+                            html += '        <div class="col-2">                                                                         ';
+                            html += '            <img src="/StoreProductImgs/' + item.Sp_PImageName + ' " alt="Alternate Text" />                    ';
+                            html += '        </div>                                                                                      ';
+                            html += '        <div class="col-3">' + item.Sp_ProductName + '</div>                                                             ';
+                            html += '        <div class="col-3">                                                                         ';
+
+                            html += '  <input class="form-control form-control-sm"  type="number" name="name"  id="ChkCQnt_' + item.Crt_Id + '"     onchange="ChkEditCartQty(' + item.Crt_Id + ')" value="' + item.Crt_PQty + '" min="1"/>  ';
+
+                            html += '        </div>                                                                                      ';
+                            html += '        <div class="col-3 p-1 text-left">                                                                         ';
+                            html += '           &#8377; ' + item.Sp_Rate + '                                                                            ';
+
+
+                            html += '        </div>                                                                                      ';
+                            html += '        <div class="col-1 p-0  text-left">                                                          ';
+                            html += '            <a href="#">                                                                            ';
+                            html += '                <i class="fas fa-times" onclick="RemoveCartItem(' + item.Crt_Id + ')"></i>          ';
+                            html += '            </a>                                                                                    ';
+                            html += '        </div>                                                                                      ';
+                            html += '    </div>                                                                                          ';
+                            html += '   </div>                                                                                           ';
+
+
+                            CartItemCount++;
+
+                            CartTotal += item.Crt_PQty * item.Sp_Rate;
+
+                        });
+
+                        $('.Checkcart-product-container').html(html);
+
+                        $('.CartItemCount').html(CartItemCount + " Item");
+
+                        $('.CartTotal').html("&#8377; " + CartTotal);
+
+
+                        $('.CartItemCounthead').html(CartItemCount);
+                        $('.CartTotalhead').html("&#8377; " + CartTotal);
+
+                        var delivCharg = $("#DeliveryCharg").text();
+
+
+
+
+                        $('#CartTotal').html(CartTotal);
+                        $('#DeliveryCharg').html(delivCharg);
+
+                        $('.FCartTotal').html((parseInt(CartTotal) + +parseInt(delivCharg)));
+
+                        $('.FCartTotal').val((CartTotal + +delivCharg)); //hidden field
+
+
+
+
+                    },
+                });
+            }
+
+        }
+
+
+
+
+
+
+        // Increment Decrement function
+
+        function increment(IDS) {
+
+            document.getElementById('CQnt_' + IDS).stepUp();
+            EditCartQty(IDS);
+        }
+        function decrement(IDS) {
+
+            document.getElementById('CQnt_' + IDS).stepDown();
+
+            EditCartQty(IDS);
+
+        }
+
+        // End Increment decrement
+
+
+
+        function AddtoCartTrand(ID) {
+
+            var Qty = 1; // $("#Qty_"+Qnt).val();
+
+            var CustID = "@Session["CustId"]";
+
+           // alert(Qty);
+
+            if (CustID != "") {
+
+
+                var empObj = {
+                    Crt_CustId: CustID,
+                    Crt_ProdId:ID,
+                    Crt_PQty:Qty,
+                };
+
+                $.ajax({
+                    url: "/Customer/AddToCartWithLogins",
+                    type: "POST",
+                    data: JSON.stringify(empObj),
+                    contentType: "application/json;charset=utf-8",
+                    dataType: "json",
+                    success: function (result) {
+
+
+                        LoadCart();
+                        CheckoutLoadCart();
+                    },
+                });
+
+            } else {
+
+                alert("Please Login.....");
+
+
+
+            }
+
+
+        }
+
+
+
+        // this for cart
+        function EditCartQty(id) {
+
+            var PQty = $("#CQnt_" + id).val();
+
+            var empObj = {
+                PID: id,
+                PQnt: PQty,
+
+            };
+
+            $.ajax({
+                type: 'POST',
+                dataType: 'JSON',
+                url: '/Customer/UdateCartQty',
+                data: empObj,
+
+                success: function (result) {
+
+                    LoadCart();
+
+                },
+            });
+
+        }
+        // end
+        // this same but for checkout
+
+        function ChkEditCartQty(id) {
+
+            var PQty = $("#ChkCQnt_" + id).val();
+
+
+            var empObj = {
+                PID: id,
+                PQnt: PQty,
+
+            };
+
+            $.ajax({
+                type: 'POST',
+                dataType: 'JSON',
+                url: '/Customer/UdateCartQty',
+                data: empObj,
+
+                success: function (result) {
+                    CheckoutLoadCart();
+                    LoadCart();
+
+                },
+            });
+
+        }
+
+        // end
+
+        function RemoveCartItem(id) {
+
+            $.ajax({
+                url: "/Customer/RemoveCartItem/" + id,
+                type: "POST",
+                //  data: JSON.stringify(empObj),
+                contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                success: function (result) {
+
+                    CheckoutLoadCart();
+                    LoadCart();
+
+                  },
+              });
+             }
+
+
+
+
+        function CheckoutCartCutDtl() {
+
+            $.ajax({
+                url: "/Customer/checkoutCartCustdtl",
+                type: "GET",
+                //  data: JSON.stringify(empObj),
+                contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                success: function (result) {
+
+                    $("#CustName").val(result.Cust_Name);
+                    $("#ContactNo").val(result.Cust_Contact);
+
+
+
+                },
+            });
+        }
+
+
+
+
+
+
+
+
+
+
+    </script>
+
+
+
+
+
+
+
+
+
+    @if (TempData["Msg"] != null)
+    {
+        <script>alert('@TempData["Msg"]');</script>
+
+
+    }
+
+
+
+</body>
+</html>

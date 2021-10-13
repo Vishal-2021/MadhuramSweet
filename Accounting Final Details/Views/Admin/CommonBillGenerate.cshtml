@@ -1,0 +1,672 @@
+﻿﻿@model Accounting_Final_Details.Models.CommanBillNo
+
+@{
+    ViewBag.Title = "CommonBillGenerate";
+    // Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+
+    if (Session["Role"] != null)
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    }
+}
+
+
+
+<main>
+    <div class="container-fluid">
+
+
+
+
+
+
+        <div class="row">
+            <div class="col-sm-6">
+                <h4>Common bill no generator ! </h4>
+            </div>
+            <div class="col-sm-6 text-right mb-2">
+                @Html.ActionLink("<< Back to List", "ListCommonBillGenerate", null, new { @Class = "btn btn-info btn-sm float-right" })
+            </div>
+        </div>
+
+        <div style="border:1px solid #ddd;padding:5px">
+
+            @using (Html.BeginForm("AddCommonBillGenerate", "Admin", FormMethod.Get))
+            {
+                <fieldset class="box">
+                    <legend class="box">Common Bill Generator !</legend>
+
+
+                    <div class="form-row">
+
+                        <div class="form-group col-md-2">
+                            <div class="">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-file-invoice" style="font-size:24px;padding-left:1px;padding-right:5px"></i>
+                                        </span>
+                                    </div>
+                                    @*@Html.EditorFor(model => model.ComBiNo_BillID, new { htmlAttributes = new { @class = "form-control CBID", @readonly = "readonly" } })*@
+                                    <input type="text" name="ComBiNo_BillID" id="ComBiNo_BillID" value="" class="form-control" readonly />
+
+                                </div>
+                                @Html.ValidationMessageFor(model => model.ComBiNo_BillID, "", new { @class = "text-danger" })
+                            </div>
+                        </div>@*column1 End*@
+
+                        <div class="form-group col-md-3">
+                            <div class="">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <span class="fas fa-clipboard-list"></span>
+                                        </span>
+                                    </div>
+                                    @Html.DropDownListFor(model => model.ComBiNo_CustSuppID, ViewBag.CustSuppName as SelectList, "-- Select Cust/Supp --", new { @class = "form-control" })
+                                </div>
+                                @Html.ValidationMessageFor(model => model.ComBiNo_CustSuppID, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            <div class="">
+                                <div class="input-group">
+
+                                    @{
+                                        DateTime dt = DateTime.Now;
+                                    }
+
+                                    <input type="date" name="Fdate" id="Fdate" value="@dt.ToString("yyyy-MM-dd")" class="form-control" />
+
+                                </div>
+                            </div>
+                        </div>@*column1 End*@
+
+                        <div class="form-group col-md-1">
+                            <label class="form-control border-0 text-center" style="font-weight:600;font-size:17px"> To </label>
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            <div class="">
+                                <div class="input-group">
+                                    <input type="date" name="Ldate" id="Ldate" value="@dt.ToString("yyyy-MM-dd")" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            <div class="">
+                                <div class="input-group">
+                                      <a href="#" class="btn btn-info" onclick="BetweenDate()"><i class="fa fa-search"></i> Search</a>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </fieldset>
+            }
+
+
+            <style>
+                fieldset {
+                    border: 1px solid #ddd;
+                    border-left: 1px solid #ddd;
+                    padding: 6px;
+                    margin-bottom: 5px;
+                    width: 100%;
+                }
+
+
+
+
+                legend {
+                    /*padding: 0.2em 0.5em;
+                                        border: 2px solid #333;*/
+                    width: auto;
+                    font-size: 15px;
+                    font-weight: 500;
+                    /*margin-left: 10px;
+                                        color: #333;
+                                        font-size: 90%;
+                                        font-weight: bold;
+                                        text-align: left;
+                                        border-bottom-left-radius: 5px;
+                                        border-top-right-radius: 5px;*/
+                }
+
+
+
+                #main:hover .box {
+                    border-color: #1b76c4;
+                }
+            </style>
+
+            <style>
+                table, th, td {
+                    border: 1px solid #ddd;
+                }
+            </style>
+
+
+
+            <div class="table-responsive" style="padding-top:5px">
+                <div style="overflow-y: auto; height:150px; border:1px solid #ddd;padding:5px">
+
+                    <form id="formId">
+
+                        <input type="hidden" name="ComBiNo_BillID" id="ComBiNo_BillID" value="" class="form-control ComBiNo_BillID" readonly />
+
+
+                        <table class="" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th style="padding-left:10px">
+                                        <span class="custom-checkbox">
+                                            <input type="checkbox" id="selectAll" class="check_all">
+
+                                        </span>
+
+                                    </th>
+                                    <th>
+                                        Bill No.
+                                    </th>
+                                    <th>
+                                        Final Amt.
+                                    </th>
+                                    <th>
+                                        Notes
+                                    </th>
+                                    <th>
+                                        Date
+                                    </th>
+
+                                </tr>
+                            </thead>
+
+
+
+
+                            @*@using (Html.BeginForm("AddCommonBillGenerate", "Admin", FormMethod.Post, new { id = "formId" }))
+                                {*@
+
+                            <tbody class="tbody">
+
+                                @*<tr>
+                                        <td>
+                                            <input type="checkbox" name="vishal" value="123" />
+                                        </td>
+                                        <td>
+                                            <input type="text" id="autoBillno" name="autoBillno" value="123" />
+                                        </td>
+                                        <td>
+                                            vishal
+                                        </td>
+                                        <td>
+                                            vishal
+                                        </td>
+                                    </tr>*@
+
+                            </tbody>
+
+                            @*}*@
+                        </table>
+                    </form>
+
+                </div>
+            </div>
+
+
+            <div style="padding-top:5px" class="">
+                <b class="text-danger float-left" style="font-weight:600;">@ViewBag.TermsAndCondition</b>
+
+
+                <button class="btn btn-info float-right" id="postBtn" type="submit"><i class="fas fa-plus"></i> Add</button>
+            </div>
+            <div class="table-responsive" style="padding-top:5px">
+                <div style="overflow-y: auto; height:150px; border:1px solid #ddd;padding:5px">
+
+                    <table class="" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>
+                                    ID
+                                </th>
+                                <th>
+                                    Bill No.
+                                </th>
+                                <th>
+                                    Final Amt.
+                                </th>
+                                @*<th>
+                                        Notes
+                                    </th>*@
+                                <th>
+                                    Date
+                                </th>
+                                <th style="padding-right:50px">
+                                    Actions
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody class="tbod">
+                            @*@foreach (var item in ViewBag.CommanBillNo)
+                                {
+                                <tr>
+                                    <td>
+                                        @item.ComBiNo_ID
+                                    </td>
+                                    <td>
+                                        @item.ComBiNo_BillNo
+                                    </td>
+                                    <td>
+                                        @item.ComBiNo_FinalAmt
+                                    </td>
+                                    <td>
+                                        @item.ComBiNo_PaidAmt
+                                    </td>
+                                    <td>
+                                        @item.ComBiNo_BillID
+                                    </td>
+                                    <td>
+                                        &nbsp; &nbsp; <a class="text-danger" href="/Admin/DeleteCommonBillGenerate/@item.ComBiNo_ID" onclick="return confirm('Are you sure?')"><i class="fas fa-trash-alt" style="font-size:23px"></i></a>
+                                    </td>
+                                </tr>
+                                }*@
+                        </tbody>
+                    </table>
+
+                </div>
+
+            </div>
+        </div>   @*Border Close*@
+
+
+        <div class="float-right m-2" style="padding-top:5px">
+            <div class="form-group">
+                @*<button formaction="/Admin/CommonBillUpdateStatus" class="btn btn-info form-control" type="button"></button>*@
+
+                <a class="btn btn-info form-control" onclick="Redirect_Msg()" href="#" @*href="/Admin/CommonBillUpdateStatus"*@> <i class="far fa-save"></i> Save</a>
+
+            </div>
+        </div>
+
+    </div>
+</main>
+
+
+<div class="modal fade bd-example-modal" id="ShowModal" onclick="RedirectToList()">
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+            <div class="modal-header border-0" style="padding:5px;padding-left:15px ;margin:0;">
+                <h5 class="text-success">Common Bill No Generated successfully ...!</h5>
+
+                <a href="/Admin/ListSaleBillWithoutGst" class="close" data-dismiss="modal">&times;</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script>
+
+    function RedirectToList() {
+        @*window.location.href = '@Url.Action("CommonBillUpdateStatus", "Admin")';*@
+
+        var BillID = $("#ComBiNo_BillID").val();
+
+         location.href = '@Url.Action("CommonBillUpdateStatus", "Admin")?BillIDs=' + BillID;
+
+
+    }
+
+
+
+
+
+
+
+
+
+    function Redirect_Msg()
+    {
+
+
+        if (!$(".tbod").html())
+        {
+            alert("Table is Empty");
+
+        } else
+        {
+            $("#ShowModal").modal();
+
+            var BillID = $("#ComBiNo_BillID").val();
+
+            setTimeout(function () { location.href = '@Url.Action("CommonBillUpdateStatus", "Admin")?BillIDs=' + BillID; }, 1000);
+
+        }
+
+
+
+    }
+
+
+
+
+
+    // validation
+    function validation() {
+        var isvalid = true;
+        if ($('#ComBiNo_CustSuppID').val().trim() == "") {
+            $('#ComBiNo_CustSuppID').css('border-color', 'Red')
+            isvalid = false;
+        }
+        else {
+            $('#ComBiNo_CustSuppID').css('border-color', 'lightgrey')
+        }
+        return isvalid;
+    }
+
+    function BetweenDate() {
+        var obj =
+            {
+                ComBiNo_CustSuppID: $("#ComBiNo_CustSuppID").val(),
+                Fdate: $("#Fdate").val(),
+                Ldate: $("#Ldate").val(),
+            }
+        var rslt = validation();
+
+        if (rslt == true) {
+            $.ajax({
+
+                url: "/Admin/BillNo_AccordingName_BetDate",
+                data: JSON.stringify(obj),
+                type: "POST",
+                contentType: "application/json;charset=utf-8",
+                dataType: "json",
+
+                success: function (result) {
+
+
+                    if (result.length != 0) {
+                    
+                    var html = '';
+
+                    $.each(result, function (key, item) {
+
+                        html += '<tr>';
+
+                        html += '<td style="padding-left:10px">' +
+                            '<input type="checkbox" id = "BillNo" class = "all_checked" name="BillNo" value="' + item.ComBiNo_BillNo + '" />' +
+
+                        '</td>';
+
+                        html += '<td>' + item.ComBiNo_BillNo + '</td>';
+
+                        html += '<td>' + item.ComBiNo_FinalAmt + '</td>';
+
+                        html += '<td>' + item.Notes + '</td>';
+
+                        var jsonDate = new Date(+item.Sale_date.replace(/\/Date\((\d+)\)\//, '$1'));
+
+
+                        // best for date formating
+                        var d = new Date(jsonDate);
+                        var day = d.getDate();
+                        var month = d.getMonth() + 1;
+                        var year = d.getFullYear();
+                        if (day < 10) {
+                            day = "0" + day;
+                        }
+                        if (month < 10) {
+                            month = "0" + month;
+                        }
+                        var date = day + "/" + month + "/" + year;
+                        // End Date formating
+
+                        html += '<td>' + date + '</td>';
+
+                        html += '</tr>';
+
+                    });
+
+                    $('.tbody').html(html);
+                    } else {
+                      
+                        $('.tbody').html("<tr><th colspan='5' class='text-center text-danger' > Data not found ! </th></tr>");
+
+                    }
+                },
+                error: function (ts) { alert(ts.responseText) }
+            })
+        }
+
+    }
+
+    $(document).ready(function () {
+
+        loadData();
+        generate();
+
+        jQuery(".check_all").click(function () {
+            jQuery(".all_checked").attr('checked', $(this).is(':checked') ? true : false);
+        })
+
+
+        //$("#ComBiNo_CustSuppID").change(function () {
+        //     var ID = $(this).val();
+        //     $.ajax({
+        //         url: "/Admin/BillNo_AccordingName/" + ID,
+        //         type: "post",
+        //         contentType: "application/json;charset=utf-8",
+        //         dataType: "json",
+        //         success: function (result) {
+        //             var html = '';
+        //             $.each(result, function (key, item) {
+        //                 html += '<tr>';
+        //                 html += '<td style="padding-left:10px">' +
+        //                     '<input type="checkbox" id = "BillNo" class = "all_checked" name="BillNo" value="' + item.ComBiNo_BillNo + '" />' +
+        //                 '</td>';
+        //                 html += '<td>' + item.ComBiNo_BillNo + '</td>';
+        //                 html += '<td>' + item.ComBiNo_FinalAmt + '</td>';
+        //                 html += '<td>' + item.Notes + '</td>';
+        //                 var jsonDate = new Date(+item.Sale_date.replace(/\/Date\((\d+)\)\//, '$1'));
+        //                 // best for date formating
+        //                 var d = new Date(jsonDate);
+        //                 var day = d.getDate();
+        //                 var month = d.getMonth() + 1;
+        //                 var year = d.getFullYear();
+        //                 if (day < 10) {
+        //                     day = "0" + day;
+        //                 }
+        //                 if (month < 10) {
+        //                     month = "0" + month;
+        //                 }
+        //                 var date = day + "/" + month + "/" + year;
+        //                 // End Date formating
+
+        //                 html += '<td>' + date + '</td>';
+
+        //                 html += '</tr>';
+
+        //             });
+
+        //           $('.tbody').html(html);
+
+        //         },
+        //         error: function (ts) { alert(ts.responseText) }
+        //     })
+        // })
+
+
+         $('#postBtn').click(function () {
+
+           //  var idss = $("#vishal").val();
+           //  alert(idss);
+
+             var form = $("#formId").serialize();
+
+                 $.ajax({
+                     type: 'POST',
+                     url: "/Admin/AddCommonBillGenerate",
+                     data: form,
+                     dataType: 'json',
+                     success: function (data) {
+
+
+
+                         loadData();
+
+                         if (data != "") {
+                             alert(data);
+                         }
+
+
+
+                         if (data.result == "Error") {
+                             alert(data.message);
+                         }
+                     }
+                 });
+
+
+         })
+
+    })
+
+    function loadData() {
+
+        $.ajax({
+
+            url: "/Admin/CommonBillno_List",
+
+            type: "GET",
+
+            contentType: "application/json;charset=utf-8",
+
+            dataType: "json",
+
+            success: function (result) {
+
+                var html = '';
+
+                $.each(result, function (key, item) {
+
+                    html += '<tr>';
+
+                    html += '<td>' + item.ComBiNo_ID + '</td>';
+
+                    html += '<td>' + item.ComBiNo_BillNo + '</td>';
+
+                    html += '<td>' + item.ComBiNo_FinalAmt + '</td>';
+
+                    html += '<td>' + item.ComBiNo_BillID + '</td>';
+
+                    html += '<td> &nbsp; &nbsp; <a class="text-danger" href="/Admin/DeleteCommonBillGenerate/'+item.ComBiNo_ID+'" onclick="return confirm("Are you sure?")"><i class="fas fa-trash-alt" style="font-size:23px"></i></a>  </td>';
+
+                    html += '</tr>';
+
+                });
+
+                $('.tbod').html(html);
+
+
+
+            },
+
+            error: function (errormessage) {
+
+                alert(errormessage.responseText);
+
+            }
+
+        });
+
+    }
+
+    function generate() {
+
+        $.ajax({
+
+            url: "/Admin/CommonBillno_BillNoGenerator",
+
+            typr: "GET",
+
+            contentType: "application/json;charset=UTF-8",
+
+            dataType: "json",
+
+            success: function (result) {
+
+                var rslt = result;
+                var Year = new Date().getFullYear();
+                $("#ComBiNo_BillID").val("00" + rslt + "/" + Year);
+                $(".ComBiNo_BillID").val("00" + rslt + "/" + Year);
+
+            },
+
+            error: function (errormessage) {
+
+                //  alert(errormessage.responseText);
+            }
+        });
+    }
+
+    function FetchFAmtPAmt()
+    {
+
+        var obj = {
+            BillNo : $("#ComBiNo_BillNo").val()
+        }
+
+        $.ajax({
+
+            url: "/Admin/FetchFinalNReciAmt",
+
+            typr: "GET",
+
+            data: obj,
+
+            contentType: "application/json;charset=UTF-8",
+
+            dataType: "json",
+
+            success: function (result) {
+
+                $("#ComBiNo_FinalAmt").val(result[0]); // FinalAmt
+                $("#ComBiNo_PaidAmt").val(result[1]);  // Paid Amt
+
+            },
+
+
+        });
+
+        return false;
+
+    }
+
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,2048 @@
+﻿@model Accounting_Final_Details.Models.PurchaseDtl
+
+@{
+    ViewBag.Title = "ListPurchaseDetails";
+    //  Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+
+    if (Session["Role"] != null)
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    }
+
+}
+
+<script src="~/AutoSuggestion/jquery-1.10.0.min.js"></script>
+<script src="~/AutoSuggestion/jquery-ui.js"></script>
+<link href="~/AutoSuggestion/jquery-ui.css" rel="stylesheet" />
+
+
+
+
+
+<div class="container">
+    <div class="row border mb-2 table-hover">
+        <div class="col-10 d-flex align-items-center">
+            <img class="img-fluid" src="~/Logo/Icons/online-purchase.png" style="width:30px" />
+
+            <span class="h4 mt-2">&nbsp; Add Purchase !</span>
+        </div>
+        <div class="col-2 d-flex align-items-center">
+            <div class="container-fluid p-0 text-right">
+                <a class="btn btn-sm bg-gradient-info " href="/Admin/ListPurchaseDetails"><i class="fas fa-angle-double-left mt-1"></i> <span>&nbsp; Back to List</span> </a>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+<div class="form-horizontal border p-2">
+
+
+    @Html.AntiForgeryToken()
+
+
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+
+    @Html.HiddenFor(m => m.PurID, new { @class = "form-control RID", @name = "PurID", })
+
+
+    <fieldset class="box">
+        <legend class="box">Bill Details !</legend>
+
+
+        <div class="form-row">
+            <div class="form-group col-md-4">
+                <div class="">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <span class="fa fa-user"></span>
+                            </span>
+                        </div>
+                        @Html.EditorFor(model => model.SplrCustName, new { htmlAttributes = new { @class = "form-control", placeholder = "Select Supplier/Cutomer", onchange = "TempOrgNameExistorNot()" } })
+
+
+                    </div>
+                    @Html.ValidationMessageFor(model => model.SplrCustName, "", new { @class = "text-danger" })
+
+
+                </div>
+            </div> @*column1 End*@
+
+            <div class="form-group col-md-4">
+                <div class="">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <span class="fas fa-file-invoice"></span>
+                            </span>
+                        </div>
+                        @Html.EditorFor(model => model.PurBillNo, new { htmlAttributes = new { @class = "form-control", placeholder = "Bill No.", onchange = "BillnoExistorNot()" } })
+                    </div>
+                    @Html.ValidationMessageFor(model => model.PurBillNo, "", new { @class = "text-danger" })
+                </div>
+            </div>@*column1 End*@
+
+            <div class="form-group col-md-4">
+                <div class="">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <i class="fa fa-calendar"></i>
+                            </span>
+                        </div>
+
+
+
+                        @if (Model.PurDate != DateTime.MinValue)
+                        {
+                            <input class="form-control" type="date" id="PurDates" name="PurDate" value="@Convert.ToDateTime(Model.PurDate).ToString("yyyy-MM-dd")" required />
+                        }
+                        else
+                        {
+                            DateTime dt = DateTime.Now;
+                            <input class="form-control" type="date" id="PurDates" name="PurDate" value="@dt.ToString("yyyy-MM-dd")" required />
+                        }
+
+
+
+
+                        <script>
+                            document.getElementsByClassName('dtcurrent').value = new Date().toISOString().substring(0, 10);
+                        </script>
+
+
+                    </div>
+                    @Html.ValidationMessageFor(model => model.PurDate, "", new { @class = "text-danger" })
+
+                </div>
+            </div>@*column1 End*@
+
+        </div>@*form-row End*@
+
+    </fieldset>
+
+
+
+    <fieldset class="box">
+        <legend class="box">Product Filter !</legend>
+
+        <div class="form-row">
+            <div class="form-group col-md-4">
+                <div class="">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <i class="fab fa-product-hunt" style="font-size:24px;padding-left:1px;padding-right:5px"></i>
+                            </span>
+                        </div>
+
+                        @Html.EditorFor(model => model.ProductSelection, new { htmlAttributes = new { @class = "form-control ProductSelection", placeholder = "Select Product Name", onchange = "GetProductDetailsByName()" } })
+
+                        &nbsp;   <button class="btn bg-gradient-info btn-sm" type="submit" onclick="GetProductDetailsByName()"><i class="fas fa-sync-alt"></i> </button>
+                    </div>
+                    @Html.ValidationMessageFor(model => model.ProductSelection, "", new { @class = "text-danger" })
+                </div>
+            </div>@*column1 End*@
+
+            <div class="form-group col-md-4">
+                <div class="input-group">
+                    <input type="text" name="BarcodeNo" id="BarcodeNo" value="" placeholder="Barcode No" class="form-control" />
+                    &nbsp;
+                    <button class="btn bg-gradient-info btn-sm" onclick="GetProductDetailsByBarcodeNo()"><i class="fa fa-search"></i> Search</button>
+                </div>
+
+            </div>@*column1 End*@
+
+
+
+        </div>
+
+    </fieldset>
+
+
+    <fieldset class="box">
+        <legend class="box">Product Details !</legend>
+
+        <div class="form-row">
+            <div class="form-group col-md-3">
+                <div class="">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <span class="fas fa-clipboard-list"></span>
+                            </span>
+                        </div>
+                        @Html.DropDownListFor(model => model.Goodtypes, ViewBag.TypeOfGoodsList as SelectList, "Select Product Type", new { @class = "form-control", disabled = "true" })
+                    </div>
+                    @Html.ValidationMessageFor(model => model.Goodtypes, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group col-md-3">
+                <div class="">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <i class="fas fa-rupee-sign" style="font-size:24px;padding-left:1px;padding-right:5px"></i>
+                            </span>
+                        </div>
+                        @Html.EditorFor(model => model.ProductRate, new { htmlAttributes = new { @class = "form-control Prate", placeholder = "Product Rate", disabled = "true" } })
+
+                        @Html.HiddenFor(model => model.ProductRate, new { @class = "form-control Prate FPrate", placeholder = "Product Rate", disabled = "true", })
+                    </div>
+                    @Html.ValidationMessageFor(model => model.ProductRate, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group col-md-3">
+                <div class="">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <i class="fas fa-money-check-alt" style="font-size:24px;padding-left:1px;padding-right:5px"></i>
+                            </span>
+                        </div>
+                        @Html.DropDownListFor(model => model.ProductGst, ViewBag.ProductGst as SelectList, "Select Product Gst %", new { @class = "form-control", disabled = "true" })
+                    </div>
+                    @Html.ValidationMessageFor(model => model.ProductGst, "", new { @class = "text-danger" })
+
+                </div>
+            </div>
+            <div class="form-group col-md-3">
+                <div class="">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <i class="fas fa-warehouse"></i>
+                            </span>
+                        </div>
+                        @Html.DropDownListFor(model => model.WearhouseRefID, ViewBag.WearhouseList as SelectList, "-- Select Wearhouse --", new { @class = "form-control Pwearhouse" })
+                    </div>
+                    @Html.ValidationMessageFor(model => model.WearhouseRefID, "", new { @class = "text-danger" })
+
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-3">
+                <div class="">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <i class="fas fa-calculator" style="font-size:24px;padding-left:1px;padding-right:5px"></i>
+                            </span>
+                        </div>
+                        @Html.EditorFor(model => model.PurQuantity, new { htmlAttributes = new { @class = "form-control", placeholder = "Product Quntity" } })
+
+                    </div>
+                    @Html.ValidationMessageFor(model => model.PurQuantity, "", new { @class = "text-danger" })
+
+                </div>
+
+            </div>@*column1 End*@
+
+
+            @*Qantity Column*@
+            <div class="form-group col-md-3">
+                <div class="">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <span class="fas fa-percentage"></span>
+                            </span>
+                        </div>
+                        @Html.EditorFor(model => model.PurDiscount, new { htmlAttributes = new { @class = "form-control", placeholder = "Product Discount", onchange = "ProductDisc()" } })
+                    </div>
+                    @Html.ValidationMessageFor(model => model.PurDiscount, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group col-md-3">
+                <button type="button" class="btn btn-info" id="productBtn" onclick="AddUpdateTempPurchaseDtl()"><i class="fas fa-plus" style="font-size:15px"></i> Add</button>
+              
+                &nbsp;  <a class="btn bg-gradient-info" onclick="Create()" href="#"> <i class="fas fa-plus" style="font-size:15px"></i> Product</a>
+            </div>
+
+        </div>@*Row End*@
+
+
+    </fieldset>
+
+
+    <style>
+        fieldset {
+            border: 1px solid #ddd;
+            border-left: 1px solid #ddd;
+            padding: 6px;
+            margin-bottom: 5px;
+            width: 100%;
+        }
+
+        legend {
+            /*padding: 0.2em 0.5em;
+                            border: 2px solid #333;*/
+            width: auto;
+            font-size: 15px;
+            font-weight: 500;
+            /*margin-left: 10px;
+                            color: #333;
+                            font-size: 90%;
+                            font-weight: bold;
+                            text-align: left;
+                            border-bottom-left-radius: 5px;
+                            border-top-right-radius: 5px;*/
+        }
+
+
+
+        #main:hover .box {
+            border-color: #1b76c4;
+        }
+    </style>
+
+    <style>
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+    </style>
+
+    <div class="table-responsive">
+        <div style="overflow-y: auto; height:150px; border:1px solid #ddd;padding:5px">
+
+            <table class="text-center" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>
+                            Bill No
+                        </th>
+                        <th>
+                            Supplier/Customer Name
+                        </th>
+                        <th>
+                            Product Name
+                        </th>
+                        <th>
+                            Product Rate
+                        </th>
+                        <th>
+                            Gst (%)
+                        </th>
+                        <th>
+                            Quantity
+                        </th>
+                        <th>
+                            Discount (%)
+                        </th>
+                        <th>
+                            Gst (Rs.)
+                        </th>
+                        <th>
+                            Total
+                        </th>
+                        <th>
+                            Wearhouse Name
+                        </th>  
+                        <th>
+                            Date
+                        </th>
+                        <th>
+                            Actions
+                        </th>
+
+                    </tr>
+                </thead>
+
+                <tbody class="tbody"></tbody>
+            </table>
+
+        </div>
+
+    </div>
+
+
+
+    <div class="container pt-1">
+        <b>No of Items : <b class="RowCunt"></b></b>
+        <div class="form-row">
+            <div class="form-group col-md-7">
+
+                <div class="pt-2">
+
+
+
+                    <div class="form-row">
+
+                        <div class="form-group col-md-4">
+                            <div class="">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <span class="fas fa-percentage"></span>
+                                        </span>
+                                    </div>
+                                    @Html.EditorFor(model => model.DiscPer, new { htmlAttributes = new { @class = "form-control", placeholder = "On Total Discount (%)", onchange = "AddDiscount()" } })
+
+                                </div>
+                                @Html.ValidationMessageFor(model => model.DiscPer, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <div class="">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <span class="fas fa-rupee-sign"></span>
+                                        </span>
+                                    </div>
+                                    @Html.EditorFor(model => model.DiscRs, new { htmlAttributes = new { @class = "form-control", placeholder = "Rs. Discount", onchange = "AddDiscount()" } })
+
+                                </div>
+                                @Html.ValidationMessageFor(model => model.DiscRs, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <div class="">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <span class="fas fa-shipping-fast"></span>
+                                        </span>
+                                    </div>
+                                    @Html.EditorFor(model => model.Charges, new { htmlAttributes = new { @class = "form-control", placeholder = "Charges", onchange = "AddDiscount()" } })
+
+                                </div>
+                                @Html.ValidationMessageFor(model => model.Charges, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="form-row">
+                        <div class="col-12">
+                            <button class="btn bg-gradient-info" type="submit" onclick="AddDiscount()"><i class="fas fa-plus" style="font-size:15px"></i> Add</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="form-group col-md-5">
+                <div class="form-row">
+                    <div class="form-group col-md-6 border">
+                        <b style="font-weight:600">
+                            Quantity : <b class="Qnt"> </b> <br />
+                            Total Rate (Rs.) : <b class="ProRate"></b> <br />
+                            Total Discount (%) : <b class="TotalDisRate"></b>
+                        </b>
+
+                    </div>
+                    <div class="form-group col-md-6 border">
+
+                        <b style="font-weight:600">
+                            Grand Total (Rs.) :
+                            @Html.HiddenFor(model => model.GrandTot, new { @class = "form-control", placeholder = "Product Rate" })
+                            <b class="GrndTtl"></b>
+                        </b> <br />
+                        <b style="font-weight:600">  GST Total (Rs.) :  <b class="TtlGst"></b>        </b> <br />
+                        <b style="font-weight:600">Final Total (Rs.):  <b class="FTotal"></b>       </b>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+
+
+    <div class="row">
+        <div class="col-12 text-right">
+
+            <a class="btn bg-gradient-danger " href="/Admin/Trash_TempPurchase" onclick=""><i class="fas fa-trash-alt"></i> Clear</a>
+
+            &nbsp;  <button class="btn bg-gradient-info Create" type="submit" onclick="AfterSaveRedirect()"><i class="far fa-save"></i> Save</button>
+
+        </div>
+    </div>
+
+
+</div> @*Main div tag*@
+
+
+
+
+
+@*Model Success Message*@
+
+<div class="modal fade bd-example-modal" id="ShowModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header border-0" style="padding:5px;padding-left:15px ;margin:0;">
+                <h4 class="text-success">Save Successfully ...!</h4>
+
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+            </div>
+            <div class="modal-body">
+
+                <div class="alert alert-warning" role="alert">
+                    If you want to do payment of Supplier then click yes, other wise no.
+                </div>
+
+                <form>
+
+                    @Html.HiddenFor(m => m.PurSuppCustId, new { @class = "form-control OrgID", @name = "OrgID", id = "Custidmsg" })
+
+                    @Html.HiddenFor(m => m.PurBillNo, new { @class = "form-control OrgID", id = "Billnomsg" })
+
+                    @Html.HiddenFor(m => m.TotalAmt, new { @class = "form-control OrgID", id = "TotalAmtmsg" })
+
+                    @Html.HiddenFor(m => m.Existance, new { @class = "form-control OrgID", id = "Existancemsg" })
+
+
+                    <div class="form-group">
+                        <button class="btn bg-gradient-info form-control col-2" type="submit" formaction="/Admin/ListSuppCustPaymentDetails" > Yes</button>
+
+                        <button class="btn bg-gradient-danger form-control col-2" type="submit" formaction="/Admin/ListPurchaseDetails" > No</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@*Model Product*@
+
+<div class="modal fade bd-example-modal-lg" id="ShowModalP">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header p-0">
+                <div class="container border m-1">
+                    <div class="row mt-2">
+                        <div class="col-1">
+                            <img class="img-fluid" src="~/Logo/Icons/box.png" width="30px" />
+                        </div>
+                        <div class="col-10">
+                            <h4 class="Create" style="display:none;">
+                                Add  Product
+                            </h4>
+                            <h4 class="Edit" style="display:none;">Edit Product</h4>
+                        </div>
+                        <div class="col-1">
+                            <a href="#" class="close" data-dismiss="modal">&times;</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+            <div class="modal-body p-1">
+
+                <div class="border p-1">
+
+
+
+                    <div class="row mb-2">
+                        <div class="col-md-3">
+
+                            @Html.Editor("ProductName", new { htmlAttributes = new { @class = "form-control form-control-sm UpdateProductName", placeholder = "Product Name" } })
+
+                        </div>
+                        <div class="col-md-9">
+                            <button class="btn btn-info btn-sm" onclick="FetchProductDetailByProductName()" type="submit"><i class="fa fa-search"></i> Search</button>
+                            <button class="btn btn-info btn-sm" onclick="Create()" type="submit"><i class="fas fa-plus"></i> Add New</button>
+                        </div>
+                    </div>
+
+
+
+
+                    <hr class="p-0 m-0 mb-2" />
+
+
+                    <input type="hidden" name="PurProductID" value="" class="MPurProductID" />
+
+
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <span class="fas fa-barcode"></span>
+                                        </span>
+                                    </div>
+                                    @Html.Editor("BarcodeNo", new { htmlAttributes = new { @class = "form-control UBarcodeNo EditBar", placeholder = "Barcode No", onchange = "CheckBarcodeNoExistorNot()" } })
+
+                                    <div class="d-flex align-items-center" style="">
+                                        <i id="BValid" class="fas fa-check-circle text-success" style="display:none;   margin-left:10px;"></i>
+                                        <i id="BInvalid" class="fas fa-exclamation-circle text-danger" style="display:none;margin-left:10px;"></i>
+                                    </div>
+                                </div>
+                                @Html.ValidationMessage("BarcodeNo", "", new { @class = "text-danger" })
+                                <div class="text-danger" style="display:none;" id="Bwrong"><i class="fas fa-exclamation fa-xs"></i> Your Barcode No already Exist.</div>
+
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <span class="far fa-list-alt"></span>
+                                        </span>
+                                    </div>
+                                    @Html.DropDownList("Category_ID", ViewBag.ProductCategory as SelectList, "-- select category --", new { @class = "form-control UCategory_ID" })
+                                </div>
+                                @Html.ValidationMessage("Category_ID", "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <span class="fab fa-product-hunt"></span>
+                                        </span>
+                                    </div>
+                                    @Html.Editor("ProductName", new { htmlAttributes = new { @class = "form-control UProductName checkProductName", placeholder = "Product Name", onchange = "CheckProductExistorNot()" } })
+                                    <div class="d-flex align-items-center" style="">
+                                        <i id="PValid" class="fas fa-check-circle text-success" style="display:none;   margin-left:10px;"></i>
+                                        <i id="PInvalid" class="fas fa-exclamation-circle text-danger" style="display:none;margin-left:10px;"></i>
+                                    </div>
+                                </div>
+                                @Html.ValidationMessage("ProductName", "", new { @class = "text-danger" })
+                                <div class="text-danger" style="display:none;" id="Pwrong"><i class="fas fa-exclamation fa-xs"></i> Your Product Name already Exist.</div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <span class="fas fa-money-bill-alt"></span>
+                                        </span>
+                                    </div>
+                                    @Html.Editor("ProductSaleRate", new { htmlAttributes = new { @class = "form-control UProductSaleRate", placeholder = "Sale Rate" } })
+
+
+                                </div>
+                                @Html.ValidationMessage("ProductSaleRate", "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-money-bill-alt"></i>
+                                        </span>
+                                    </div>
+                                    @Html.Editor("ProductPurchaseRate", new { htmlAttributes = new { @class = "form-control UProductPurchaseRate", placeholder = "Purchase Rate" } })
+                                </div>
+                                @Html.ValidationMessage("ProductPurchaseRate", "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-balance-scale"></i>
+                                        </span>
+                                    </div>
+                                    @*@Html.EditorFor(model => model.PDMeasurement, new { htmlAttributes = new { @class = "form-control", placeholder = "Measurement" } })*@
+                                    @Html.DropDownList("PDMeasurement", ViewBag.MesurementList as SelectList, "-- Select Measurement --", new { @class = "form-control UPDMeasurement" })
+                                </div>
+                                @Html.ValidationMessage("PDMeasurement", "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <i class="fab fa-goodreads"></i>
+                                        </span>
+                                    </div>
+                                    @Html.DropDownList("PDTypeGoods", ViewBag.TypeOfGoodsList as SelectList, "-- Select Good Type --", new { @class = "form-control UPDTypeGoods" })
+                                </div>
+                                @Html.ValidationMessage("PDTypeGoods", "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-percent"></i>
+                                        </span>
+                                    </div>
+                                    @Html.DropDownList("GstPercent", ViewBag.ProductGst as SelectList, "-- Select Product GST --", new { @class = "form-control UGstPercent" })
+                                </div>
+                                @Html.ValidationMessage("GstPercent", "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-percent"></i>
+                                        </span>
+                                    </div>
+                                    @Html.DropDownList("Tax",
+                                    new List<SelectListItem>
+                                    {
+                                        new SelectListItem{Value = "Inclusive", Text="Inclusive"},
+                                        new SelectListItem{Value = "Exclusive", Text="Exclusive"}
+                                    }
+                                   , "-- Select Tax Type --", new { @class = "form-control" })
+                                </div>
+                                @Html.ValidationMessage("Tax", "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                       
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <i class="fab fa-centos"></i>
+                                        </span>
+                                    </div>
+                                    @Html.Editor("HSM_Code", new { htmlAttributes = new { @class = "form-control UHSM_Code", placeholder = "HSN Code" } })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-cart-arrow-down"></i>
+                                        </span>
+                                    </div>
+                                    @Html.Editor("Opening_Stock_Qty", new { htmlAttributes = new { @class = "form-control UOpening_Stock_Qty", placeholder = "Opening Stock (Qty.)" } })
+                                </div>
+                                @Html.ValidationMessage("Opening_Stock_Qty", "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-warehouse"></i>
+                                        </span>
+                                    </div>
+
+                                    @Html.DropDownList("WearhouseRefId", ViewBag.WearhouseList as SelectList, "-- Select Wearhouse --", new { @class = "form-control MWearhouseRefId" })
+
+                                </div>
+                                @Html.ValidationMessage("WearhouseRefId", "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                    <hr style="padding:0;margin:0" />
+                    <div class="row mt-1">
+                        
+                        <div class="col-md-12 text-right">
+                            <button class="btn btn-info  Create" type="submit" onclick="AddProduct()" style="display:none;"><i class="far fa-save"></i> Submit</button>
+                            <button class="btn btn-info Edit" type="submit" onclick="AddProduct()" style="display:none;"><i class="fas fa-sync-alt"></i> Update</button>
+
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+<script>
+
+
+
+
+
+
+
+
+
+
+
+
+    // save Grand Total And final Total for reportin purpose
+
+    function SaveGraFinTotl() {
+
+        var GraTotl = $('.GrndTtl').text();
+        var FinTotl = $('.FTotal').text();
+        var BillNo = $('#hiddBillNo').val();
+        var Dates = $('#PurDates').val();
+
+
+        var empObj = {
+            PurBillNo: BillNo,
+            PurDate: Dates,
+            GrandTot: GraTotl,
+            TotalAmt: FinTotl
+          };
+
+        $.ajax({
+
+            url: "/Admin/PurchaseForReports",
+
+            data: JSON.stringify(empObj),
+
+            type: "POST",
+
+            contentType: "application/json;charset=utf-8",
+
+            dataType: "json",
+
+            success: function (result) {
+
+
+            },
+
+            error: function (errormessage) {
+
+                alert(errormessage.responseText);
+
+            }
+
+        });
+
+    }
+
+
+     // end
+
+
+
+    // Add Discount Button
+    function AddDiscount() {
+
+
+
+      var GrndTtl = $("#GrandTot").val();
+      var dscper = $("#DiscPer").val();
+      var disRs = $("#DiscRs").val();
+      var charges = $("#Charges").val();
+      var TtlGst = $(".TtlGst").text();
+
+
+
+
+  var  GrandTotal = GrndTtl - disRs + +charges; // Grand Total
+
+  var DiscGrandTol = GrandTotal * dscper / 100; // Discount on Grand
+
+  var FGrandTotal = GrandTotal - DiscGrandTol;  // Final Grand Total
+
+  $('.GrndTtl').empty().append(FGrandTotal);
+
+  var FinalTot = FGrandTotal + parseFloat(TtlGst);
+
+  $('.FTotal').empty().append(FinalTot);
+
+
+
+
+
+
+
+
+
+  var empObj = {
+
+      DiscPer: $('#DiscPer').val(),
+      DiscRs: $('#DiscRs').val(),
+      Charges: $('#Charges').val()
+
+
+
+  };
+
+  $.ajax({
+
+      url: "/Admin/AddPurchaseReportBill",
+
+      data: JSON.stringify(empObj),
+
+      type: "POST",
+
+      contentType: "application/json;charset=utf-8",
+
+      dataType: "json",
+
+      success: function (result) {
+
+         // alert("Successfull");
+          //loadData();
+          //Clear();
+
+
+      },
+
+      error: function (errormessage) {
+
+        //  alert(errormessage.responseText);
+
+      }
+
+  });
+
+
+
+
+
+
+    }
+// End Discount Button
+
+
+    function ProductDisc() {
+        var Prate = $(".FPrate").val();
+
+        var PurDisc =   $("#PurDiscount").val();
+
+        var PDiscRate = Prate * PurDisc / 100;
+
+        var FPDiscRate = Prate - PDiscRate;
+
+        $("#ProductRate").val(FPDiscRate);
+
+
+    }
+
+    function AfterSaveRedirect() {
+
+
+        $.ajax({
+
+            url: "/Admin/Check_TempPurchaseEmpty",
+
+            typr: "GET",
+
+            contentType: "application/json;charset=UTF-8",
+
+            dataType: "json",
+
+            success: function (result) {
+
+                var res1 = validation_AfterSave(); // text box validation
+                var res2 = true;
+
+                if (result == 0) {
+                    alert("Your Table is Empty");
+                    res2 = false;
+                }
+
+
+                if (res1 == true && res2 == true) {
+
+                    AddDiscount();
+                    $("#ShowModal").modal();
+
+                    $.ajax({
+
+                        url: "/Admin/AfterSaveRedirect",
+
+                        typr: "GET",
+
+                        contentType: "application/json;charset=UTF-8",
+
+                        dataType: "json",
+
+                        success: function (result) {
+
+                            $('#Custidmsg').val(result.TempPurSuppCustName);
+                            $('#Billnomsg').val(result.TempPurBillNo);
+
+                            var totamt = $('.FTotal').text();
+                            $('#TotalAmtmsg').val(totamt);
+
+                            $('#Existancemsg').val("23");
+
+
+                            SaveGraFinTotl();
+                            SaveTableData();
+
+                        },
+
+
+                    });
+
+                }
+            },
+            error: function () {
+                alert('Error occured');
+            }
+        });
+
+        return false;
+
+    }
+
+
+    function SaveTableData() {
+
+
+
+        $.ajax({
+
+            url: "/Admin/CreatePurchaseDetails",
+
+            typr: "GET",
+
+            contentType: "application/json;charset=UTF-8",
+
+            dataType: "json",
+
+            success: function (result) {
+
+                loadData();
+
+            },
+
+
+        });
+
+        return false;
+
+    }
+
+    // validation
+    function validation()
+    {
+        var isvalid = true;
+
+        if ($('#SplrCustName').val().trim() == "") {
+            $('#SplrCustName').css('border-color','Red')
+            isvalid = false;
+        }
+        else {
+            $('#SplrCustName').css('border-color', 'lightgrey')
+        }
+
+        if ($('#PurBillNo').val().trim() == "") {
+            $('#PurBillNo').css('border-color', 'Red')
+            isvalid = false;
+        }
+        else {
+            $('#PurBillNo').css('border-color', 'lightgrey')
+        }
+
+
+        if ($('#PurDates').val().trim() == "") {
+            $('#PurDates').css('border-color', 'Red')
+            isvalid = false;
+        }
+        else {
+            $('#PurDates').css('border-color', 'lightgrey')
+        }
+
+
+
+
+        if ($('#ProductSelection').val().trim() == "") {
+            $('#ProductSelection').css('border-color', 'Red')
+            isvalid = false;
+        }
+        else {
+            $('#ProductSelection').css('border-color', 'lightgrey')
+        }
+
+
+
+
+
+        if ($('#PurQuantity').val().trim() == "") {
+            $('#PurQuantity').css('border-color', 'Red')
+            isvalid = false;
+        }
+        else {
+            $('#PurQuantity').css('border-color', 'lightgrey')
+        }
+
+
+
+
+        if ($('#PurDiscount').val().trim() == "") {
+            $('#PurDiscount').css('border-color', 'Red')
+            isvalid = false;
+        }
+        else {
+            $('#PurDiscount').css('border-color', 'lightgrey')
+        }
+
+
+
+
+
+
+
+
+
+
+        if ($('#Goodtypes').val().trim() == "") {
+            $('#Goodtypes').css('border-color', 'Red')
+            isvalid = false;
+        }
+        else {
+            $('#Goodtypes').css('border-color', 'lightgrey')
+        }
+
+
+
+
+
+
+        if ($('#ProductRate').val().trim() == "") {
+            $('#ProductRate').css('border-color', 'Red')
+            isvalid = false;
+        }
+        else {
+            $('#ProductRate').css('border-color', 'lightgrey')
+        }
+
+
+        if ($('#ProductGst').val().trim() == "") {
+            $('#ProductGst').css('border-color', 'Red')
+            isvalid = false;
+        }
+        else {
+            $('#ProductGst').css('border-color', 'lightgrey')
+        }
+
+
+        if ($('.Pwearhouse').val().trim() == "") {
+            $('.Pwearhouse').css('border-color', 'Red')
+            isvalid = false;
+        }
+        else {
+            $('.Pwearhouse').css('border-color', 'lightgrey')
+        }
+
+        
+
+
+        return isvalid;
+
+    }
+
+    function validation_AfterSave() {
+        var isvalid = true;
+
+        if ($('#SplrCustName').val().trim() == "") {
+            $('#SplrCustName').css('border-color', 'Red')
+            isvalid = false;
+        }
+        else {
+            $('#SplrCustName').css('border-color', 'lightgrey')
+        }
+
+        if ($('#PurBillNo').val().trim() == "") {
+            $('#PurBillNo').css('border-color', 'Red')
+            isvalid = false;
+        }
+        else {
+            $('#PurBillNo').css('border-color', 'lightgrey')
+        }
+
+
+
+
+
+        return isvalid;
+
+    }
+
+    // Exist or not
+    function TempOrgNameExistorNot() {
+
+
+
+
+        var ID = $('#SplrCustName').val();
+
+        $.ajax({
+
+            url: "/Admin/TempOrgNameExistorNot/" + ID,
+
+            typr: "GET",
+
+            contentType: "application/json;charset=UTF-8",
+
+            dataType: "json",
+
+            success: function (result) {
+
+
+
+                if (result == 1) {
+
+                }
+                if(result == 2)
+                {
+                    $('#SplrCustName').val("");
+                    alert("You can not use other Customer/Supplier Name after adding Customer/Supplier Name");
+                }
+
+
+                //if (result == 5) {
+
+                //    $('#SplrCustName').val("");
+                //    alert("Customer/Supplier not exist in Table");
+
+                //}
+
+
+
+            },
+
+
+        });
+
+        return false;
+
+    }
+
+
+
+    function BillnoExistorNot() {
+
+        //var BillNo = $('#PurBillNo').val();
+
+        //alert(BillNo);
+        var obj = {
+                     BillNo : $('#PurBillNo').val()
+                  }
+
+    $.ajax({
+
+            url: "/Admin/BillnoExistorNot",
+
+            typr: "GET",
+
+            data: obj,
+
+            contentType: "application/json;charset=UTF-8",
+
+            dataType: "json",
+
+            success: function (result) {
+
+                if (result == 1) {
+                    $('#PurBillNo').val("");
+                    alert("Bill Number Already Exist");
+                  }
+                else {
+
+                }
+
+            },
+
+
+        });
+
+        return false;
+
+    }
+
+
+    function GetTotal() {
+
+        $.ajax({
+
+            url: "/Admin/TotalsTempPurchaseList",
+
+            type: "GET",
+
+            contentType: "application/json;charset=utf-8",
+
+            dataType: "json",
+
+            success: function (result) {
+
+                 $('.Qnt').empty().append(result[0]);
+                 $('.RowCunt').empty().append(result[1]);
+                 $('.ProRate').empty().append(result[2]);
+                 $('.GrndTtl').empty().append(result[3]);
+                 $('.TtlGst').empty().append(result[4]);
+                 $('.FTotal').empty().append(result[5]);
+                 $('.TotalDisRate').empty().append(result[6]);
+
+                 $("#GrandTot").val(result[3]);
+
+
+                 var GrandTot = "@Model.GrandTot";
+                 var TotalAmt = "@Model.TotalAmt";
+
+
+                if (GrandTot != 0 && TotalAmt != 0)
+                 {
+                     $('.GrndTtl').empty().append(parseFloat(GrandTot));
+                     $('.FTotal').empty().append(parseFloat(TotalAmt));
+                 }
+
+
+
+            },
+
+            error: function (errormessage) {
+
+                //  alert(errormessage.responseText);
+
+                $('.Qnt').empty().append(0);
+                $('.RowCunt').empty().append(0);
+                $('.ProRate').empty().append(0);
+                $('.GrndTtl').empty().append(0);
+                $('.TtlGst').empty().append(0);
+                $('.FTotal').empty().append(0);
+
+
+            }
+
+        });
+
+    }
+
+
+    function loadData() {
+
+        $.ajax({
+
+            url: "/Admin/TempPurchaseList",
+
+            type: "GET",
+
+            contentType: "application/json;charset=utf-8",
+
+            dataType: "json",
+
+            success: function (result) {
+
+                var html = '';
+
+                $.each(result, function (key, item) {
+
+                
+                    html += '<tr>';
+
+                 
+
+                    html += '<td>   <input type="hidden" name="HidBillNo" id ="hiddBillNo" value="' + item.TempDataPurchase.TempPurBillNo + '" /> ' + item.TempDataPurchase.TempPurBillNo + ' </td>';
+
+
+                    html += '<td>' + item.CustomerDetails.CustName + '</td>';
+
+                    html += '<td>' +  item.ProductDetails.ProductName + '</td>';
+
+                    html += '<td>' + item.ProductDetails.ProductPurchaseRate + '</td>';
+
+                    html += '<td>' + item.ProductGST.ProdGst + '</td>';
+
+                    html += '<td>' + item.TempDataPurchase.TempPurQuantity + '</td>';
+
+                    html += '<td>' + item.TempDataPurchase.TempPurDiscount + '</td>';
+
+                    html += '<td>' + item.TempDataPurchase.TempPurGstRs + '</td>';
+
+                    html += '<td>' + item.TempDataPurchase.TempPurTotal + '</td>';
+
+
+                    var jsonDate = new Date(+item.TempDataPurchase.TempPurDate.replace(/\/Date\((\d+)\)\//, '$1'));
+
+
+                   // best for date formating
+                        var d = new Date(jsonDate);
+                        var day = d.getDate();
+                        var month = d.getMonth() + 1;
+                        var year = d.getFullYear();
+                        if (day < 10) {
+                            day = "0" + day;
+                        }
+                        if (month < 10) {
+                            month = "0" + month;
+                        }
+                        var date = day + "/" + month + "/" + year;
+                    // End Date formating
+
+                    html += '<td>' + item.Wearhouse.Name + '</td>';
+
+                    html += '<td>' + date + '</td>';
+
+                    html += '<td>  <a class="text-info" href="#" onclick="Edit(' + item.TempDataPurchase.TempPurID + ')"> <i class="fa fa-edit" style="font-size:17px"></i></a> &nbsp; | &nbsp; <a class="text-danger"  onclick="DeleteTempPurchaseDtl(' + item.TempDataPurchase.TempPurID + ')"><i class="fas fa-trash-alt" style="font-size:17px"></i></a>';
+
+                    html += '</tr>';
+
+
+                });
+
+                $('.tbody').html(html);
+                GetTotal();
+
+            },
+
+            error: function (errormessage) {
+
+                alert(errormessage.responseText);
+
+            }
+
+        });
+
+    }
+
+
+    $("#SplrCustName").autocomplete({
+        source: function (request, response) {
+               $.ajax({
+                    url: '@Url.Action("AutoCustOrgName", "Admin")',
+                    dataType: "json",
+                    data: { search: $("#SplrCustName").val() },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return { label: item.Name, value: item.Name };
+                        }));
+                    },
+                    error: function (xhr, status, error) {
+                        alert("Error");
+                    }
+                });
+
+        }
+    });
+
+
+    $("#ProductSelection").autocomplete({
+        source: function (request, response) {
+            $.ajax({
+                url: '@Url.Action("AutoProductName", "Admin")',
+                dataType: "json",
+                data: { search: $("#ProductSelection").val() },
+                success: function (data) {
+                    response($.map(data, function (item) {
+                        return { label: item.Name, value: item.Name };
+                    }));
+                },
+                error: function (xhr, status, error) {
+                    alert("Error");
+                }
+            });
+        }
+    });
+
+
+
+    $(document).ready(function () {
+        $(".Create").show();
+
+       loadData();
+
+    });
+
+    // bind value to textbox
+    function GetProductDetailsByName() {
+
+        var empObj = {
+            ProductSelection: $('#ProductSelection').val(),
+        };
+
+        $.ajax({
+            url: "/Admin/FetchProductDetailByName",
+            data: JSON.stringify(empObj),
+            type: "POST",
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            success: function (result) {
+         
+                $('#ProductRate').val(result.ProductPurchaseRate);
+                $('.Prate').val(result.ProductPurchaseRate);
+
+                $('#Goodtypes').val(result.PDTypeGoods);
+
+                $('#ProductGst').val(result.GstPercent);
+
+                $('#PurDiscount').val(0);
+
+                $('#WearhouseRefID').val(result.WearhouseRefId);
+            },
+        });
+    }
+
+
+
+
+    function GetProductDetailsByBarcodeNo()
+    {
+            var Obj = {
+                BarcodeNo: $('#BarcodeNo').val(),
+            };
+        
+            $.ajax({
+                url: "/Admin/FetchProductDetailByBarcodeNo",
+                data: Obj,
+                type: "POST",
+                dataType: "json",
+                success: function (result) {
+
+                     if (result == "") {
+
+                        $('#ProductSelection').val("");
+                        $('#ProductRate').val("");
+                        $('.Prate').val("");
+                        $('#Goodtypes').val("");
+                        $('#ProductGst').val("");
+                        $('#PurDiscount').val("");
+
+                        alert("Product not found");
+
+
+                    }
+                    else {
+
+
+                        $('#ProductSelection').val(result.ProductName);
+                        $('#ProductRate').val(result.ProductPurchaseRate);
+                        $('.Prate').val(result.ProductPurchaseRate);
+
+                        $('#Goodtypes').val(result.PDTypeGoods);
+
+                        $('#ProductGst').val(result.GstPercent);
+
+                        $('#PurDiscount').val("");
+
+
+                    }
+
+
+                },
+            });
+     }
+
+
+
+       // @@@@@@@@@@ Add Product popup @@@@@@@@@@@@
+
+
+        function Product_validation() {
+            var isvalid = true;
+
+            if ($('.UCategory_ID').val().trim() == "") {
+                $('.UCategory_ID').css('border-color', 'Red')
+                isvalid = false;
+            }
+            else {
+                $('.UCategory_ID').css('border-color', 'lightgrey')
+            }
+
+
+            if ($('.UProductName').val().trim() == "") {
+                $('.UProductName').css('border-color', 'Red')
+                isvalid = false;
+            }
+            else {
+                $('.UProductName').css('border-color', 'lightgrey')
+            }
+
+            if ($('.UProductSaleRate').val().trim() == "") {
+                $('.UProductSaleRate').css('border-color', 'Red')
+                isvalid = false;
+            }
+            else {
+                $('.UProductSaleRate').css('border-color', 'lightgrey')
+            }
+
+            if ($('.UProductPurchaseRate').val().trim() == "") {
+                $('.UProductPurchaseRate').css('border-color', 'Red')
+                isvalid = false;
+            }
+            else {
+                $('.UProductPurchaseRate').css('border-color', 'lightgrey')
+            }
+
+            if ($('.UPDMeasurement').val().trim() == "") {
+                $('.UPDMeasurement').css('border-color', 'Red')
+                isvalid = false;
+            }
+            else {
+                $('.UPDMeasurement').css('border-color', 'lightgrey')
+            }
+
+            if ($('.UPDTypeGoods').val().trim() == "") {
+                $('.UPDTypeGoods').css('border-color', 'Red')
+                isvalid = false;
+            }
+            else {
+                $('.UPDTypeGoods').css('border-color', 'lightgrey')
+            }
+
+            if ($('.UGstPercent').val().trim() == "") {
+                $('.UGstPercent').css('border-color', 'Red')
+                isvalid = false;
+            }
+            else {
+                $('.UGstPercent').css('border-color', 'lightgrey')
+            }
+
+           
+
+            if ($('.UOpening_Stock_Qty').val().trim() == "") {
+                $('.UOpening_Stock_Qty').css('border-color', 'Red')
+                isvalid = false;
+            }
+            else {
+                $('.UOpening_Stock_Qty').css('border-color', 'lightgrey')
+            }
+
+            if ($('#Tax').val().trim() == "") {
+                $('#Tax').css('border-color', 'Red')
+                isvalid = false;
+            }
+            else {
+                $('#Tak').css('border-color', 'lightgrey')
+            }
+
+            if ($('.MWearhouseRefId').val().trim() == "") {
+                $('.MWearhouseRefId').css('border-color', 'Red')
+                isvalid = false;
+            }
+            else {
+                $('.MWearhouseRefId').css('border-color', 'lightgrey')
+            }
+
+
+
+
+            return isvalid;
+
+        }
+
+        function Create() {
+            $("#ShowModalP").modal();
+            $(".Edit").hide();
+            $(".Create").show();
+            $(".EditBar").prop("disabled", false);
+
+
+            ModalDtlClear();
+
+
+        }
+
+        function ModalDtlClear() {
+
+            $('.PurProductID').val("");
+            $('.UBarcodeNo').val("");
+            $('.UCategory_ID').val("");
+            $('.UProductName').val("");
+            $('.UProductSaleRate').val("");
+            $('.UProductPurchaseRate').val("");
+            $('.UPDMeasurement').val("");
+            $('.UPDTypeGoods').val("");
+            $('.UGstPercent').val("");
+            $('.UHSM_Code').val("");
+            $('.UOpening_Stock_Qty').val("");
+            $('#Tax').val("");
+            $('.MWearhouseRefId').val("");
+
+
+
+            $('#PValid').hide();
+            $('#PInvalid').hide();
+            $('#Pwrong').hide();
+
+            $('#BValid').hide();
+            $('#BInvalid').hide();
+            $('#Bwrong').hide();
+        }
+
+        function AddProduct() {
+
+            var valid = Product_validation();
+
+
+            if (valid == true) {
+
+                var Obj = {
+                   
+                    PDID: $('.MPurProductID').val(),
+                    BarcodeNo: $('.UBarcodeNo').val(),
+                    Category_ID: $('.UCategory_ID').val(),
+                    ProductName: $('.UProductName').val(),
+                    ProductSaleRate: $('.UProductSaleRate').val(),
+                    ProductPurchaseRate: $('.UProductPurchaseRate').val(),
+                    PDMeasurement: $('.UPDMeasurement').val(),
+                    PDTypeGoods: $('.UPDTypeGoods').val(),
+                    GstPercent: $('.UGstPercent').val(),
+                    Tax: $('#Tax').val(),
+                    HSM_Code: $('.UHSM_Code').val(),
+                    Opening_Stock_Qty: $('.UOpening_Stock_Qty').val(),
+                    WearhouseRefId: $('.MWearhouseRefId').val()
+                };
+                $.ajax({
+                    url: "/Admin/AddProduct_Modal",
+                    data: JSON.stringify(Obj),
+                    type: "POST",
+                    contentType: "application/json;charset=utf-8",
+                    dataType: "json",
+                    success: function (result) {
+                        alert(result);
+                        Create();
+                    },
+                    error: function (errormessage) {
+                        alert(errormessage.responseText);
+                    }
+                });
+
+
+            }
+
+
+
+
+        }
+
+        function FetchProductDetailByProductName() {
+
+            var Obj = {
+                ProductName: $('.UpdateProductName').val(),
+            };
+
+            $.ajax({
+                url: "/Admin/FetchProductDetailByProductName",
+                data: Obj,
+                type: "POST",
+
+                dataType: "json",
+
+                success: function (result) {
+
+                        $('.MPurProductID').val(result.PDID);
+                        $('.UBarcodeNo').val(result.BarcodeNo);
+                        $('.UCategory_ID').val(result.Category_ID);
+                        $('.UProductName').val(result.ProductName);
+                        $('.UProductSaleRate').val(result.ProductSaleRate);
+                        $('.UProductPurchaseRate').val(result.ProductPurchaseRate);
+                        $('.UPDMeasurement').val(result.PDMeasurement);
+                        $('.UPDTypeGoods').val(result.PDTypeGoods);
+                        $('.UGstPercent').val(result.GstPercent);
+                        $('#Tax').val(result.Tax);
+                        $('.MWearhouseRefId').val(result.WearhouseRefId);
+
+                        $('.UHSM_Code').val(result.HSM_Code);
+                        $('.UOpening_Stock_Qty').val(result.Opening_Stock_Qty);
+
+                        $(".Create").hide();
+                        $(".Edit").show();
+                        $(".EditBar").prop("disabled", true);
+                  
+                },
+                error: function (errormessage) {
+
+                    alert("Product not found");
+
+                }
+            });
+
+
+        }
+
+        $(".UpdateProductName").autocomplete({
+          source: function (request, response) {
+            $.ajax({
+                url: '@Url.Action("AutoProductName", "Admin")',
+                dataType: "json",
+                data: { search: $(".UpdateProductName").val() },
+                success: function (data) {
+                    response($.map(data, function (item) {
+                        return { label: item.Name, value: item.Name };
+                    }));
+                },
+                error: function (xhr, status, error) {
+                    alert("Error");
+                }
+            });
+        }
+         });
+
+        function CheckProductExistorNot() {
+
+            var empObj = {
+                ProductName: $('.checkProductName').val(),
+            };
+
+            $.ajax({
+                url: "/Admin/ProducNameExistOrNot",
+                data: JSON.stringify(empObj),
+                type: "POST",
+                contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                success: function (result) {
+
+                    if (result == 0) {
+                        $('.checkProductName').val('');
+                        $('#PValid').hide();
+                        $('#PInvalid').show();
+                        $('#Pwrong').show();
+                    }
+                    else {
+                        $('#Pwrong').hide();
+                        $('#PInvalid').hide();
+                        $('#PValid').show();
+
+
+
+                    }
+                },
+            });
+        }
+
+        function CheckBarcodeNoExistorNot() {
+
+            var Obj = {
+                BarcodeNo: $('.UBarcodeNo').val(),
+            };
+
+            $.ajax({
+                url: "/Admin/ProducBarcodeNoExistOrNot",
+                data: Obj,
+                type: "POST",
+
+                dataType: "json",
+                success: function (result) {
+
+                    if (result == 0) {
+                        $('.UBarcodeNo').val('');
+                        $('#BValid').hide();
+                        $('#BInvalid').show();
+                        $('#Bwrong').show();
+                    }
+                    else {
+                        $('#Bwrong').hide();
+                        $('#BInvalid').hide();
+                        $('#BValid').show();
+                    }
+
+
+
+
+                },
+            });
+        }
+
+
+       // End Add Product popup
+
+
+
+    // @@@@@@ Purchased Product table @@@@@@@@
+
+    function Clear()
+    {
+        $('#PurID').val("");
+        $('#ProductSelection').val("");
+        $('#Goodtypes').val("");
+        $('#ProductRate').val("");
+        $('#ProductGst').val("");
+        $('#PurQuantity').val("");
+        $('#PurDiscount').val("");
+        $('.Pwearhouse').val("");
+       
+        $('#productBtn').html('<i class="fas fa-plus"></i> Add');
+    }
+
+    function AddUpdateTempPurchaseDtl() {
+
+       var res = validation();
+
+       if (res == true) {
+
+           var empObj = {
+
+               PurID: $('#PurID').val(),
+               SplrCustName: $('#SplrCustName').val(),
+               ProductSelection: $('#ProductSelection').val(),
+               Goodtypes: $('#Goodtypes').val(),
+               ProductRate: $('#ProductRate').val(),
+               ProductGst: $('#ProductGst').val(),
+               PurBillNo: $('#PurBillNo').val(),
+               PurQuantity: $('#PurQuantity').val(),
+               PurDiscount: $('#PurDiscount').val(),
+               PurDate: $('#PurDates').val(),
+               WearhouseRefID: $('#WearhouseRefID').val()
+
+           };
+
+           $.ajax({
+               url: "/Admin/AddTempData",
+               data: JSON.stringify(empObj),
+               type: "POST",
+               contentType: "application/json;charset=utf-8",
+               dataType: "json",
+               success: function (result) {
+
+                   loadData();
+                   Clear();
+               },
+
+               error: function (errormessage) {
+
+                   alert(errormessage.responseText);
+
+               }
+
+           });
+       }
+    }
+
+    function DeleteTempPurchaseDtl(ID) {
+
+
+        $.ajax({
+
+            url: "/Admin/DeleteTempData/" + ID,
+
+            typr: "GET",
+
+            contentType: "application/json;charset=UTF-8",
+
+            dataType: "json",
+
+            success: function (result) {
+
+
+                loadData();
+            },
+
+
+        });
+
+        return false;
+
+    }
+
+    function Edit(ID) {
+
+
+        $.ajax({
+
+            url: "/Admin/FetchPurchaseDetails/" + ID,
+
+            typr: "GET",
+
+            contentType: "application/json;charset=UTF-8",
+
+            dataType: "json",
+
+
+
+            success: function (result) {
+
+                $('#PurID').val(result.TempDataPurchase.TempPurID);
+
+                $('#SplrCustName').val(result.CustomerDetails.CustName);
+
+                $('#ProductSelection').val(result.ProductDetails.ProductName);
+                $('#Goodtypes').val(result.ProductDetails.PDTypeGoods);
+                $('.Prate').val(result.ProductDetails.ProductPurchaseRate);
+                var Prate = result.ProductDetails.ProductPurchaseRate;
+                var PurDisc =   result.TempDataPurchase.TempPurDiscount;
+                $('#ProductGst').val(result.ProductDetails.GstPercent);
+                $('#PurBillNo').val(result.TempDataPurchase.TempPurBillNo);
+                $('#PurQuantity').val(result.TempDataPurchase.TempPurQuantity);
+                $('#PurDiscount').val(result.TempDataPurchase.TempPurDiscount);
+
+                var TotDisc = Prate * PurDisc / 100;
+                $('#ProductRate').val(Prate - TotDisc);
+
+
+
+                var jsonDate = new Date(+result.TempDataPurchase.TempPurDate.replace(/\/Date\((\d+)\)\//, '$1'));
+
+
+                // best for date formating
+                var d = new Date(jsonDate);
+                var day = d.getDate();
+                var month = d.getMonth() + 1;
+                var year = d.getFullYear();
+                if (day < 10) {
+                    day = "0" + day;
+                }
+                if (month < 10) {
+                    month = "0" + month;
+                }
+                var date = year + "-" + month + "-" + day;
+                // End Date formating
+
+                $('#PurDates').val(date);
+
+                $('#WearhouseRefID').val(result.TempDataPurchase.WearhouseRefID);
+
+
+
+
+
+                
+
+                $('#productBtn').html('<i class="far fa-edit"></i > Update');
+
+
+
+
+
+            },
+
+
+        });
+
+        return false;
+
+    }
+
+</script>
+
+
+
+

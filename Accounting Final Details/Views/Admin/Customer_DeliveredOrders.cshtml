@@ -1,0 +1,515 @@
+﻿@{
+
+    // Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+
+    if (Session["Role"] != null)
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    }
+}
+
+
+
+
+
+
+
+<main>
+    <div class="container-fluid">
+        <h2 class="mt-4">Customer Delivered Orders !</h2>
+        @*<ol class="breadcrumb mb-4">
+            <li class="breadcrumb-item"><a href="index">Dashboard</a></li>
+
+        </ol>*@
+
+
+        <hr />
+        <section class="section alert-section">
+            <div class="alert alert-info" style="background:#29d2e4;">
+                <div class="alert-container">
+
+                    <i class="fa fa-info-circle"></i>
+                    <b class="alert-info" style="background:#29d2e4">Info alert:</b> You've got some friends nearby, stop looking at your phone and find them...
+                </div>
+            </div>
+        </section>
+
+
+
+
+
+        @*<div class="card mb-4">
+            <div class="card-body">DataTables is a third party plugin that is used to generate the demo table below. For more information about DataTables, please visit the <a target="_blank" href="https://datatables.net/">official DataTables documentation</a>.</div>
+        </div>*@
+
+        <div class="form-row">
+            <div class="col">
+                <div class="alert alert-success" id="success-alert" style="display:none" role="alert">
+                    <i class="far fa-check-circle"></i> @TempData["SaveRegMsg"] @TempData["UpdatRegMsg"]
+                </div>
+            </div>
+
+
+
+        </div>
+
+        <script>
+            $(document).ready(function () {
+
+                var SaveMsg = "@TempData["SaveRegMsg"]";
+
+                var UpdateMsg = "@TempData["UpdatRegMsg"]";
+
+
+                if (SaveMsg != "") {
+                    $("#success-alert").fadeTo(2000, 500).slideUp(500, function () {
+                        $("#success-alert").slideUp(500);
+                    });
+                }
+
+                if (UpdateMsg != "") {
+                    $("#success-alert").fadeTo(2000, 500).slideUp(500, function () {
+                        $("#success-alert").slideUp(500);
+                    });
+                }
+            });
+        </script>
+
+
+
+        @*<div class="container text-right" style="margin-bottom:10px;">
+
+        </div>*@
+
+
+        <style>
+        </style>
+
+        <div class="card mb-4">
+            <div class="card-header"><i class="fas fa-table mr-1"></i>Customer Delivered Orders</div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Order ID
+                                </th>
+                                <th>
+                                    Customer Name
+                                </th>
+                                <th>
+                                    Mobile No
+                                </th>
+                                <th>
+                                    Address
+                                </th>
+                                <th>
+                                    Status
+                                </th>
+                                <th>
+                                    Payment
+                                </th>
+                                <th>
+                                    Date
+                                </th>
+                                <th>
+                                    Time
+                                </th>
+                                <th>
+                                    Items
+                                </th>
+
+                                <th>
+
+                                </th>
+
+                                @*<th style="padding-right:80px">
+                                    Actions
+                                </th>*@
+
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+
+                                <th>
+                                    Order ID
+                                </th>
+                                <th>
+                                    Customer Name
+                                </th>
+                                <th>
+                                    Mobile No
+                                </th>
+                                <th>
+                                    Address
+                                </th>
+                                <th>
+                                    Status
+                                </th>
+                                <th>
+                                    Payment
+                                </th>
+                                <th>
+                                    Date
+                                </th>
+                                <th>
+                                    Time
+                                </th>
+                                <th>
+                                    Items
+                                </th>
+                                <th>
+
+                                </th>
+
+                                @*<th style="padding-right:80px">
+                                    Actions
+                                </th>*@
+
+                            </tr>
+                        </tfoot>
+                        <tbody id="tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+
+@*Model Of Insert Update Delete*@
+<div class="modal fade bd-example-modal-lg" id="ShowModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+
+                <h4>Ordered Items</h4>
+
+
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+
+
+            </div>
+            <div class="modal-body">
+
+                <h6>Order Id: # <b class="text-danger" id="OrdID"> </b></h6>
+
+                <table class="table table-sm">
+                    <thead class="thead-light text-center">
+                        <tr>
+
+                            <th scope="col">Image</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Rate</th>
+                            <th scope="col">Qty</th>
+                            <th>Total  </th>
+                        </tr>
+                    </thead>
+                    <tbody id="OrderItems"></tbody>
+                </table>
+
+
+
+
+
+                @*<div class="form-group">
+                        <button class="btn btn-info form-control Create"><i class="glyphicon glyphicon-registration-mark"></i> Submit</button>
+                    </div>*@
+
+                @*</form>*@
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@*End of the modal*@
+
+
+
+
+<script>
+
+    function DeliveryStatus(OrdID) {
+
+
+    var StatusID =  $("#DeliStatus_"+OrdID).val();
+
+
+    $.ajax({
+        url: "/Admin/Customer_OrderStatusUpdate",
+
+        type: "GET",
+
+        data:{OrdId:OrdID,StatusId:StatusID},
+
+        dataType: "json",
+        success: function (result) {
+            LoadData();
+            alert(result);
+
+        },
+
+    });
+  }
+
+
+
+
+    $(document).ready(function () {
+     //   $("#ShowModal").modal();
+        LoadData();
+
+       setInterval(function(){ 
+           LoadData();
+       }, 20000);
+
+    })
+
+
+ 
+
+
+
+
+
+
+
+
+    function View(OrdID) {
+        $("#ShowModal").modal();
+
+        $.ajax({
+
+            url: "/Admin/OrderedItemsList",
+
+            type: "GET",
+
+            data:{OrdID: OrdID},
+
+            dataType: "json",
+
+            success: function (result) {
+
+
+
+
+                var html = '';
+
+                var total = 0;
+                var deliCharge = "@ViewBag.charges";
+
+
+
+
+                $.each(result, function (key, item) {
+
+
+                    var OrdID =  item.OrderedProducts.OP_OrderId;
+
+                    var Rate = item.OrderedProducts.OP_Rate;
+                    var Qty = item.OrderedProducts.OP_Qty;
+
+                    var Rslt = Rate*Qty;
+
+
+                    html += ' <tr class="text-center">';
+                    html += ' <th scope="row"><img style="width:25px;height:25px" src="/StoreProductImgs/'+item.OrderedProducts.OP_Img+'" alt="Alternate Text" /></th>  ';
+                    html += ' <td>'+item.OrderedProducts.OP_Name+'</td>            ';
+                    html += ' <td>'+item.OrderedProducts.OP_Qty+'</td>            ';
+                    html += ' <td>'+item.OrderedProducts.OP_Rate+'</td>            ';
+                    html += ' <td>'+ parseFloat(Rslt)   +'</td>            ';
+                    html += ' </tr>                   ';
+
+                    total += parseFloat(Rslt);
+
+                });
+
+                Ftotal = total + +deliCharge;
+
+                html +='<tr>                                                     ';
+                html +='<th colspan="4">Total</th>                               ';
+                html +='<td class="text-center" style="font-weight:600">'+ total +'</td> ';
+                html +='</tr>                                                    ';
+
+            html +=' <tr>                                                     ';
+            html +=' <th colspan="4">Delivary Charges</th>                    ';
+            html +=' <td class="text-center" style="font-weight:400">+ '+ deliCharge +' </td>';
+            html +=' </tr>                                                    ';
+
+              html += '<tr>                                                      ';
+              html += '<th colspan="4">Final Total</th>                          ';
+              html += '<td class="text-center" style="font-weight:900" >'+ Ftotal +'</td> ';
+              html += '</tr>                                                     ';
+
+
+                $("#OrderItems").html(html);
+
+                $("#OrdID").html(OrdID);
+
+
+
+            },
+
+        });
+     }
+
+
+
+
+    function LoadData() {
+
+        $.ajax({
+
+            url: "/Admin/Customer_DeliveredOrderList",
+
+            typr: "GET",
+
+            contentType: "application/json;charset=UTF-8",
+
+            dataType: "json",
+
+
+            success: function (result) {
+
+                var html = '';
+
+                $.each(result, function (key, item) {
+
+                    html += '         <tr>                                                                                   ';
+                    html += '             <td>                                                                               ';
+                    html += '                  ' + item.CustomerOrder.OrderID + '                                                   ';
+                    html += '             </td>                                                                             ';
+                    html += '             <td>                                                                              ';
+                    html += '                  ' + item.Customer_Registration.Cust_Name + '                                        ';
+                    html += '             </td>                                                                             ';
+                    html += '             <td>                                                                              ';
+                    html += '                  ' + item.CustomerOrder.CustNumber + '                                                ';
+                    html += '             </td>                                                                             ';
+                    html += '             <td>                                                                              ';
+                    html += '                  ' + item.CustomerOrder.CustAddress + '                                              ';
+                    html += '             </td>                                                                             ';
+                    html += '             <td>                                                                              ';
+                    html += '                 ' + item.CustomerOrder.CustStatus + '                                               ';
+                    html += '             </td>                                                                             ';
+                    html += '             <td>                                                                              ';
+                    html += '                  ' + item.CustomerOrder.CustPaymentMode + '                                          ';
+                    html += '             </td>                                                                             ';
+
+
+                    var jsonDate = new Date(+item.CustomerOrder.CustOrdDate.replace(/\/Date\((\d+)\)\//, '$1'));
+
+
+                    // best for date formating
+                    var d = new Date(jsonDate);
+                    var day = d.getDate();
+                    var month = d.getMonth() + 1;
+                    var year = d.getFullYear();
+                    if (day < 10) {
+                        day = "0" + day;
+                    }
+                    if (month < 10) {
+                        month = "0" + month;
+                    }
+                    var date = day + "/" + month + "/" + year;
+                    // End Date formating
+
+
+                    html += '             <td>                                                                              ';
+                    html += '                  ' + date + '                                               ';
+                    html += '             </td>                                                                             ';
+                    html += '             <td>                                                                              ';
+                    html += '                  ' + item.CustomerOrder.DeliTime + '                                               ';
+                    html += '             </td>                                                                              ';
+                    html += '             <td>                                                                               ';
+                    html += '                 <a class="btn btn-sm btn-info" href="#" onclick = "View('+ item.CustomerOrder.OrderID +')">View</a>                                          ';
+                    html += '             </td>                                                                              ';
+                    html += '             <td>                                                                               ';
+                    html += '                 <span class="badge badge-info"> ' + item.CustomerDeliveryStatus.CDS_Name + '</span>    ';
+                    html += '             </td>                                                                              ';
+                //    html += '             <td>                                                                               ';
+
+                    @*html += '<select id="DeliStatus_'+item.CustomerOrder.OrderID+'" onchange="DeliveryStatus('+item.CustomerOrder.OrderID+')"  class="form-control form-control-sm">';
+
+
+                     // var DeliList =  @ViewBag.DeliveryStatusList;
+
+                    var DeliList =   @Html.Raw(Json.Encode(ViewBag.DeliveryStatusList));
+
+
+
+                    $.each(DeliList, function (key, item1) {
+                        if (item.CustomerOrder.DeliveryStatus == item1.CDS_ID)
+                        {
+                          html += ' <option value="'+ item1.CDS_ID +'" selected>'+ item1.CDS_Name  +'</option>';
+                        }
+                        else
+                        {
+                           html += '<option value="' + item1.CDS_ID + '">' + item1.CDS_Name + '</option>';
+                        }
+                    });
+
+
+
+                    html += '</select>';*@
+
+
+               //     html += '            </td>                                                                               ';
+
+                    html += '         </tr>                                                                                  ';
+
+
+                });
+
+                $("#tbody").html(html);
+
+
+
+            },
+
+
+        });
+
+
+    }
+
+
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

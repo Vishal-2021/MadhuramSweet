@@ -1,0 +1,737 @@
+﻿@*@model IEnumerable<Accounting_Final_Details.Models.ProductDetails>*@
+
+@model Accounting_Final_Details.Models.ProductDetails
+
+
+
+@{
+    ViewBag.Title = "ListProductDeatails";
+    //   Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+
+
+    if (Session["Role"] != null)
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    }
+
+}
+
+
+<main>
+    <div class="container-fluid">
+
+        <div class="row border mb-2 table-hover">
+
+            <div class="col-12 d-flex align-items-center">
+                <img class="img-fluid" src="~/Logo/Icons/box.png" style="width:30px" />
+
+                <span class="h4 mt-2">&nbsp;  Product !</span>
+            </div>
+        </div>
+
+
+
+
+
+        <section class="section alert-section">
+            <div class="alert alert-info" style="background:#29d2e4;">
+                <div class="alert-container">
+
+                    <i class="fa fa-info-circle"></i>
+                    <b class="alert-info" style="background:#29d2e4">Info alert:</b> You've got some friends nearby, stop looking at your phone and find them...
+                </div>
+            </div>
+        </section>
+
+
+
+
+        @*<div class="card mb-4">
+                <div class="card-body">DataTables is a third party plugin that is used to generate the demo table below. For more information about DataTables, please visit the <a target="_blank" href="https://datatables.net/">official DataTables documentation</a>.</div>
+            </div>*@
+        @*<div class="container text-right" style="margin-bottom:10px;">
+                <button type="button" onclick="Create()" class="btn btn-info"><i class="fa fa-plus"></i> Add</button>
+            </div>*@
+
+
+        <div class="form-row">
+            <div class="col">
+                <div class="alert alert-success" id="success-alert" style="display:none" role="alert">
+                    <i class="far fa-check-circle"></i> @TempData["SaveRegMsg"] @TempData["UpdatRegMsg"]
+                </div>
+            </div>
+
+            <div class="col text-right" style="padding-top:10px;padding-bottom:10px">
+                <button type="button" onclick="Create()" class="btn bg-gradient-info"><i class="fa fa-plus"></i> New Product</button>
+            </div>
+
+        </div>
+
+        <script>
+            $(document).ready(function () {
+
+                var SaveMsg = "@TempData["SaveRegMsg"]";
+
+                var UpdateMsg = "@TempData["UpdatRegMsg"]";
+
+
+                if (SaveMsg != "") {
+                    $("#success-alert").fadeTo(2000, 500).slideUp(500, function () {
+                        $("#success-alert").slideUp(500);
+                    });
+                }
+
+                if (UpdateMsg != "") {
+                    $("#success-alert").fadeTo(2000, 500).slideUp(500, function () {
+                        $("#success-alert").slideUp(500);
+                    });
+                }
+
+            });
+        </script>
+
+
+
+
+
+
+
+        <div class="card mb-4">
+            <div class="card-header p-1">
+
+                <div class="row">
+                    <div class="col-12 vertical-center">
+                        <div class="container">
+                            <div>
+                                <img class="img-fluid" src="~/Logo/Icons/box.png" style="width:35px" />
+                            </div>
+                            <div>
+                                <span class="h6 font-weight-bold"> Product</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.PDID)
+                                </th>
+                                <th>
+                                    Barcode-No
+                                </th>
+                                <th>
+                                    Category
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.ProductName)
+                                </th>
+
+                                <th>
+                                    @Html.DisplayNameFor(model => model.ProductSaleRate)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.ProductPurchaseRate)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Opening_Stock_Qty)
+                                </th>
+
+                                <th>
+                                    @Html.DisplayNameFor(model => model.PDMeasurement)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.PDTypeGoods)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.GstPercent)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Tax)
+                                </th>
+
+                                <th @*style="padding-right:90px"*@>
+                                    @Html.DisplayNameFor(model => model.HSM_Code)
+                                </th>
+
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Wearhouse)
+                                </th>
+
+
+                                <th>
+                                    Actions
+                                </th>
+
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.PDID)
+                                </th>
+                                <th>
+                                    Barcode-No
+                                </th>
+                                <th>
+                                    Category
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.ProductName)
+                                </th>
+
+                                <th>
+                                    @Html.DisplayNameFor(model => model.ProductSaleRate)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.ProductPurchaseRate)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Opening_Stock_Qty)
+                                </th>
+
+                                <th>
+                                    @Html.DisplayNameFor(model => model.PDMeasurement)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.PDTypeGoods)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.GstPercent)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Tax)
+                                </th>
+
+                                <th>
+                                    @Html.DisplayNameFor(model => model.HSM_Code)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Wearhouse)
+                                </th>
+
+                                <th>
+                                    Actions
+                                </th>
+
+                            </tr>
+                        </tfoot>
+                        <tbody>
+
+
+
+                            @foreach (var item in ViewBag.ListPrdctDtl)
+                            {
+                                <tr>
+                                    <td>
+                                        @item.ProductDetails.PDID
+                                    </td>
+                                    <td>
+                                        @if (item.ProductDetails.BarcodeNo != null)
+                                        {
+                                            <span>@item.ProductDetails.BarcodeNo</span>
+                                        }
+                                        else
+                                        {
+                                            <span>NA</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @item.Product_Catagory.Category_Name
+                                    </td>
+
+                                    <td>
+                                        @item.ProductDetails.ProductName
+                                    </td>
+
+                                    <td>
+                                        @item.ProductDetails.ProductSaleRate
+                                    </td>
+                                    <td>
+                                        @item.ProductDetails.ProductPurchaseRate
+                                    </td>
+
+                                    <td>
+                                        @item.ProductDetails.Opening_Stock_Qty
+                                    </td>
+                                    <td>
+                                        @item.Mesurement.MesureType
+                                    </td>
+                                    <td>
+                                        @item.TypesOfGoods.TypeOfGoodsName
+                                    </td>
+                                    <td>
+                                        @item.ProductGST.ProdGst
+                                    </td>
+                                    <td>
+                                        @item.ProductDetails.Tax
+                                    </td>
+                                    <td>
+                                        @item.ProductDetails.HSM_Code
+                                    </td>
+
+                                    <td>
+                                        @item.Wearhouse.Name
+                                    </td>
+
+                                    <td>
+                                        <a class="text-info" href="#" onclick="Edit( @item.ProductDetails.PDID)"> <i class="fa fa-edit" style="font-size:23px"></i></a> &nbsp;
+                                        <a class="text-danger" href="/Admin/DeleteProductDetails/@item.ProductDetails.PDID" onclick="return confirm('Are you sure?')"><i class="fas fa-trash-alt" style="font-size:23px"></i></a>
+                                    </td>
+                                </tr>
+                            }
+
+
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+
+
+
+
+
+
+@*Model Of Insert Update Delete*@
+
+<div class="modal fade bd-example-modal-lg" id="ShowModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header p-0">
+                <div class="container border m-1">
+                    <div class="row mt-2">
+                        <div class="col-1">
+                            <img class="img-fluid" src="~/Logo/Icons/box.png" width="30px" />
+                        </div>
+                        <div class="col-10">
+                            <h4 class="Create" style="display:none;">
+                                Add  Product
+                            </h4>
+                            <h4 class="Edit" style="display:none;">Edit Product</h4>
+                        </div>
+                        <div class="col-1">
+                            <a href="#" class="close" data-dismiss="modal">&times;</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body p-1">
+                <div class="border  p-1">
+                    @using (Html.BeginForm())
+                    {
+                        @Html.HiddenFor(m => m.PDID, new { @class = "form-control PDID", @name = "PDID", })
+
+
+                        <div class="row">
+                            <div class="col-md Create" style="display:none;">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">
+                                                <span class="fas fa-barcode"></span>
+                                            </span>
+                                        </div>
+                                        @Html.TextBoxFor(model => model.BarcodeNo, new { @class = "form-control", placeholder = "Barcode No", onchange = "CheckBarcodeNoExistorNot()" })
+                                        <div class="d-flex align-items-center" style="">
+                                            <i id="BValid" class="fas fa-check-circle text-success" style="display:none;   margin-left:10px;"></i>
+                                            <i id="BInvalid" class="fas fa-exclamation-circle text-danger" style="display:none;margin-left:10px;"></i>
+                                        </div>
+                                    </div>
+                                    @Html.ValidationMessageFor(model => model.BarcodeNo, "", new { @class = "text-danger" })
+                                    <div class="text-danger" style="display:none;" id="Bwrong"><i class="fas fa-exclamation fa-xs"></i> Your Barcode No already Exist.</div>
+
+                                </div>
+
+
+                            </div>
+                            <div class="col-md">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">
+                                                <span class="far fa-list-alt"></span>
+                                            </span>
+                                        </div>
+                                        @Html.DropDownListFor(model => model.Category_ID, ViewBag.ProductCategory as SelectList, "-- select category --", new { @class = "form-control" })
+                                    </div>
+                                    @Html.ValidationMessageFor(model => model.Category_ID, "", new { @class = "text-danger" })
+                                </div>
+
+                            </div>
+                            <div class="col-md">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">
+                                                <span class="fab fa-product-hunt"></span>
+                                            </span>
+                                        </div>
+                                        @Html.EditorFor(model => model.ProductName, new { htmlAttributes = new { @class = "form-control ProductName checkProductName", placeholder = "Product Name", onchange = "CheckProductExistorNot()" } })
+                                        <div class="d-flex align-items-center" style="">
+                                            <i id="PValid" class="fas fa-check-circle text-success" style="display:none;   margin-left:10px;"></i>
+                                            <i id="PInvalid" class="fas fa-exclamation-circle text-danger" style="display:none;margin-left:10px;"></i>
+                                        </div>
+                                    </div>
+                                    @Html.ValidationMessageFor(model => model.ProductName, "", new { @class = "text-danger" })
+                                    <div class="text-danger" style="display:none;" id="Pwrong"><i class="fas fa-exclamation fa-xs"></i> Your Product Name already Exist.</div>
+                                </div>
+
+                            </div>
+                        </div>
+
+
+
+                        <div class="row">
+                            <div class="col-md">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">
+                                                <span class="fas fa-money-bill-alt"></span>
+                                            </span>
+                                        </div>
+                                        @Html.EditorFor(model => model.ProductSaleRate, new { htmlAttributes = new { @class = "form-control ProductSaleRate", placeholder = "Sale Rate" } })
+                                    </div>
+                                    @Html.ValidationMessageFor(model => model.ProductSaleRate, "", new { @class = "text-danger" })
+                                </div>
+
+                            </div>
+                            <div class="col-md">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">
+                                                <i class="fas fa-money-bill-alt"></i>
+                                            </span>
+                                        </div>
+                                        @Html.EditorFor(model => model.ProductPurchaseRate, new { htmlAttributes = new { @class = "form-control ProductPurchaseRate", placeholder = "Product Purchase Rate" } })
+                                    </div>
+                                    @Html.ValidationMessageFor(model => model.ProductPurchaseRate, "", new { @class = "text-danger" })
+                                </div>
+
+                            </div>
+                            <div class="col-md">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">
+                                                <i class="fas fa-balance-scale"></i>
+                                            </span>
+                                        </div>
+                                        @Html.DropDownListFor(model => model.PDMeasurement, ViewBag.MesurementList as SelectList, "-- Select Measurement --", new { @class = "form-control PDMeasurement" })
+                                    </div>
+                                    @Html.ValidationMessageFor(model => model.PDMeasurement, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">
+                                                <i class="fab fa-goodreads"></i>
+                                            </span>
+                                        </div>
+                                        @Html.DropDownListFor(model => model.PDTypeGoods, ViewBag.TypeOfGoodsList as SelectList, "-- Select Good Type --", new { @class = "form-control PDTypeGoods" })
+                                    </div>
+                                    @Html.ValidationMessageFor(model => model.PDTypeGoods, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                         
+                            <div class="col-md">
+
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">
+                                                <i class="fas fa-percent"></i>
+                                            </span>
+                                        </div>
+                                        @Html.DropDownListFor(model => model.GstPercent, ViewBag.ProductGst as SelectList, "-- Select Product Gst --", new { @class = "form-control GstPercent" })
+                                    </div>
+                                    @Html.ValidationMessageFor(model => model.GstPercent, "", new { @class = "text-danger" })
+                                </div>
+
+                            </div>
+
+                            <div class="col-md">
+
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">
+                                                <i class="fas fa-percent"></i>
+                                            </span>
+                                        </div>
+                                        @Html.DropDownListFor(model => model.Tax,
+                                        new List<SelectListItem> {
+                                          new SelectListItem{Value = "Inclusive", Text = "Inclusive"},
+                                          new SelectListItem{Value = "Exclusive", Text = "Exclusive"}
+                                        }
+
+                                         , "-- Select Tax Type --", new { @class = "form-control" })
+                                    </div>
+                                    @Html.ValidationMessageFor(model => model.Tax, "", new { @class = "text-danger" })
+                                </div>
+
+                            </div>
+
+                         
+                        </div>
+
+
+
+
+                        <div class="row">
+                            <div class="col-md">
+
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">
+                                                <i class="fab fa-centos"></i>
+                                            </span>
+                                        </div>
+                                        @Html.EditorFor(model => model.HSM_Code, new { htmlAttributes = new { @class = "form-control", placeholder = "HSN Code" } })
+                                    </div>
+                                    @*@Html.ValidationMessageFor(model => model.HSM_Code, "", new { @class = "text-danger" })*@
+                                </div>
+
+                            </div>
+                            <div class="col-md">
+
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">
+                                                <i class="fas fa-cart-arrow-down"></i>
+                                            </span>
+                                        </div>
+                                        @Html.EditorFor(model => model.Opening_Stock_Qty, new { htmlAttributes = new { @class = "form-control", placeholder = "Opening Stock (Qty.)" } })
+                                    </div>
+                                    @Html.ValidationMessageFor(model => model.Opening_Stock_Qty, "", new { @class = "text-danger" })
+                                </div>
+
+                            </div>
+                            <div class="col-md">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">
+                                                <i class="fas fa-warehouse"></i>
+                                            </span>
+                                        </div>
+                                        @Html.DropDownListFor(model => model.WearhouseRefId, ViewBag.WearhouseList as SelectList, "-- Select Wearhouse --", new { @class = "form-control" })
+                                    </div>
+                                    @Html.ValidationMessageFor(model => model.WearhouseRefId, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                          
+
+
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-md">
+                                <div class="container text-right">
+                                    <button class="btn bg-gradient-info Create" type="submit" formaction="/Admin/CreateProductDetails" style="display:none;"><i class="fas fa-save"></i> Submit</button>
+                                    <button class="btn bg-gradient-info Edit" type="submit" formaction="/Admin/EditProductDetails" style="display:none;"><i class="fas fa-sync-alt"></i> Update</button>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    }
+                </div>
+
+
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@*End of the modal*@
+
+
+
+<script>
+    function Create() {
+        $("#ShowModal").modal();
+        $(".Edit").hide();
+        $(".Create").show();
+
+
+        $('.PDID').val("");
+        $('.ProductName').val("");
+        $('.ProductSaleRate').val("");
+        $('.ProductPurchaseRate').val("");
+        $('.PDMeasurement').val("");
+        $('.PDTypeGoods').val("");
+        $('.GstPercent').val("");
+    }
+
+
+    function Edit(ID) {
+
+        $("#ShowModal").modal();
+        $(".Create").hide();
+        $(".Edit").show();
+
+        $.ajax({
+
+            url: "/Admin/FetchProductDetails/" + ID,
+
+            typr: "GET",
+
+            contentType: "application/json;charset=UTF-8",
+
+            dataType: "json",
+
+
+
+            success: function (result) {
+
+
+                $('.PDID').val(result.PDID);
+                $('#BarcodeNo').val(result.BarcodeNo);
+
+                $('#Category_ID').val(result.Category_ID);
+                $('.ProductName').val(result.ProductName);
+                $('.ProductSaleRate').val(result.ProductSaleRate);
+                $('.ProductPurchaseRate').val(result.ProductPurchaseRate);
+                $('.PDMeasurement').val(result.PDMeasurement);
+                $('.PDTypeGoods').val(result.PDTypeGoods);
+                $('.GstPercent').val(result.GstPercent);
+
+                $('#HSM_Code').val(result.HSM_Code);
+                $('#Opening_Stock_Qty').val(result.Opening_Stock_Qty);
+
+                $('#WearhouseRefId').val(result.WearhouseRefId);
+
+                $('#Tax').val(result.Tax);
+
+
+            },
+
+
+        });
+
+        return false;
+
+    }
+
+
+
+
+
+
+    function CheckProductExistorNot() {
+
+        var empObj = {
+            ProductName: $('.checkProductName').val(),
+        };
+
+        $.ajax({
+            url: "/Admin/ProducNameExistOrNot",
+            data: JSON.stringify(empObj),
+            type: "POST",
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            success: function (result) {
+
+                if (result == 0) {
+                    $('.checkProductName').val('');
+                    $('#PValid').hide();
+                    $('#PInvalid').show();
+                    $('#Pwrong').show();
+                }
+                else {
+                    $('#Pwrong').hide();
+                    $('#PInvalid').hide();
+                    $('#PValid').show();
+
+
+
+                }
+            },
+        });
+    }
+
+    function CheckBarcodeNoExistorNot() {
+
+        var Obj = {
+            BarcodeNo: $('#BarcodeNo').val(),
+        };
+
+        $.ajax({
+            url: "/Admin/ProducBarcodeNoExistOrNot",
+            data: Obj,
+            type: "POST",
+
+            dataType: "json",
+            success: function (result) {
+
+                if (result == 0) {
+                    $('#BarcodeNo').val('');
+                    $('#BValid').hide();
+                    $('#BInvalid').show();
+                    $('#Bwrong').show();
+                }
+                else {
+                    $('#Bwrong').hide();
+                    $('#BInvalid').hide();
+                    $('#BValid').show();
+                }
+
+
+            },
+        });
+    }
+
+
+
+</script>

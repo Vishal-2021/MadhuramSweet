@@ -1,0 +1,158 @@
+﻿
+@{
+    ViewBag.Title = "FinalTransaction_Purchase_Report";
+    Layout = null;
+}
+@{
+
+    // Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    if (Session["Role"] != null)
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    }
+}
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/js/all.min.js" crossorigin="anonymous"></script>
+
+
+</head>
+<body>
+
+    <style>
+        table, td, th {
+            border: 1px solid black;
+        }
+
+        table {
+            border-collapse: collapse;
+        }
+    </style>
+
+  
+    <section class="section alert-section">
+        <div class="alert alert-info" style="background:#29d2e4;">
+            <div class="alert-container">
+
+                <i class="fa fa-info-circle"></i>
+                <b class="alert-info" style="background:#29d2e4">Info alert:</b> You've got some friends nearby, stop looking at your phone and find them...
+            </div>
+        </div>
+    </section>
+
+    @if (ViewBag.FinalTotalAmt != null)
+    {
+
+        <div class="print" id="printableArea">
+
+            <h1 class="text-center">
+                Purchase Total Payment Amt.
+            </h1>
+
+            <table style="width:100%">
+
+                <thead>
+                    <tr>
+                        <th>
+                            Final Total Amt
+                        </th>
+                        @*<th>
+                                Total Received Amt
+                            </th>*@
+                        <th>
+                            Total Outstanding Amt
+                        </th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>
+
+                            @ViewBag.FinalTotalAmt
+
+                        </td>
+                        @*<td>
+                                @ViewBag.ReceivedAmt
+                            </td>*@
+                        <td>
+                            @{
+                                decimal Outstanding = 0;
+
+                                // !(ViewBag.AllFinal_PurchaseTotal is DBNull)
+                                if (!(ViewBag.FinalTotalAmt is DBNull) && !(ViewBag.ReceivedAmt is DBNull))
+                                {
+                                    Outstanding = ViewBag.FinalTotalAmt - ViewBag.ReceivedAmt;
+                                }
+
+                            }
+
+                            @Outstanding
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+
+        </div>
+
+
+    }
+
+    else
+    {
+        <h4 class="text-center text-danger" style="border:1px solid #ddd;font-weight:600;margin-top:15px">Data is Not Available ...</h4>
+    }
+
+    <div style="width:50%;margin-top:50px;">
+        <button type="button" id="Btnhide" class="btn btn-info btn-md mr-2" onclick="window.print()"><i class="fas fa-print"></i> PDF</button>
+    </div>
+
+
+    <style type="text/css">
+        @@media print {
+
+            #Btnhide {
+                display: none;
+            }
+        }
+
+        table, td, th {
+            border: 1px solid;
+        }
+
+        table {
+            width: 100%;
+        }
+    </style>
+
+    @*<script>
+            $(document).ready(function () {
+                window.print();
+            })
+        </script>*@
+
+
+</body>
+</html>
+
+

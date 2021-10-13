@@ -1,0 +1,295 @@
+﻿@model Accounting_Final_Details.Models.delivery_charges
+
+@{
+    ViewBag.Title = "DelivaryCharges";
+    //  Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    if (Session["Role"] != null)
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    }
+
+}
+
+<main>
+    <div class="container-fluid">
+        <h2 class="mt-4">Delivary Charges !</h2>
+        @*<ol class="breadcrumb mb-4">
+            <li class="breadcrumb-item"><a href="index">Dashboard</a></li>
+        </ol>*@
+
+        <hr />
+        <section class="section alert-section">
+            <div class="alert alert-info" style="background:#29d2e4;">
+                <div class="alert-container">
+
+                    <i class="fa fa-info-circle"></i>
+                    <b class="alert-info" style="background:#29d2e4">Info alert:</b> You've got some friends nearby, stop looking at your phone and find them...
+                </div>
+            </div>
+        </section>
+
+
+
+
+        <div class="form-row">
+            <div class="col">
+                <div class="alert alert-success" id="success-alert" style="display:none" role="alert">
+                    <i class="far fa-check-circle"></i> @TempData["SaveRegMsg"] @TempData["UpdatRegMsg"]
+                </div>
+            </div>
+
+            <div class="col text-right" style="padding-top:10px;padding-bottom:10px">
+                <button type="button" onclick="Create()" class="btn btn-info"><i class="fa fa-plus"></i> Add</button>
+            </div>
+
+        </div>
+
+
+
+
+
+
+
+
+
+        <div class="card mb-4">
+            <div class="card-header"><i class="fas fa-table mr-1"></i>Delivary Charges</div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>
+                                    ID
+                                </th>
+                                <th>
+                                    Pincode
+                                </th>
+                                <th>
+                                    Delivary Charges
+                                </th>
+
+                                <th style="padding-right:60px">
+                                    Actions
+                                </th>
+
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>
+                                    ID
+                                </th>
+                                <th>
+                                    Pincode
+                                </th>
+                                <th>
+                                    Delivary Charges
+                                </th>
+
+
+                                <th style="padding-right:60px">
+                                    Actions
+                                </th>
+
+                            </tr>
+                        </tfoot>
+                        <tbody>
+
+
+                            @foreach (var item in ViewBag.DelivaryChargList)
+                            {
+                                <tr>
+                                    <td>
+                                        @item.DC_ID
+                                    </td>
+                                    <td>
+                                        @item.Pincode
+                                    </td>
+                                    <td>
+                                        @item.DC_Charges
+                                    </td>
+                                    <td>
+                                        <a class="text-info" href="#" onclick="Edit(@item.DC_ID)"> <i class="fa fa-edit" style="font-size:23px"></i></a> &nbsp;
+
+                                        <a class="text-danger" href="/Admin/Delete_DelivaryCharges/@item.DC_ID" onclick="return confirm('Are you sure?')"><i class="fas fa-trash-alt" style="font-size:23px"></i></a>
+                                    </td>
+                                </tr>
+                            }
+
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+
+
+
+
+@*Model Of Insert Update Delete*@
+
+<div class="modal fade" id="ShowModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+         
+                           <div class="modal-header">
+                                <h4 class="Create" style="display:none;">Add Delivary Charges</h4>
+                                <h4 class="Edit" style="display:none;">Edit Delivary Charges</h4>
+
+                                <a href="#" class="close" data-dismiss="modal">&times;</a>
+
+
+
+                            </div>
+                           <div class="modal-body">
+                               @*@using (Html.BeginForm())
+        {*@
+                               @*formaction="/Admin/"*@
+
+
+
+                               @using (Html.BeginForm())
+                               {
+
+                                   @Html.HiddenFor(m => m.DC_ID, new { @class = "form-control", @name = "DC_ID", })
+
+                                   <div class="form-group">
+                                       <div class="">
+                                           <div class="input-group">
+                                               <div class="input-group-prepend">
+                                                   <span class="input-group-text">
+                                                       <span class="fas fa-map-marker-alt"></span>
+                                                   </span>
+                                               </div>
+                                               @Html.EditorFor(model => model.Pincode, new { htmlAttributes = new { @class = "form-control", placeholder = "Pincode", onchange = "CheckPincodeExistorNot()", required = "required" } })
+                                           </div>
+                                           @Html.ValidationMessageFor(model => model.Pincode, "", new { @class = "text-danger" })
+                                       </div>
+                                   </div>
+
+                                   <div class="form-group">
+                                       <div class="">
+                                           <div class="input-group">
+                                               <div class="input-group-prepend">
+                                                   <span class="input-group-text">
+                                                       <span class="fas fa-shipping-fast"></span>
+                                                   </span>
+                                               </div>
+                                               @Html.EditorFor(model => model.DC_Charges, new { htmlAttributes = new { @class = "form-control", placeholder = "Delivary Charges", required = "required" } })
+                                           </div>
+                                           @Html.ValidationMessageFor(model => model.DC_Charges, "", new { @class = "text-danger" })
+                                       </div>
+                                   </div>
+
+                                   <div class="form-group">
+                                       <button class="btn btn-info form-control Create" type="submit" @*formaction="/Admin/AddEditStore_Products"*@ style="display:none;"><i class="glyphicon glyphicon-registration-mark"></i> Submit</button>
+                                       <button class="btn btn-info form-control Edit" type="submit" @*formaction="/Admin/AddEditStore_Products"*@ style="display:none;"><i class="glyphicon glyphicon-registration-mark"></i> Update</button>
+                                   </div>
+
+                               }
+
+                           </div>
+                        </div>
+
+
+
+
+                    </div>
+                </div>
+
+                @*End of the modal*@
+
+
+
+                <script>
+                    function Create() {
+                        $("#ShowModal").modal();
+                        $(".Edit").hide();
+                        $(".Create").show();
+
+
+                        $('#DC_ID').val("");
+                        $('#Pincode').val("");
+                        $('#DC_Charges').val("");
+
+                    }
+
+
+                    function Edit(ID) {
+
+                        $("#ShowModal").modal();
+                        $(".Create").hide();
+                        $(".Edit").show();
+
+
+                        $.ajax({
+
+                            url: "/Admin/FetchDeleveryData/" + ID,
+
+                            typr: "GET",
+
+                            contentType: "application/json;charset=UTF-8",
+
+                            dataType: "json",
+
+
+
+                            success: function (result) {
+
+                                $('#DC_ID').val(result.DC_ID);
+                                $('#Pincode').val(result.Pincode);
+                                $('#DC_Charges').val(result.DC_Charges);
+
+                            },
+
+
+                        });
+
+                        return false;
+
+                    }
+
+
+                    function CheckPincodeExistorNot() {
+
+                        var Pincode = $("#Pincode").val();
+
+                        
+
+                        $.ajax({
+
+                            url: "/Admin/PicodeExistorNot/",
+                            data: { Pincode: Pincode },
+                            type: "GET",
+                            dataType: "json",
+                           
+                            success: function (result) {
+                              
+                                if (result == 0) {
+                                    $("#Pincode").val("");
+                                    alert("Pincode already Exist");
+
+                                }
+
+                               
+
+                            },
+
+                        });
+
+                    }
+
+
+
+
+
+                </script>

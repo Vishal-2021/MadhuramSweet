@@ -1,0 +1,188 @@
+﻿@model IEnumerable<Accounting_Final_Details.Models.SalesGST>
+
+@{
+    ViewBag.Title = "ListSaleGst";
+    //  Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    if (Session["Role"] != null)
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    }
+}
+
+
+
+<main>
+    <div class="container-fluid">
+        <h2 class="mt-4">Sales bill with GST !</h2>
+        @*<ol class="breadcrumb mb-4">
+            <li class="breadcrumb-item"><a href="index">Dashboard</a></li>
+
+        </ol>*@
+
+
+
+        <hr />
+        <section class="section alert-section">
+            <div class="alert alert-info" style="background:#29d2e4;">
+                <div class="alert-container">
+
+                    <i class="fa fa-info-circle"></i>
+                    <b class="alert-info" style="background:#29d2e4">Info alert:</b> You've got some friends nearby, stop looking at your phone and find them...
+                </div>
+            </div>
+        </section>
+
+
+
+
+
+
+
+
+
+
+        <div class="form-row">
+
+            @*<div class="col">
+                <div class="alert alert-success" id="success-alert" style="display:none" role="alert">
+                    <i class="far fa-check-circle"></i> @TempData["SaveRegMsg"] @TempData["UpdatRegMsg"]
+                </div>
+            </div>*@
+
+            <div class="col text-right" style="padding-top:10px;padding-bottom:10px">
+                <a href="/Admin/Trash_TempSalesGst" class="btn btn-info"><i class="fa fa-plus"></i> Add</a>
+            </div>
+        </div>
+        @*
+        <script>
+            $(document).ready(function () {
+
+                var SaveMsg = "@TempData["SaveRegMsg"]";
+
+                var UpdateMsg = "@TempData["UpdatRegMsg"]";
+
+
+                if (SaveMsg != "") {
+                    $("#success-alert").fadeTo(2000, 500).slideUp(500, function () {
+                        $("#success-alert").slideUp(500);
+                    });
+                }
+
+                if (UpdateMsg != "") {
+                    $("#success-alert").fadeTo(2000, 500).slideUp(500, function () {
+                        $("#success-alert").slideUp(500);
+                    });
+                }
+            });
+        </script>*@
+
+
+
+
+
+
+
+
+
+
+
+
+        <div class="card mb-4">
+            <div class="card-header"><i class="fas fa-table mr-1"></i>Sales bill GST</div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Bill No
+                                </th>
+                                <th>
+                                    Supplier/Customer Name
+                                </th>
+                                <th>
+                                    Credit Notes
+                                </th>
+                                <th>
+                                    Date
+                                </th>
+                                <th>
+                                    Actions
+                                </th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>
+                                    Bill No
+                                </th>
+                                <th>
+                                    Supplier/Customer Name
+                                </th>
+                                <th>
+                                    Credit Notes
+                                </th>
+                                <th style="padding-right:60px">
+                                    Date
+                                </th>
+                                <th>
+                                    Actions
+                                </th>
+                            </tr>
+                        </tfoot>
+                        <tbody>
+
+
+
+                            @foreach (var item in ViewBag.ListSaleGstDtl)
+                            {
+                                <tr>
+                                    <td>
+                                        <b class="text-danger">
+                                            @item.SaleGST_BillNo
+                                        </b>
+                                    </td>
+                                    <td>
+                                        @item.SaleGST_SuppCustName
+                                    </td>
+                                    <td>
+                                        @foreach (var item2 in ViewBag.ListCreditNote)
+                                        {
+                                            if (item2.CreditNotes_SaleWithGSTBillNo == item.SaleGST_BillNo)
+                                            {
+                                                @Html.ActionLink("Edit", "Add_CreditNotes_to_TempCreditNotes", new { BillNo = item2.CreditNotes_SaleWithGSTBillNo }, new { Class = "btn btn-info btn-sm", style = "font-weight:600;margin-right:5px;margin-bottom:5px" })
+
+                                                @Html.ActionLink("Delete", "Delete_ListCreditNotes", new { BillNo = item2.CreditNotes_SaleWithGSTBillNo }, new { Class = "btn btn-danger btn-sm", style = "font-weight:600;margin-bottom:5px;margin-right:5px;", onclick = "return confirm('Are you sure?')" })
+
+                                                @Html.ActionLink("Rpt.", "ListCreditNotes_Report", new { BillNo = item2.CreditNotes_SaleWithGSTBillNo }, new { @Class = "btn btn-info btn-sm", style = "font-weight:600" })
+
+                                                break;
+                                            }
+                                        }
+                                    </td>
+                                    <td>
+                                        @Convert.ToDateTime(item.SaleGST_Date).ToString("dd/MM/yyyy")
+                                    </td>
+                                    <td>
+                                        @Html.ActionLink("Edit", "Add_SaleGst_to_TempSaleGst", new { BillNo = item.SaleGST_BillNo }, new { Class = "btn btn-info btn-sm", style = "font-weight:600" })
+                                        &nbsp;
+                                        @Html.ActionLink("Delete", "Delete_ListSaleGst", new { BillNo = item.SaleGST_BillNo }, new { Class = "btn btn-danger btn-sm", style = "font-weight:600", onclick = "return confirm('Are you sure?')" })
+                                        &nbsp;
+                                        @Html.ActionLink("Rpt.", "ListSaleGst_Report", new { BillNo = item.SaleGST_BillNo }, new { @Class = "btn btn-info btn-sm", style = "font-weight:600" })
+                                        &nbsp;
+                                        @Html.ActionLink("+ Credit Note", "Add_SaleGst_to_AddCreditNotes", new { BillNo = item.SaleGST_BillNo }, new { Class = "btn btn-info btn-sm", style = "font-weight:600" })
+
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>

@@ -1,0 +1,274 @@
+﻿@model Accounting_Final_Details.Models.UploadFiles
+
+@{
+    ViewBag.Title = "UplaodFiles";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+
+
+<section class="section alert-section">
+    <div class="alert alert-info" style="background:#29d2e4;">
+        <div class="alert-container">
+
+            <i class="fa fa-info-circle"></i>
+            <b class="alert-info" style="background:#29d2e4">Info alert:</b> You've got some friends nearby, stop looking at your phone and find them...
+        </div>
+    </div>
+</section>
+
+
+<fieldset class="box">
+    <legend class="box">Send Documents !</legend>
+
+    @using (Html.BeginForm("UplaodFiles", "Admin", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <div class="form-row">
+
+            <div class="form-group col-md-3">
+                <div class="">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <i class="fas fa-user-check" style="font-size:24px;padding-left:1px;padding-right:5px"></i>
+                            </span>
+                        </div>
+                        @Html.DropDownList("RID", ViewBag.RegistList as SelectList, "-- Select Name --", new { @class = "form-control", required = "required" })
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="form-group col-md-3">
+                <div class="">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <i class="far fa-sticky-note" style="font-size:24px;padding-left:1px;padding-right:5px"></i>
+                            </span>
+                        </div>
+                        @Html.TextArea("Notes", new { @class = "form-control", required = "required" })
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="form-group col-md-3">
+                <div class="">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <span class="fas fa-file-upload"></span>
+                            </span>
+                        </div>
+                        @Html.TextBoxFor(model => model.files, "", new { @type = "file", @multiple = "multiple", @class = "form-control", id = "file", required = "required" })
+                   
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+            <div class="form-group col-md-2">
+                <div class="">
+                    <input type="submit" id="BtnSubmit" value="+ Add" class="btn btn-info" />
+                </div>
+            </div>
+        </div>
+    }
+</fieldset>
+
+
+
+
+
+<script type="text/javascript">
+    $('#file').on('change', function () {
+
+        const size =
+            (this.files[0].size / 1024 / 1024).toFixed(2);
+
+        if (size > 50) {
+            alert("File must be under the size of 50 MB");
+            $("#file").val('');
+        } else {
+
+        }
+    });
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="form-row">
+    <div class="col">
+        <div class="alert alert-success" id="success-alert" style="display:none" role="alert">
+            <i class="far fa-check-circle"></i>
+            @ViewBag.UploadStatus
+        </div>
+    </div>
+</div>
+
+<script>
+            $(document).ready(function () {
+
+                var SaveMsg = "@ViewBag.UploadStatus";
+
+                if (SaveMsg != "") {
+                    $("#success-alert").fadeTo(2000, 500).slideUp(500, function () {
+                        $("#success-alert").slideUp(500);
+                    });
+                }
+
+
+
+
+            });
+
+
+
+</script>
+
+
+
+
+
+
+
+
+<div class="card mb-4">
+    <div class="card-header"><i class="fas fa-table mr-1"></i>Uploaded Files</div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <td>
+                            <b>ID</b>
+                        </td>
+                        <th>
+                            User Name
+                        </th>
+                        <th>
+                            Notes
+                        </th>
+                        <th>
+                            Date
+                        </th>
+                        <th>
+                            Actions
+                        </th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <td>
+                            <b>ID</b>
+                        </td>
+                        <th>
+                            User Name
+                        </th>
+                        <th>
+                            Notes
+                        </th>
+                        <th>
+                            Date
+                        </th>
+                        <th>
+                            Actions
+                        </th>
+                    </tr>
+                </tfoot>
+                <tbody>
+
+                    @foreach (var item in ViewBag.UploadedList)
+                    {
+                        <tr>
+                            <td>
+                                @item.UploadFiles.UpID
+                            </td>
+                            <td>
+                                @item.Rgst.Name
+                            </td>
+                            <td>
+                                @item.UploadFiles.Notes
+                            </td>
+                            <td>
+                                @Convert.ToDateTime(item.UploadFiles.UpDates).ToString("dd-MM-yyyy")
+
+                            </td>
+
+                            <td>
+                                @Html.ActionLink("View", "DownloadFiles", new { UpID = item.UploadFiles.UpID }, new { @Class = "btn btn-info btn-sm", style = "font-weight:600" })
+                                &nbsp;
+                                @Html.ActionLink("Edit", "Edit_UploadedFiles", new { UpID = item.UploadFiles.UpID }, new { @Class = "btn btn-info btn-sm", style = "font-weight:600" })
+                                &nbsp;
+                                @Html.ActionLink("Delete", "Delete_DownloadFiles", new { UpID = item.UploadFiles.UpID }, new { @Class = "btn btn-danger btn-sm", style = "font-weight:600" })
+
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<style>
+    fieldset {
+        border: 1px solid #ddd;
+        border-left: 1px solid #ddd;
+        padding: 6px;
+        margin-bottom: 5px;
+        width: 100%;
+    }
+
+    legend {
+        width: auto;
+        font-size: 15px;
+        font-weight: 500;
+    }
+
+    #main:hover .box {
+        border-color: #1b76c4;
+    }
+</style>
+
+
+

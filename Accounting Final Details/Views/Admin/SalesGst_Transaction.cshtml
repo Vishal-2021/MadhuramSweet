@@ -1,0 +1,409 @@
+﻿@model Accounting_Final_Details.Models.SalesGST_Transactions
+
+@{
+    ViewBag.Title = "SalesGst_Transaction";
+  //  Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+
+    if (Session["Role"] != null)
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    }
+}
+
+
+
+
+<main>
+    <div class="container-fluid">
+        <h2 class="mt-4">Sale transaction !</h2>
+        @*<ol class="breadcrumb mb-4">
+            <li class="breadcrumb-item"><a href="index">Dashboard</a></li>
+        </ol>*@
+
+
+        <hr />
+        <section class="section alert-section">
+            <div class="alert alert-info" style="background:#29d2e4;">
+                <div class="alert-container">
+
+                    <i class="fa fa-info-circle"></i>
+                    <b class="alert-info" style="background:#29d2e4">Info alert:</b> You've got some friends nearby, stop looking at your phone and find them...
+                </div>
+            </div>
+        </section>
+
+
+        <div class="container text-right" style="margin-bottom:10px;">
+            <button type="button" onclick="Create()" class="btn btn-info"><i class="fa fa-plus"></i> Add</button>
+        </div>
+        @{ decimal outstandAmt = 0;
+            if (!(ViewBag.SumOfReciAmt is DBNull))
+            {
+
+                decimal BillAmt, SumReciAmt;
+                BillAmt = ViewBag.BillAmt;
+                SumReciAmt = ViewBag.SumOfReciAmt;
+
+                outstandAmt = BillAmt - SumReciAmt;
+
+
+                <h6>Bill Amt :- @BillAmt </h6>
+                <h6>Total Recived Amt :-  @SumReciAmt </h6>
+                <h6>
+                    Outstanding Amt :-
+                    @if (outstandAmt <= 0)
+                    {
+                        <b style="font-weight:600;color:green">@outstandAmt</b>
+                    }
+                    else
+                    {
+                        <b style="font-weight:600;color:red">@outstandAmt</b>
+                    }
+
+                </h6>
+
+            }
+            else
+            {
+                <h6>Bill Amt :- @ViewBag.BillAmt </h6>
+            }
+        }
+
+        <div class="card mb-4">
+            <div class="card-header"><i class="fas fa-table mr-1"></i>Sale Transaction</div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+
+                            <tr>
+                                <th>
+                                    TranId
+                                </th>
+                                <th>
+                                    CustSuppName
+                                </th>
+                                <th>
+                                    TranReciAmt
+                                </th>
+                                <th>
+                                    Payment Method
+                                </th>
+                                <th>
+                                    Cheque No.
+                                </th>
+                                <th>
+                                    TranNote
+                                </th>
+                                <th>
+                                    TranDate
+                                </th>
+
+                                <th>
+                                    Action
+                                </th>
+                            </tr>
+
+
+                        </thead>
+
+                        <tbody>
+
+                            @foreach (var item in ViewBag.ListCustSupTransaction)
+                            {
+                                <tr>
+                                    <td>
+                                        @item.SalesGST_Transactions.SGstTran_TranID
+                                    </td>
+                                    <td>
+                                        @item.CustDtl.CustName
+                                    </td>
+                                    <td>
+                                        @item.SalesGST_Transactions.SGstTran_TranReciAmt
+                                    </td>
+                                    <td>
+                                        @item.PaymentMethod.PayMName
+                                    </td>
+                                    <td>
+                                        @item.SalesGST_Transactions.SGstTran_Cheque
+                                    </td>
+                                    <td>
+                                        @item.SalesGST_Transactions.SGstTran_TransactionNote
+                                    </td>
+                                    <td>
+                                        @Convert.ToDateTime(item.SalesGST_Transactions.SGstTran_Date).ToString("dd/MM/yyyy")
+                                    </td>
+                                    <td>
+                                        <a class="text-info" href="#" onclick="Edit(@item.SalesGST_Transactions.SGstTran_TranID)"> <i class="fa fa-edit" style="font-size:23px"></i></a> &nbsp;
+
+                                        <a class="text-danger" href="/Admin/DeleteSalesGst_Transaction/@item.SalesGST_Transactions.SGstTran_TranID" onclick="return confirm('Are you sure?')"><i class="fas fa-trash-alt" style="font-size:23px"></i></a>
+
+                                    </td>
+                                </tr>
+                            }
+
+
+
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+
+
+
+@*Model Of Insert Update Delete*@
+
+<div class="modal fade" id="ShowModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="Create" style="display:none;">Add Sale Transaction</h4>
+                <h4 class="Edit" style="display:none;">Edit Sale Transaction</h4>
+
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+
+
+
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm())
+                {
+
+
+                    @Html.HiddenFor(m => m.SGstTran_TranID, new { @class = "form-control RID", @name = "RID", })
+                    @Html.HiddenFor(m => m.SGstTran_BillNo, new { @class = "form-control RID", @name = "RID", })
+                    @Html.HiddenFor(m => m.SGstTran_CustSupID, new { @class = "form-control RID", @name = "RID", })
+
+
+
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <span class="fas fa-sort-amount-down"></span>
+                                </span>
+                            </div>
+                            @Html.EditorFor(model => model.SGstTran_TranReciAmt, new { htmlAttributes = new { @class = "form-control Name", placeholder = "Recieved Amt" } })
+
+
+                        </div>
+                        @Html.ValidationMessageFor(model => model.SGstTran_TranReciAmt, "", new { @class = "text-danger" })
+
+
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <i class="fas fa-list"></i>
+                                </span>
+                            </div>
+                            @Html.DropDownListFor(model => model.SGstTran_TranPayMethod, ViewBag.ListPaymentMethod as SelectList, "Select Payment Method", new { @class = "form-control", onchange = "ChequeBoxEffect()" })
+
+                        </div>
+                        @Html.ValidationMessageFor(model => model.SGstTran_TranPayMethod, "", new { @class = "text-danger" })
+
+                    </div>
+
+                    <div class="form-group EffectChequeNo" style="display:none">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <span class="far fa-sticky-note"></span>
+                                </span>
+                            </div>
+                            @Html.EditorFor(model => model.SGstTran_Cheque, new { htmlAttributes = new { @class = "form-control", placeholder = "Cheque Number" } })
+
+                        </div>
+                        @Html.ValidationMessageFor(model => model.SGstTran_Cheque, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <span class="far fa-sticky-note"></span>
+                                </span>
+                            </div>
+                            @Html.TextAreaFor(model => model.SGstTran_TransactionNote, new { @class = "form-control Contact", placeholder = "Note" })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.SGstTran_TransactionNote, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <span class="far fa-sticky-note"></span>
+                                </span>
+                            </div>
+                            @*@Html.TextAreaFor(model => model.TranNote, new { @class = "form-control Contact", placeholder = "Note" })*@
+                            @{
+                                DateTime dt = DateTime.Now;
+                            }
+
+                            <input type="date" name="SGstTran_Date" id="SGstTran_Date" value="@dt.ToString("yyyy-MM-dd")" class="form-control" />
+                        </div>
+                        @Html.ValidationMessageFor(model => model.SGstTran_Date, "", new { @class = "text-danger" })
+                    </div>
+
+
+                    <div class="form-group">
+                        <button class="btn btn-info form-control Create" type="submit" formaction="/Admin/AddEditSaleGst_Transaction" style="display:none;"><i class="glyphicon glyphicon-registration-mark"></i> Submit</button>
+                        <button class="btn btn-info form-control Edit" type="submit" formaction="/Admin/AddEditSaleGst_Transaction" style="display:none;"><i class="glyphicon glyphicon-registration-mark"></i> Update</button>
+                    </div>
+
+                    @*</form>*@
+
+                }
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@*End of the modal*@
+
+
+
+
+
+
+
+
+<script>
+
+    function Create() {
+        $("#ShowModal").modal();
+        $(".Edit").hide();
+        $(".Create").show();
+        $('#SGstTran_TranID').val("");
+
+
+    }
+
+    function ChequeBoxEffect()
+    {
+        var TranPayMethod = $("#SGstTran_TranPayMethod").val();
+     if (TranPayMethod == 2) {
+
+         $(".EffectChequeNo").fadeIn();
+     }
+     else
+     {
+         $(".EffectChequeNo").fadeOut();
+
+      //   $(".EffectChequeNo").val("");
+
+     }
+
+
+    }
+
+
+
+
+    function Edit(ID) {
+
+        $("#ShowModal").modal();
+        $(".Create").hide();
+        $(".Edit").show();
+
+
+        $.ajax({
+
+            url: "/Admin/FetchSalesGst_Transaction/" + ID,
+
+            typr: "GET",
+
+            contentType: "application/json;charset=UTF-8",
+
+            dataType: "json",
+
+
+            success: function (result) {
+
+                $('#SGstTran_TranID').val(result.SalesGST_Transactions.SGstTran_TranID);
+                $('#SGstTran_CustSupID').val(result.SalesGST_Transactions.SGstTran_CustSupID);
+                $('#SGstTran_TranReciAmt').val(result.SalesGST_Transactions.SGstTran_TranReciAmt);
+                $('#SGstTran_TranPayMethod').val(result.SalesGST_Transactions.SGstTran_TranPayMethod);
+
+                var PaymentMethodId = result.SalesGST_Transactions.SGstTran_TranPayMethod;
+             if (PaymentMethodId == 2) {
+                 $(".EffectChequeNo").fadeIn();
+             }
+             else
+             {
+                 $(".EffectChequeNo").hide();
+             }
+
+
+             $('#SGstTran_Cheque').val(result.SalesGST_Transactions.SGstTran_Cheque);
+
+             $('#SGstTran_TransactionNote').val(result.SalesGST_Transactions.SGstTran_TransactionNote);
+
+             var jsonDate = new Date(+result.SalesGST_Transactions.SGstTran_Date.replace(/\/Date\((\d+)\)\//, '$1'));
+
+                // best for date formating
+                var d = new Date(jsonDate);
+                var day = d.getDate();
+                var month = d.getMonth() + 1;
+                var year = d.getFullYear();
+                if (day < 10) {
+                    day = "0" + day;
+                }
+                if (month < 10) {
+                    month = "0" + month;
+                }
+                var date = year + "-" + month + "-" + day;
+                // End Date formating
+
+                $('#SGstTran_Date').val(date);
+
+                $('#SGstTran_BillNo').val(result.SalesGST_Transactions.SGstTran_BillNo);
+            },
+
+
+        });
+
+        return false;
+
+
+    }
+
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

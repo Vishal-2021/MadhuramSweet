@@ -1,0 +1,355 @@
+﻿
+@{
+    ViewBag.Title = "SalesGstNGstbifercation";
+  //  Layout = null;
+}
+
+@{
+
+    // Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    if (Session["Role"] != null)
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    }
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/js/all.min.js" crossorigin="anonymous"></script>
+
+</head>
+<body>
+
+    <style>
+        table, td, th {
+            border: 1px solid black;
+        }
+
+        table {
+            border-collapse: collapse;
+        }
+    </style>
+
+
+    <section class="section alert-section">
+        <div class="alert alert-info" style="background:#29d2e4;">
+            <div class="alert-container">
+
+                <i class="fa fa-info-circle"></i>
+                <b class="alert-info" style="background:#29d2e4">Info alert:</b> You've got some friends nearby, stop looking at your phone and find them...
+            </div>
+        </div>
+    </section>
+
+
+    <div class="p-2">
+
+
+        <div id="fieldsets">
+
+            <fieldset class="box">
+                <legend class="box">GST Bifercation Purchase Report !</legend>
+
+                <div id="myRadioGroup" style="margin-bottom:20px">
+                    <b style="font-weight:600">Select searching options : </b>
+                    <input type="radio" name="cars" value="2" /> Customer Name
+                    <input type="radio" name="cars" value="3" /> Date Wise
+                </div>
+
+                <script>
+                    $(document).ready(function () {
+                        $("input[name$='cars']").click(function () {
+                            var test = $(this).val();
+
+                            $("div.desc").hide();
+                            $("#Cars" + test).show();
+                        });
+                    });
+                </script>
+
+                <form action="/Admin/SalesGstNGstbifercation" method="post">
+
+                    <div class="form-row desc" id="Cars2" style="display: none;">
+
+
+                        <div class="form-group col-md-3">
+                            <div class="">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-user-check" style="font-size:24px;padding-left:1px;padding-right:5px"></i>
+                                        </span>
+                                    </div>
+                                    @Html.DropDownList("CustId", ViewBag.SuppCustList as SelectList, "-- Select Name --", new { @class = "form-control", required = "required" })
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-3">
+                            <div class="">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-calendar-alt" style="font-size:24px;padding-left:1px;padding-right:5px"></i>
+                                        </span>
+                                    </div>
+                                    @{
+                                        DateTime dt = DateTime.Now;
+                                    }
+
+                                    <input type="date" name="Fdate" id="Fdate" value="@dt.ToString("yyyy-MM-dd")" onchange="BetweenDate()" class="form-control" required />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-1">
+                            <label class="form-control border-0 text-center" style="font-weight:600;font-size:17px"> To </label>
+                        </div>
+
+                        <div class="form-group col-md-3">
+                            <div class="">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <span class="fas fa-calendar-alt"></span>
+                                        </span>
+                                    </div>
+                                    <input type="date" name="Ldate" id="Ldate" onchange="BetweenDate()" value="@dt.ToString("yyyy-MM-dd")" class="form-control" required />
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            <div class="">
+                                <input type="submit" id="BtnSubmit" value="Search" class="btn btn-info" />
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+                <form action="/Admin/SalesGstNGstbifercation" method="post">
+
+                    <div class="form-row desc" id="Cars3" style="display: none;">
+
+                        <div class="form-group col-md-3">
+                            <div class="">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-calendar-alt" style="font-size:24px;padding-left:1px;padding-right:5px"></i>
+                                        </span>
+                                    </div>
+                                    <input type="date" name="Fdate" id="Fdate" value="@dt.ToString("yyyy-MM-dd")" onchange="BetweenDate()" class="form-control" required />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-1">
+                            <label class="form-control border-0 text-center" style="font-weight:600;font-size:17px"> To </label>
+                        </div>
+
+                        <div class="form-group col-md-3">
+                            <div class="">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <span class="fas fa-calendar-alt"></span>
+                                        </span>
+                                    </div>
+                                    <input type="date" name="Ldate" id="Ldate" onchange="BetweenDate()" value="@dt.ToString("yyyy-MM-dd")" class="form-control" required />
+                                    >
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            <div class="">
+                                <input type="submit" id="BtnSubmit" value="Search" class="btn btn-info" />
+                            </div>
+                        </div>
+
+                    </div>
+
+                </form>
+            </fieldset>
+
+        </div>
+
+
+
+
+
+
+
+        <div style="width:50%;margin-top:50px;">
+            <button type="button" id="Btnhide" class="btn btn-info btn-md mr-2" onclick="window.print()"><i class="fas fa-print"></i> PDF</button>
+        </div>
+
+
+
+        @if (ViewBag.GSTBifercation != null)
+        {
+            if (ViewBag.GSTBifercation.Count != 0)
+            {
+
+                <h2 class="text-center">
+                    GST Bifercation Report
+                </h2>
+                <div class="print" id="printableArea">
+
+                    <div style="border:2px solid;padding:10px">
+
+                        <div style="margin-bottom:10px">
+                            <b>Total Purchase Amount:-  </b>  <b style="font-weight:600">@ViewBag.FinalPurchaseTotal</b>
+                        </div>
+
+                        <table class="ProductTbl" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        GST
+                                    </th>
+                                    <th>
+                                        0 %
+                                    </th>
+                                    <th>
+                                        5 %
+                                    </th>
+                                    <th>
+                                        12 %
+                                    </th>
+                                    <th>
+                                        18 %
+                                    </th>
+                                    <th>
+                                        28 %
+                                    </th>
+                                    <th>
+                                        Total
+                                    </th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+
+
+                                <tr>
+                                    <td style="font-weight:700">Total purchase</td>
+                                    <td style="font-weight:500">@ViewBag.Total0</td>
+                                    <td style="font-weight:500">@ViewBag.Total5</td>
+                                    <td style="font-weight:500">@ViewBag.Total12</td>
+                                    <td style="font-weight:500">@ViewBag.Total18</td>
+                                    <td style="font-weight:500">@ViewBag.Total28</td>
+                                    <td style="font-weight:500">@ViewBag.FinalPurchaseTotal</td>
+                                </tr>
+
+                                <tr>
+                                    <td style="font-weight:700">Total Gst Amt.</td>
+                                    <td style="font-weight:500">@ViewBag.GST_Total0</td>
+                                    <td style="font-weight:500">@ViewBag.GST_Total5</td>
+                                    <td style="font-weight:500">@ViewBag.GST_Total12</td>
+                                    <td style="font-weight:500">@ViewBag.GST_Total18</td>
+                                    <td style="font-weight:500">@ViewBag.GST_Total28</td>
+                                    <td style="font-weight:500">@ViewBag.FinalPurchaseGSTTotal</td>
+                                </tr>
+
+                                <tr>
+                                    <td style="font-weight:700">Final Total </td>
+
+                                    <td style="font-weight:500">@ViewBag.Final_Total0</td>
+                                    <td style="font-weight:500">@ViewBag.Final_Total5</td>
+                                    <td style="font-weight:500">@ViewBag.Final_Total12</td>
+                                    <td style="font-weight:500">@ViewBag.Final_Total18</td>
+                                    <td style="font-weight:500">@ViewBag.Final_Total28</td>
+
+
+                                    <td style="font-weight:500">@ViewBag.FinalTotal</td>
+
+                                </tr>
+
+
+                            </tbody>
+                        </table>
+                        <br />
+                    </div>
+
+                </div>
+                <br />
+                <hr style="border: 2px solid;" />
+                <br />
+            }
+            else
+            {
+                <h4 class="text-center text-danger" style="border:1px solid #ddd;font-weight:600;margin-top:15px">Data is Not Available ...</h4>
+            }
+        }
+
+    </div>
+
+    @*<script>
+        $(document).ready(function() {
+        var PrintValue = "@ViewBag.Printf";
+
+        if (PrintValue == "print")
+        {
+        window.print();
+        }
+
+
+        })
+        </script>*@
+
+
+
+
+    <style type="text/css">
+        @@media print {
+
+            #Btnhide, #fieldsets {
+                display: none;
+            }
+        }
+
+        table, td, th {
+            border: 1px solid;
+        }
+
+        table {
+            width: 100%;
+        }
+    </style>
+
+    <style>
+        fieldset {
+            border: 1px solid #ddd;
+            border-left: 1px solid #ddd;
+            padding: 6px;
+            margin-bottom: 5px;
+            width: 100%;
+        }
+
+        legend {
+            width: auto;
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        #main:hover .box {
+            border-color: #1b76c4;
+        }
+    </style>
+
+
+</body>
+</html>

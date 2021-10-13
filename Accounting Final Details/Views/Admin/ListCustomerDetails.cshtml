@@ -1,0 +1,582 @@
+﻿@*@model IEnumerable<Accounting_Final_Details.Models.CustomerDetails>*@
+@model Accounting_Final_Details.Models.CustomerDetails
+
+@{
+    ViewBag.Title = "ListCustomerDetails";
+  //  Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+
+    if (Session["Role"] != null)
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    }
+}
+
+<main>
+    <div class="container-fluid">
+        <h2 class="mt-4">Customer / Supplier !</h2>
+        @*<ol class="breadcrumb mb-4">
+            <li class="breadcrumb-item"><a href="index">Dashboard</a></li>
+
+        </ol>*@
+
+        <hr />
+        <section class="section alert-section">
+            <div class="alert alert-info" style="background:#29d2e4;">
+                <div class="alert-container">
+
+                    <i class="fa fa-info-circle"></i>
+                    <b class="alert-info" style="background:#29d2e4">Info alert:</b> You've got some friends nearby, stop looking at your phone and find them...
+                </div>
+            </div>
+        </section>
+
+
+
+
+
+
+        @*<div class="card mb-4">
+            <div class="card-body">DataTables is a third party plugin that is used to generate the demo table below. For more information about DataTables, please visit the <a target="_blank" href="https://datatables.net/">official DataTables documentation</a>.</div>
+        </div>*@
+        @*<div class="container text-right" style="margin-bottom:10px;">
+        </div>*@
+
+        <div class="form-row">
+            <div class="col">
+                <div class="alert alert-success" id="success-alert" style="display:none" role="alert">
+                    <i class="far fa-check-circle"></i> @TempData["SaveRegMsg"] @TempData["UpdatRegMsg"]
+                </div>
+            </div>
+
+            <div class="col text-right" style="padding-top:10px;padding-bottom:10px">
+                <button type="button" onclick="Create()" class="btn btn-info"><i class="fa fa-plus"></i> Add</button>
+            </div>
+
+        </div>
+
+        <script>
+            $(document).ready(function () {
+
+                var SaveMsg = "@TempData["SaveRegMsg"]";
+
+                var UpdateMsg = "@TempData["UpdatRegMsg"]";
+
+
+                if (SaveMsg != "") {
+                    $("#success-alert").fadeTo(2000, 500).slideUp(500, function () {
+                        $("#success-alert").slideUp(500);
+                    });
+                }
+
+                if (UpdateMsg != "") {
+                    $("#success-alert").fadeTo(2000, 500).slideUp(500, function () {
+                        $("#success-alert").slideUp(500);
+                    });
+                }
+
+            });
+        </script>
+
+
+
+
+
+        <div class="card mb-4">
+            <div class="card-header"><i class="fas fa-table mr-1"></i>Customer / Supplier</div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+
+
+                                <th>
+                                    @Html.DisplayNameFor(model => model.CustID)
+                                </th>
+                                <th style="padding-right:150px">
+                                    @Html.DisplayNameFor(model => model.CustName)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.CustContact)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.CustEmail)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.CustAddress)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.CustPinCode)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.CustState)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.CustDistrict)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.CustFssaiNumber)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.CustGstNumber)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.CustStatus)
+                                </th>
+
+                                <th>
+                                    Actions
+                                </th>
+
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+
+                                <th>
+                                    @Html.DisplayNameFor(model => model.CustID)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.CustName)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.CustContact)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.CustEmail)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.CustAddress)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.CustPinCode)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.CustState)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.CustDistrict)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.CustFssaiNumber)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.CustGstNumber)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.CustStatus)
+                                </th>
+
+                                <th>
+                                    Actions
+                                </th>
+                            </tr>
+                        </tfoot>
+                        <tbody>
+
+
+                            @foreach (var item in ViewBag.ListCustDtl)
+                            {
+                                <tr>
+                                    <td>
+                                        @item.CustDtl.CustID
+                                    </td>
+                                    <td>
+                                        @item.CustDtl.CustName
+                                    </td>
+                                    <td>
+                                        @item.CustDtl.CustContact
+                                    </td>
+                                    <td>
+                                        @item.CustDtl.CustEmail
+                                    </td>
+                                    <td>
+                                        @item.CustDtl.CustAddress
+                                    </td>
+                                    <td>
+                                        @item.CustDtl.CustPinCode
+                                    </td>
+                                    <td>
+                                        @item.state.SName
+                                    </td>
+                                    <td>
+                                        @item.district.DistName
+                                    </td>
+                                    <td>
+                                        @item.CustDtl.CustFssaiNumber
+                                    </td>
+                                    <td>
+                                        @item.CustDtl.CustGstNumber
+                                    </td>
+                                    <td>
+
+
+                                        <div class="image-container">
+                                            <a href="/Admin/ActiveStatusCustomerSupplier/@item.CustDtl.CustID" class="status-tag" style="padding:0px;padding-left:1px;padding-right:1px;display:inline-block; border-radius:4px; color:#fff;width:70px;text-align:center; text-decoration:none">@item.ActStats.ActStsName</a>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <a class="text-info" href="#" onclick="Edit(@item.CustDtl.CustID)"> <i class="fa fa-edit" style="font-size:23px"></i></a> &nbsp;
+
+                                        <a class="text-danger" href="/Admin/DeletCustomerSupplier/@item.CustDtl.CustID" onclick="return confirm('Are you sure?')"><i class="fas fa-trash-alt" style="font-size:23px"></i></a>
+
+                                    </td>
+                                </tr>
+                            }
+
+
+
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+
+
+
+
+
+
+@*Model Of Insert Update Delete*@
+
+<div class="modal fade bd-example-modal-lg" id="ShowModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="Create" style="display:none;">Add Customer / Supplier</h4>
+                <h4 class="Edit" style="display:none;">Edit Customer / Supplier </h4>
+
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+
+
+
+            </div>
+            <div class="modal-body">
+             
+
+@using (Html.BeginForm())
+{
+
+    @Html.HiddenFor(m => m.CustID, new { @class = "form-control CustID", @name = "CustID", })
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+
+                            <div class="">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <span class="fa fa-user"></span>
+                                        </span>
+                                    </div>
+                                    @Html.EditorFor(model => model.CustName, new { htmlAttributes = new { @class = "form-control CustName", placeholder = "Full Name" } })
+
+
+                                </div>
+                                @Html.ValidationMessageFor(model => model.CustName, "", new { @class = "text-danger" })
+
+
+                            </div>
+
+
+                        </div>
+                        <div class="form-group col-md-6">
+
+
+
+                            <div class="">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-phone"></i>
+                                        </span>
+                                    </div>
+                                    @Html.EditorFor(model => model.CustContact, new { htmlAttributes = new { @class = "form-control CustContact", placeholder = "Contact Number" } })
+                                    @*<input class="form-control" type="date" name="PurchaseDate" required />*@
+                                </div>
+                                @Html.ValidationMessageFor(model => model.CustContact, "", new { @class = "text-danger" })
+
+                            </div>
+
+
+                        </div>
+                    </div>
+
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+
+
+                            <div class="">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-paper-plane"></i>
+                                        </span>
+                                    </div>
+                                    @Html.EditorFor(model => model.CustEmail, new { htmlAttributes = new { @class = "form-control CustEmail", placeholder = "Email Address" } })
+                                </div>
+                                @Html.ValidationMessageFor(model => model.CustEmail, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+          
+                        <div class="form-group col-md-6">
+
+
+                            <div class="">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-address-card"></i>
+
+                                        </span>
+                                    </div>
+                                    @Html.EditorFor(model => model.CustAddress, new { htmlAttributes = new { @class = "form-control CustAddress", placeholder = "Address" } })
+                                </div>
+                                @Html.ValidationMessageFor(model => model.CustAddress, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+
+                            <div class="">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-map-marker-alt"></i>
+
+                                        </span>
+                                    </div>
+                                    @Html.EditorFor(model => model.CustPinCode, new { htmlAttributes = new { @class = "form-control CustPinCode", placeholder = "Pin Code Number" } })
+                                </div>
+                                @Html.ValidationMessageFor(model => model.CustPinCode, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <div class="">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-flag" style="font-size:24px;padding-left:1px;padding-right:5px"></i>
+                                        </span>
+                                    </div>
+                               
+                                    @Html.DropDownListFor(model => model.CustState, ViewBag.StateList as SelectList, "Select State", new { @class = "form-control CustState" })
+
+                                    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+
+                                    <script>
+                                $(document).ready(function () {
+                               
+                                    DistrictShow();
+
+                                    $("#CustState").change(function () {
+                                        var StateId = $(this).val();
+                                        debugger
+                                        $.ajax({
+                                            type: "post",
+                                            url: "/Admin/Dist?Sid=" + StateId,
+                                            contentType: "html",
+                                            success: function (response) {
+                                                debugger
+                                                $("#CustDistrict").empty();
+                                                $("#CustDistrict").append(response);
+                                            },
+                                            error: function (ts) { alert(ts.responseText) }
+                                        })
+                                    })
+
+                                })
+
+                                function DistrictShow()
+                                {
+
+                                    $.ajax({
+                                        type: "post",
+                                        url: "/Admin/DistUpdate",
+                                        contentType: "html",
+                                        success: function (response) {
+                                            debugger
+                                            $("#CustDistrict").empty();
+                                            $("#CustDistrict").append(response);
+                                        },
+                                        error: function (ts) { alert(ts.responseText) }
+                                    })
+                            
+
+
+                                }
+
+
+                              </script>
+
+                               </div>
+                                @Html.ValidationMessageFor(model => model.CustState, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <div class="">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-flag-checkered" style="font-size:24px;padding-left:1px;padding-right:5px"></i>
+                                        </span>
+                                    </div>
+                                   @Html.DropDownListFor(m => m.CustDistrict,  new SelectList(""), "select District", new { @class = "form-control CustDistrict" })
+                                </div>
+                                @Html.ValidationMessageFor(model => model.CustDistrict, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+           
+                    <div class="form-group col-md-6">
+                            <div class="">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-hamburger"></i>
+
+                                        </span>
+                                    </div>
+                                    @Html.EditorFor(model => model.CustFssaiNumber, new { htmlAttributes = new { @class = "form-control CustFssaiNumber", placeholder = "FSSAI Number" } })
+                                </div>
+                                @Html.ValidationMessageFor(model => model.CustFssaiNumber, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <div class="">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-money-check-alt"></i>
+                                        </span>
+                                    </div>
+                                    @Html.EditorFor(model => model.CustGstNumber, new { htmlAttributes = new { @class = "form-control CustGstNumber", placeholder = "GST Number" } })
+                                </div>
+                                @Html.ValidationMessageFor(model => model.CustGstNumber, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                   
+                       <div class="form-group col-md-6">
+
+
+                            <div class="Edit">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-sync"></i>
+                                        </span>
+                                    </div>
+                                    @Html.DropDownListFor(model => model.CustStatus, ViewBag.ActStatusList as SelectList, "Select Status", new { @class = "form-control CustStatus" })
+                                </div>
+                                @Html.ValidationMessageFor(model => model.CustStatus, "", new { @class = "text-danger" })
+                            </div>
+                      
+                         </div>
+                    </div>
+
+
+
+                    <div class="form-group">
+                        <button class="btn btn-info form-control Create" type="submit" formaction="/Admin/AddCustomerSupplierList" style="display:none;"><i class="glyphicon glyphicon-registration-mark"></i> Submit</button>
+                        <button class="btn btn-info form-control Edit" type="submit" onclick="Edit();" formaction="/Admin/EditCustomerSupplierList" style="display:none;"><i class="glyphicon glyphicon-registration-mark"></i> Update</button>
+                    </div>
+
+}
+
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@*End of the modal*@
+
+
+
+<script>
+    function Create() {
+        $("#ShowModal").modal();
+        $(".Edit").hide();
+        $(".Create").show();
+
+
+          $('.CustID').val("");
+        $('.CustName').val("");
+     $('.CustContact').val("");
+       $('.CustEmail').val("");
+     $('.CustAddress').val("");
+     $('.CustPinCode').val("");
+       $('.CustState').val("");
+    $('.CustDistrict').val("");
+ $('.CustFssaiNumber').val("");
+   $('.CustGstNumber').val("");
+   $('.CustStatus').val("");
+    }
+ 
+
+    function Edit(ID) {
+
+        $("#ShowModal").modal();
+        $(".Create").hide();
+        $(".Edit").show();
+    
+        $.ajax({
+
+            url: "/Admin/FetchCustomerSupplierDetails/" + ID,
+
+            typr: "GET",
+
+            contentType: "application/json;charset=UTF-8",
+
+            dataType: "json",
+
+            success: function (result) {
+           
+                $('.CustID').val(result.CustID);
+                $('.CustName').val(result.CustName);
+                $('.CustContact').val(result.CustContact);
+                $('.CustEmail').val(result.CustEmail);
+                $('.CustAddress').val(result.CustAddress);
+                $('.CustPinCode').val(result.CustPinCode);
+                $('.CustState').val(result.CustState);
+                $('.CustDistrict').val(result.CustDistrict);
+                $('.CustFssaiNumber').val(result.CustFssaiNumber);
+                $('.CustGstNumber').val(result.CustGstNumber);
+                $('.CustStatus').val(result.CustStatus);
+               
+
+            },
+
+
+        });
+
+        return false;
+
+    }
+
+
+
+
+
+</script>

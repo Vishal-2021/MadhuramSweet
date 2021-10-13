@@ -1,0 +1,424 @@
+﻿
+@{
+    ViewBag.Title = "ListSaleWiGst_Report";
+    //  Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = null;
+
+}
+
+@{
+    ViewBag.Title = "ListSaleBillWithoutGst";
+    // Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    if (Session["Role"] != null)
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    }
+
+}
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/js/all.min.js" crossorigin="anonymous"></script>
+
+</head>
+<body>
+
+    <style>
+        table, td, th {
+            border: 1px solid black;
+        }
+
+        table {
+            border-collapse: collapse;
+        }
+    </style>
+
+
+
+    <div style="width:50%;margin-top:10px;margin-bottom:20px">
+                <button type="button" id="Btnhide" class="btn btn-info btn-md mr-2" onclick="window.print()"><i class="fas fa-print"></i> PDF</button>
+    </div>
+ 
+
+    <div class="print" id="printableArea">
+        <div class="container"  style="border:1px solid;">
+
+            <div class="row">
+                <div class="col-md-3" style="margin:8px">
+                    <img height="100" width="150" alt="@ViewBag.ListOrgDtl.OrganizationDetails.OrgImage" src="data:image/jpg;base64,@Convert.ToBase64String(ViewBag.ListOrgDtl.OrganizationDetails.OrgImage)" />
+                </div>
+                <div class="col-md-4 offset-md-5"></div>
+            </div>
+
+            <br /> 
+            <div class="row" style="padding:5px">
+                <div class="col-sm" style="border:1px solid">
+                   <b>Orgnization Name : </b> <b style="font-weight:600">@ViewBag.ListOrgDtl.OrganizationDetails.OrgName</b><br />
+
+                    <b>Contact : </b> <b style="font-weight:600">+91 @ViewBag.ListOrgDtl.OrganizationDetails.OrgContact</b><br />
+                    <b>Email-ID : </b> <b style="font-weight:600">@ViewBag.ListOrgDtl.OrganizationDetails.OrgEmailID</b><br />
+                    <b>Address : </b> <b style="font-weight:600">@ViewBag.ListOrgDtl.state.SName , @ViewBag.ListOrgDtl.OrganizationDetails.OrgAddress, pincode - @ViewBag.ListOrgDtl.OrganizationDetails.OrgPinCode </b><br />
+                    
+                    <b>Fssai No : </b> <b style="font-weight:600">@ViewBag.ListOrgDtl.OrganizationDetails.OrgFssaiNumber</b><br />
+                    <b>Gst No : </b> <b style="font-weight:600">@ViewBag.ListOrgDtl.OrganizationDetails.OrgGstNumber</b><br />
+              
+                </div>
+
+                <div class="col-sm" style="border:1px solid">
+                  
+                    <b>Customer Name : </b> <b style="font-weight:600">@ViewBag.ListCustDtl.CustDtl.CustName</b><br />
+
+                    <b>Contact : </b> <b style="font-weight:600">+91 @ViewBag.ListCustDtl.CustDtl.CustContact</b><br />
+                    <b>Email-ID : </b> <b style="font-weight:600">@ViewBag.ListCustDtl.CustDtl.CustEmail</b><br />
+                    <b>Address : </b> <b style="font-weight:600">@ViewBag.ListCustDtl.state.SName, @ViewBag.ListCustDtl.district.DistName, @ViewBag.ListCustDtl.CustDtl.CustAddress, pincode - @ViewBag.ListCustDtl.CustDtl.CustPinCode</b><br />
+
+                    <b>Fssai No : </b> <b style="font-weight:600">@ViewBag.ListCustDtl.CustDtl.CustFssaiNumber </b><br />
+                    <b>Gst No : </b> <b style="font-weight:600">@ViewBag.ListCustDtl.CustDtl.CustGstNumber </b><br />
+           
+                
+                 </div>
+                <div class="col-sm" style="border:1px solid">
+                  <br />
+                   
+                    <b>Bill No : </b> <b style="font-weight:600;color:red"> @ViewBag.ListCustDtl.SalesBillWithoutGstDtl.SalBilWiGSTBillNo    </b><br /><br />
+
+                    <b>Date : </b> <b style="font-weight:600"> @Convert.ToDateTime(ViewBag.ListCustDtl.SalesBillWithoutGstDtl.SalBilWiGSTDate).ToString("dd-MM-yyyy") </b><br /><br />
+                    <b>Status : </b> <b style="font-weight:600"> @ViewBag.ListCustDtl.PaymentStatus.PayStName </b><br />
+              
+                  </div>
+            </div>
+            <br />
+
+            <div class="row">
+
+
+
+                <table style="width:100%;margin-top:15px">
+                    <thead>
+                        <tr>
+                            <th>
+                                ID
+                            </th>
+                            <th>
+                                Product Name
+                            </th>
+
+                            @if (ViewBag.ProductCount != 0)
+                            {
+                                <th>
+                                    HSN Code
+                                </th>
+                            }
+                            
+                            <th>
+                                Product Rate (Rs)
+                            </th>
+                            @*<th>
+                                Disc. (%)
+                            </th>*@
+                                 
+                             <th>
+                                Qty.
+                            </th>
+
+                            <th>
+                                Product Gst (%)
+                            </th>
+
+                            <th>
+                                Product Total (Rs)
+                            </th>
+
+
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @{
+                        int srno = 0;
+                        }
+                        @foreach (var item in ViewBag.ProductsDtl)
+                    {
+
+
+
+                            <tr>
+                                <td>
+                                    @{
+
+
+                                   srno ++;
+                                    }
+
+                                    @srno
+                                </td>
+                                <td>
+                                    @item.ProductDetails.ProductName
+                                </td>
+                              @if (ViewBag.ProductCount != 0)
+                              {
+                                <td>
+                                    @item.ProductDetails.HSM_Code
+                                </td>
+                              }
+                                <td>
+                                    @item.SalesBillWithoutGstDtl.SalBilWiGSTProductRate
+                                </td>
+                                @*<td>
+                                    0.00
+                                </td>*@
+                                <td>
+                                    @item.SalesBillWithoutGstDtl.SalBilWiGSTQuantity
+                                </td>
+                                <td>
+                                    @item.ProductGST.ProdGst
+                                </td>
+
+
+                                <td>
+                                    @item.SalesBillWithoutGstDtl.SalBilWiGSTTotal
+                                </td>
+                            </tr>
+
+                    }
+
+
+                    </tbody>
+                </table>
+            </div>
+            <br />
+
+            <div style="width:100%;">
+                <div style="float:left;">
+                    <b> Note : </b>   <br />
+                    @*<div style="border:1px solid;width:auto">
+                        <b style="font-weight:600">NA
+           
+                        
+                        </b>
+                  </div>*@
+                     
+                    <div style="width: 450px;border:1px solid;padding:5px;font-weight:600">
+                   
+
+                    @ViewBag.ListCustDtl.SalesBillWithoutGstDtl_ChargesDisc.SalBiWiGst_Note
+                    </div>
+   
+                    
+                    
+                    
+                    
+                    
+                    
+                                               
+                </div>
+
+                <div style="float:right;">
+                    <div style="border:1px solid; padding: 10px 50px 10px 10px;">
+                        <b> Grand Total (Rs) : </b>   <b style="font-weight:600">@ViewBag.ListCustDtl.SalesBillWithoutGstDtl_Report.SalBiWiGst_Rpt_GrandTotal</b> <br />
+
+                        <b>Discount (%) : </b> <b style="font-weight:600;">@ViewBag.ListCustDtl.SalesBillWithoutGstDtl_ChargesDisc.SalBiWiGst_DiscountPer</b> <br />
+                        <b>Discount (Rs) : </b> <b style="font-weight:600;">@ViewBag.ListCustDtl.SalesBillWithoutGstDtl_ChargesDisc.SalBiWiGst_DiscountRs</b> <br />
+                        <b>Extra-Charges (Rs) : </b> <b style="font-weight:600;">@ViewBag.ListCustDtl.SalesBillWithoutGstDtl_ChargesDisc.SalBiWiGst_ChargesAmt</b> <br />
+
+                        <b>Final Total (Rs) : </b>   <b style="font-weight:600" id="Ftotal">@ViewBag.ListCustDtl.SalesBillWithoutGstDtl_Report.SalBiWiGst_Rpt_FinalTotal</b>
+
+                    </div>
+                                                      
+                </div>
+            </div>
+          
+
+
+
+            <br style="clear:both" />
+
+            <div style="width:100%">
+             
+                <div style="width: 450px;border:1px solid;padding:5px;">
+                    <b>Final Total in world : </b> <br />
+                    <b style="font-weight:600;padding-left:15px"> <b style="font-weight:600" id="FtotalWord"></b> Only.</b> 
+                </div>
+                <br />
+                <div style="width: 450px;border:1px solid;padding:5px;">
+                    <b>Terms & Conditions :</b> <br />
+                    
+                    <ol type="1">
+                        @foreach (var item in ViewBag.TermsNConditon)
+                        {
+                            <li style="font-weight:600">@item.TermsCondition.TurCon</li>
+                        }
+                   
+                    </ol> 
+                  
+                
+                </div>
+
+            </div>
+
+            <br />
+
+            <div style="width:100%;">
+                <div style="float:left;">
+                  
+
+                </div>
+
+                <div style="float:right;">
+     
+                    <div class="col-md-3" style="margin:5px">
+                        <img height="80" width="170" alt="@ViewBag.ListOrgDtl.OrganizationDetails.OrgDegitalSignature" src="data:image/jpg;base64,@Convert.ToBase64String(ViewBag.ListOrgDtl.OrganizationDetails.OrgDegitalSignature)" />
+                    </div>
+                    <b>(Innover Technologies)</b>
+                </div>
+            </div>
+
+            <br style="clear:both" />
+        <br />
+
+        </div>
+
+     </div>
+
+
+
+
+
+    <style type="text/css">
+        @@media print {
+
+            #Btnhide {
+                display: none;
+            }
+        }
+
+ 
+    </style>
+
+    <script>
+        $(document).ready(function () {
+            //  window.print();
+
+            var Ftotl = $("#Ftotal").text();
+          
+            var Words = convertNumberToWords(Ftotl);
+ 
+
+            $("#FtotalWord").html(Words);
+
+        })
+
+
+        function convertNumberToWords(amount) {
+            var words = new Array();
+            words[0] = '';
+            words[1] = 'One';
+            words[2] = 'Two';
+            words[3] = 'Three';
+            words[4] = 'Four';
+            words[5] = 'Five';
+            words[6] = 'Six';
+            words[7] = 'Seven';
+            words[8] = 'Eight';
+            words[9] = 'Nine';
+            words[10] = 'Ten';
+            words[11] = 'Eleven';
+            words[12] = 'Twelve';
+            words[13] = 'Thirteen';
+            words[14] = 'Fourteen';
+            words[15] = 'Fifteen';
+            words[16] = 'Sixteen';
+            words[17] = 'Seventeen';
+            words[18] = 'Eighteen';
+            words[19] = 'Nineteen';
+            words[20] = 'Twenty';
+            words[30] = 'Thirty';
+            words[40] = 'Forty';
+            words[50] = 'Fifty';
+            words[60] = 'Sixty';
+            words[70] = 'Seventy';
+            words[80] = 'Eighty';
+            words[90] = 'Ninety';
+            amount = amount.toString();
+            var atemp = amount.split(".");
+            var number = atemp[0].split(",").join("");
+            var n_length = number.length;
+            var words_string = "";
+            if (n_length <= 9) {
+                var n_array = new Array(0, 0, 0, 0, 0, 0, 0, 0, 0);
+                var received_n_array = new Array();
+                for (var i = 0; i < n_length; i++) {
+                    received_n_array[i] = number.substr(i, 1);
+                }
+                for (var i = 9 - n_length, j = 0; i < 9; i++, j++) {
+                    n_array[i] = received_n_array[j];
+                }
+                for (var i = 0, j = 1; i < 9; i++, j++) {
+                    if (i == 0 || i == 2 || i == 4 || i == 7) {
+                        if (n_array[i] == 1) {
+                            n_array[j] = 10 + parseInt(n_array[j]);
+                            n_array[i] = 0;
+                        }
+                    }
+                }
+                value = "";
+                for (var i = 0; i < 9; i++) {
+                    if (i == 0 || i == 2 || i == 4 || i == 7) {
+                        value = n_array[i] * 10;
+                    } else {
+                        value = n_array[i];
+                    }
+                    if (value != 0) {
+                        words_string += words[value] + " ";
+                    }
+                    if ((i == 1 && value != 0) || (i == 0 && value != 0 && n_array[i + 1] == 0)) {
+                        words_string += "Crores ";
+                    }
+                    if ((i == 3 && value != 0) || (i == 2 && value != 0 && n_array[i + 1] == 0)) {
+                        words_string += "Lakhs ";
+                    }
+                    if ((i == 5 && value != 0) || (i == 4 && value != 0 && n_array[i + 1] == 0)) {
+                        words_string += "Thousand ";
+                    }
+                    if (i == 6 && value != 0 && (n_array[i + 1] != 0 && n_array[i + 2] != 0)) {
+                        words_string += "Hundred and ";
+                    } else if (i == 6 && value != 0) {
+                        words_string += "Hundred ";
+                    }
+                }
+                words_string = words_string.split("  ").join(" ");
+            }
+            return words_string;
+        }
+
+
+
+
+
+
+
+
+    </script>
+
+
+</body>
+</html>
+
+
+
+

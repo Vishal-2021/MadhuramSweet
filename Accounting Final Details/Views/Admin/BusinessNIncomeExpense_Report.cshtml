@@ -1,0 +1,457 @@
+﻿
+@{
+    ViewBag.Title = "BusinessNIncomeExpense_Report";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+
+
+@{
+
+
+    if (Session["Role"] != null)
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    }
+}
+
+<style>
+    table, td, th {
+        border: 1px solid black;
+    }
+
+    table {
+        border-collapse: collapse;
+    }
+</style>
+
+
+
+
+
+<div id="fieldsets">
+
+    <fieldset class="box">
+        <legend class="box">Business Report !</legend>
+
+
+        <form action="/Admin/BusinessNIncomeExpense_Report" method="post">
+
+            <div class="form-row">
+
+
+                <div class="form-group col-md-3">
+                    <div class="">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <i class="fas fa-calendar-alt" style="font-size:24px;padding-left:1px;padding-right:5px"></i>
+                                </span>
+                            </div>
+
+                            @{
+                                DateTime dt = DateTime.Now;
+                            }
+
+                            <input type="date" name="Fdate" id="Fdate" value="@dt.ToString("yyyy-MM-dd")" onchange="BetweenDate()" class="form-control" required />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-1">
+                    <label class="form-control border-0 text-center" style="font-weight:600;font-size:17px"> To </label>
+                </div>
+
+                <div class="form-group col-md-3">
+                    <div class="">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <span class="fas fa-calendar-alt"></span>
+                                </span>
+                            </div>
+                            <input type="date" name="Ldate" id="Ldate" onchange="BetweenDate()" value="@dt.ToString("yyyy-MM-dd")" class="form-control" required />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-2">
+                    <div class="">
+                        <input type="submit" id="BtnSubmit" value="Search" class="btn btn-info" />
+                    </div>
+                </div>
+            </div>
+
+        </form>
+
+
+
+    </fieldset>
+
+</div>
+
+
+
+
+<div style="width:50%;margin-top:30px;">
+    <button type="button" id="Btnhide" class="btn btn-info btn-md mr-2" onclick="window.print()"><i class="fas fa-print"></i> PDF</button>
+</div>
+
+<br />
+
+
+<div class="print" id="printableArea">
+
+    @if (ViewBag.NormalIncome != null && ViewBag.NormalExpense != null)
+    {
+
+        if (ViewBag.NormalExpense.Count != 0 && ViewBag.NormalIncome.Count != 0 && ViewBag.DailyBusiness.Count != 0)
+        {
+
+
+            <div style="border:2px solid;padding:10px">
+
+                @{
+                    decimal Total_Income = 0;
+                    decimal Total_Expense = 0;
+                }
+
+                <div class="row" style="margin-bottom:5px">
+                    <div class="col-md-1" style="margin:8px">
+                        <img height="50" width="100" alt="@ViewBag.ListOrgDtl.OrganizationDetails.OrgImage" src="data:image/jpg;base64,@Convert.ToBase64String(ViewBag.ListOrgDtl.OrganizationDetails.OrgImage)" />
+                    </div>
+                    <div class="col-md-10" style="margin:8px;padding-left:30px">
+                        <h2>@ViewBag.ListOrgDtl.OrganizationDetails.OrgName</h2>
+                    </div>
+                </div>
+
+
+                <h4> Daily Business Report <b style="float:right;font-size:16px">Date : <b style="font-weight:600"> @Convert.ToDateTime(ViewBag.Fdate).ToString("dd-MM-yyyy") </b>  To <b style="font-weight:600"> @Convert.ToDateTime(ViewBag.Ldate).ToString("dd-MM-yyyy") </b> </b> </h4>
+
+                <hr style="border:1px solid;margin:2px" />
+
+
+                <h4 class="text-center">Income List</h4>
+
+                <table class="text-center" id="" width="100%">
+                    <thead>
+                        <tr>
+                            @*<td>
+                                    <b>ID</b>
+                                </td>*@
+                            <th>
+                                Name
+                            </th>
+                            <th>
+                                Category
+                            </th>
+
+                            <th>
+                                Note
+                            </th>
+
+                            <th>
+                                Date
+                            </th>
+                            <th>
+                                Amount (Rs)
+                            </th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var item in ViewBag.NormalIncome)
+                        {
+                            <tr>
+                                @*<td>
+                                        @item.NormalIncomeExpense.NIE_ID
+                                    </td>*@
+                                <td>
+                                    @item.NormalIncomeExpense.NIE_Name
+                                </td>
+                                <td>
+                                    @item.NormalIncomeExpense.NIE_Category
+                                </td>
+                                <td>
+                                    @item.NormalIncomeExpense.NIE_Note
+                                </td>
+
+                                <td>
+                                    @Convert.ToDateTime(item.NormalIncomeExpense.NIE_Date).ToString("dd-MM-yyyy")
+                                </td>
+
+                                <td>
+                                    @item.NormalIncomeExpense.NIE_Amt
+                                    @{
+                                        Total_Income += item.NormalIncomeExpense.NIE_Amt;
+                                    }
+
+                                </td>
+                            </tr>
+                        }
+
+                        <tr>
+                            <td colspan="4"><b>Total Income Amount (Rs)  </b></td>
+                            <td><b style="font-weight:600"> @Total_Income</b></td>
+                        </tr>
+
+
+                    </tbody>
+                </table>
+
+                @*<div style="margin-top:10px">
+
+                    </div>*@
+                <br />
+
+                <h4 class="text-center">Expense List</h4>
+
+                <table class="text-center" id="" width="100%">
+                    <thead>
+                        <tr>
+                            @*<td>
+                                    <b>ID</b>
+                                </td>*@
+                            <th>
+                                Name
+                            </th>
+                            <th>
+                                Category
+                            </th>
+                            <th>
+                                Note
+                            </th>
+
+                            <th>
+                                Date
+                            </th>
+                            <th>
+                                Amount (Rs)
+                            </th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var item in ViewBag.NormalExpense)
+                        {
+                            <tr>
+                                @*<td>
+                                        @item.NormalIncomeExpense.NIE_ID
+                                    </td>*@
+                                <td>
+                                    @item.NormalIncomeExpense.NIE_Name
+                                </td>
+                                <td>
+                                    @item.NormalIncomeExpense.NIE_Category
+                                </td>
+                                <td>
+                                    @item.NormalIncomeExpense.NIE_Note
+                                </td>
+                                <td>
+                                    @Convert.ToDateTime(item.NormalIncomeExpense.NIE_Date).ToString("dd-MM-yyyy")
+                                </td>
+                                <td>
+                                    @item.NormalIncomeExpense.NIE_Amt
+                                    @{
+                                        Total_Expense += item.NormalIncomeExpense.NIE_Amt;
+                                    }
+                                </td>
+
+                            </tr>
+                        }
+
+                        <tr>
+                            <td colspan="4"><b>Total Expense Amount (Rs) </b></td>
+                            <td><b style="font-weight:600"> @Total_Expense</b></td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
+                @*<div style="margin-top:10px">
+                        <b>  </b>  <b style="font-weight:600"> </b>
+                    </div>*@
+                <br />
+
+                <br />
+                <h4 class="text-center">Other Data</h4>
+
+
+
+                <table class="text-center" id="" width="100%">
+                    <thead>
+                        <tr>
+                            <th>
+                                Cash (Rs)
+                            </th>
+                            <td>
+                                @ViewBag.Cash
+                            </td>
+                            <th>
+                                GPay (Rs)
+                            </th>
+                            <td>
+                                @ViewBag.Gpay
+                            </td>
+                            <th>
+                                Swiggy (Rs)
+                            </th>
+
+                            <td>
+                                @ViewBag.Swiggy
+                            </td>
+
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr>
+                            <th>
+                                Card (Rs)
+                            </th>
+                            <td>
+                                @ViewBag.Card
+                            </td>
+                            <th>
+                                Paytm (Rs)
+                            </th>
+                            <td>
+                                @ViewBag.Paytm
+                            </td>
+                            <th>
+                                Zomato (Rs)
+                            </th>
+                            <td>
+                                @ViewBag.Zomato
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="6" style="left:0">
+                                <b>Total Amount (Rs) : </b>  <b style="font-weight:600">@ViewBag.FinalTotal</b>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                @*<div style="margin-top:10px">
+
+                    </div>*@
+
+                <div style="margin-top:10px;border:1px solid;padding:10px">
+                    <h5>
+                        <b>Total Daily Business (Rs) :   </b>  <b style="font-weight:600">
+                            &nbsp; &#8377
+
+
+
+                            @{
+                                decimal FTotl = Total_Expense + Convert.ToDecimal(ViewBag.FinalTotal) - Total_Income;
+                            }
+                            @FTotl
+                        </b>
+                    </h5>
+                </div>
+
+
+
+
+            </div>
+        }
+        else
+        {
+            <h4 class="text-center text-danger" style="border:1px solid #ddd;font-weight:600;margin-top:15px">Data is Not Available</h4>
+        }
+    }
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+    @@media print {
+
+        #Btnhide, #fieldsets {
+            display: none;
+        }
+    }
+
+    table, td, th {
+        border: 1px solid;
+    }
+
+    table {
+        width: 100%;
+    }
+</style>
+
+<style>
+    fieldset {
+        border: 1px solid #ddd;
+        border-left: 1px solid #ddd;
+        padding: 6px;
+        margin-bottom: 5px;
+        width: 100%;
+    }
+
+    legend {
+        width: auto;
+        font-size: 15px;
+        font-weight: 500;
+    }
+
+    #main:hover .box {
+        border-color: #1b76c4;
+    }
+</style>

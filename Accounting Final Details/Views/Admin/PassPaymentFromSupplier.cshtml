@@ -1,0 +1,290 @@
+﻿@model Accounting_Final_Details.Models.PaymentFromSupplier
+
+@{ 
+    // Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    if (Session["Role"] != null)
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    }
+}
+
+<h4 style="padding:5px">Payment Supplier/Customer !</h4>
+
+
+@using (Html.BeginForm()) 
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal border p-2">
+       
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    
+        @Html.HiddenFor(m => m.PFSID, new { @class = "form-control RID", @name = "PFSID", })
+
+
+
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <div class="">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <span class="fa fa-user"></span>
+                            </span>
+                        </div>
+
+                        @Html.DropDownListFor(model => model.PFSName, ViewBag.SuppCustList as SelectList, "Select Customer/Supplier Name", new { @class = "form-control" })
+
+                    </div>
+                    @Html.ValidationMessageFor(model => model.PFSName, "", new { @class = "text-danger" })
+
+
+                </div>
+            </div>
+            <div class="form-group col-md-6">
+                <div class="">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <i class="fas fa-money-bill"></i>
+                            </span>
+                        </div>
+                        @Html.EditorFor(model => model.PFSBillNumber, new { htmlAttributes = new { @class = "form-control", placeholder = "Bill Number", onchange = "FetchBillDtl()" } })
+                    </div>
+                    @Html.ValidationMessageFor(model => model.PFSBillNumber, "", new { @class = "text-danger" })
+
+                </div>
+            </div>
+        </div>
+       
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <div class="">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <span class="far fa-money-bill-alt"></span>
+                            </span>
+                        </div>
+                        @Html.EditorFor(model => model.PFSBillAmount, new { htmlAttributes = new { @class = "form-control", placeholder = "Bill Amount" } })
+
+
+                    </div>
+                    @Html.ValidationMessageFor(model => model.PFSBillAmount, "", new { @class = "text-danger" })
+
+
+
+
+                </div>
+
+            
+            </div>
+            <div class="form-group col-md-6">
+        
+                <div class="">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <i class="fab fa-amazon-pay"></i>
+                            </span>
+                        </div>
+                        @Html.DropDownListFor(model => model.PFSPaymentMethod, ViewBag.PayMethodList as SelectList, "Select Payment Method", new { @class = "form-control" })
+
+
+
+                    </div>
+                    @Html.ValidationMessageFor(model => model.PFSPaymentMethod, "", new { @class = "text-danger" })
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-6">
+
+
+                <div class="">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <i class="fas fa-rupee-sign"></i>
+
+                            </span>
+                        </div>
+                        @Html.EditorFor(model => model.PFSAmountPayable, new { htmlAttributes = new { @class = "form-control", placeholder = "Amount Payble", onchange = "ChangePaymentStatus()" } })
+
+
+
+                    </div>
+                    @Html.ValidationMessageFor(model => model.PFSAmountPayable, "", new { @class = "text-danger" })
+
+
+
+
+
+                </div>
+
+
+            </div>
+            <div class="form-group col-md-6">
+
+                <div class="">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <i class="fas fa-rupee-sign"></i>
+
+                            </span>
+                        </div>
+                        @Html.EditorFor(model => model.PFSOutStandingAmount, new { htmlAttributes = new { @class = "form-control", placeholder = "Outstanding Amount" } })
+                    </div>
+                    @Html.ValidationMessageFor(model => model.PFSOutStandingAmount, "", new { @class = "text-danger" })
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-6">
+
+                <div class="">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <i class="fas fa-sync"></i>
+                            </span>
+                        </div>
+                        @Html.DropDownListFor(model => model.PFSStatus, ViewBag.PayStatusList as SelectList, "Select Payment Status", new { @class = "form-control" })
+
+                    </div>
+                    @Html.ValidationMessageFor(model => model.PFSStatus, "", new { @class = "text-danger" })
+
+                </div>
+
+            </div>
+            <div class="form-group col-md-6">
+
+                <div class="">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <i class="far fa-sticky-note"></i>
+
+                            </span>
+                        </div>
+                        @Html.TextArea("PFSNote", new { @class = "form-control", placeholder = "Note" })
+                    </div>
+                    @Html.ValidationMessageFor(model => model.PFSNote, "", new { @class = "text-danger" })
+
+
+                </div>
+
+
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-6">
+
+                <div class="">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <i class="fas fa-calendar"></i>
+
+                            </span>
+                        </div>
+                        <input class="form-control" type="date" name="PFSDateOfPayment" id="PFSDateOfPayment" required />
+
+                        <script>
+                            document.getElementById('PFSDateOfPayment').value = new Date().toISOString().substring(0, 10);
+                        </script>
+                    </div>
+                    @Html.ValidationMessageFor(model => model.PFSDateOfPayment, "", new { @class = "text-danger" })
+
+
+                </div>
+
+            </div>
+            <div class="form-group col-md-6">
+
+                <div class="">
+                    <div class="col-md-offset-2 col-md-10">
+                        <button class="btn btn-info" type="submit" formaction="/Admin/AddPaymentFromSupplier" ><i class="fas fa-plus"></i> Add</button>    
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "ListPaymentFromSupplier")
+</div>
+
+
+
+
+<script>
+
+    function ChangePaymentStatus() {
+       var BillAmt =   $('#PFSBillAmount').val();
+
+       var amtPayable = $('#PFSAmountPayable').val();
+       var Rslt = BillAmt - amtPayable;
+
+       if (Rslt == 0) {
+
+           $('#PFSOutStandingAmount').val(0);
+           $('#PFSStatus').val(2);
+       }
+       else {
+           $('#PFSOutStandingAmount').val(Rslt);
+           $('#PFSStatus').val(1);
+       }
+
+    }
+
+  
+    function FetchBillDtl() {
+        var ID = $('#PFSBillNumber').val();
+
+        $.ajax({
+
+            url: "/Admin/FetchBillDtl/" + ID,
+
+            typr: "GET",
+
+            contentType: "application/json;charset=UTF-8",
+
+            dataType: "json",
+
+            success: function (result) {
+                alert(result);
+               // if (result != 0) {
+                    $('#PFSBillAmount').val(result);
+               // }
+                
+                   // alert("Bill Number not Exist");
+                   // $('#PFSBillNumber').val("");
+                   // $('#PFSBillAmount').val("");
+             },
+
+
+        });
+        return false;
+
+    }
+  
+
+</script>

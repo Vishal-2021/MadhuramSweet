@@ -1,0 +1,479 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_LayoutCustomer.cshtml";
+
+    ViewBag.Title = "OrderHistory";
+}
+
+
+
+
+
+
+<div class="container pt-2">
+    <div aria-live="polite" aria-atomic="true">
+        <div class="toast">
+
+
+            <div class="toast-body alert-success">
+                Your order placed <strong>Successfully!</strong>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<div class="page-layout">
+
+    <div class="main-content-area ">
+
+
+        <section id="dashboard-nav" class="dashboard-section pt-3">
+
+
+
+
+
+            <div class="container">
+                <div class="dashboard-body bg-color-white p-4 p-md-5">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="order-head mb-3">
+                                <h5>My Orders</h5>
+                            </div>
+                        </div>
+
+
+                        <div class="col-lg-12 p-0" id="ItemsOrder">
+
+
+
+
+
+
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+        </section>
+
+    </div>
+</div>
+
+
+
+
+
+@*Model Of Insert Update Delete*@
+
+<div class="modal fade" id="ShowModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+
+                <h4>Cancle Ordered Items</h4>
+
+
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+
+
+            </div>
+
+            <div class="modal-body" style="border:none">
+
+                <form action="/Customer/CancleOrder" method="get">
+
+                    <h6>Order Id: # <b class="text-danger OrdID">  </b></h6>
+                    <input type="hidden" id="OrdID" name="ICR_OrdID" value="" />
+                    <div>cancel reason  :</div>
+                    <div>
+                        <textarea name="ICR_Reason" class="form-control" required></textarea>
+                    </div>
+                    <br />
+                    <div class="text-right"> <input class="btn btn-sm btn-danger" type="submit" name="name" value="submit" /> </div>
+                </form>
+
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@*End of the modal*@
+
+
+
+
+@*Model Of Insert Update Delete*@
+
+<div class="modal fade bd-example-modal-lg  print" id="ShowModal2">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+
+                <h4>Ordered Items</h4>
+
+
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+
+
+            </div>
+            <div class="modal-body" style="border:none">
+
+                <h6>Order Id: # <b class="text-danger OrdID"> </b></h6>
+
+                <table class="table table-sm">
+                    <thead class="thead-light text-center">
+                        <tr>
+
+                            <th scope="col">Image</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Rate</th>
+                            <th scope="col">Qty</th>
+                            <th>Total  </th>
+                        </tr>
+                    </thead>
+                    <tbody class="OrderItems">
+                    </tbody>
+                </table>
+
+
+
+
+
+                @*<div class="form-group">
+                        <button class="btn btn-info form-control Create"><i class="glyphicon glyphicon-registration-mark"></i> Submit</button>
+                    </div>*@
+
+                @*</form>*@
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@*End of the modal*@
+
+
+
+
+
+
+
+
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+@*This File Assign the border of auto suggest element*@
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+@*This is use for auto suggestion*@
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+    $(document).ready(function () {
+        var msg = "@TempData["OrderPlace"]";
+       //  $(".Btnpos").css({ position: 'relative' });
+        //  $(".Btnpos").css({position: 'absolute' });
+
+        if (msg != "") {
+            $(".Btnpos").css({ position: 'initial' });
+            $(".toast").toast({ delay: 3000 });
+            $(".toast").toast('show');
+
+           // $(".Btnpos").css({ position: 'relative' });
+
+        }
+        var Title = "@ViewBag.Title";
+        if (Title == "OrderHistory") {
+            $("#SearchProduct").attr("class", "search-form d-none")
+        }
+
+
+
+        LoadOrderList();
+
+        setInterval(function () {
+            LoadOrderList();
+        }, 20000);
+
+    });
+
+
+
+    function CancleOrder(OrdId) {
+        $("#ShowModal").modal();
+
+        $(".OrdID").html(OrdId)
+
+        $("#OrdID").val(OrdId)
+    }
+
+
+
+
+
+     function View(OrdID) {
+         $("#ShowModal2").modal();
+
+        $.ajax({
+
+            url: "/Admin/OrderedItemsList",
+
+            type: "GET",
+
+            data:{OrdID: OrdID},
+
+            dataType: "json",
+
+            success: function (result) {
+
+
+
+
+                var html = '';
+
+                var total = 0;
+
+                var deliCharge = 0;
+
+
+                $.each(result, function (key, item) {
+
+                     deliCharge = item.CustomerOrder.DeliveryCharges;
+                 });
+
+
+
+                $.each(result, function (key, item) {
+
+
+                    var OrdID =  item.OrderedProducts.OP_OrderId;
+
+                    var Rate = item.OrderedProducts.OP_Rate;
+                    var Qty = item.OrderedProducts.OP_Qty;
+
+                    var Rslt = Rate*Qty;
+
+
+                    html += ' <tr class="text-center">';
+                    html += ' <th scope="row"><img style="width:25px;height:25px" src="/StoreProductImgs/'+item.OrderedProducts.OP_Img+'" alt="Alternate Text" /></th>  ';
+                    html += ' <td>'+item.OrderedProducts.OP_Name+'</td>            ';
+                    html += ' <td>'+item.OrderedProducts.OP_Qty+'</td>            ';
+                    html += ' <td>'+item.OrderedProducts.OP_Rate+'</td>            ';
+                    html += ' <td>'+ parseFloat(Rslt)   +'</td>            ';
+                    html += ' </tr>                   ';
+
+                    total += parseFloat(Rslt);
+
+                });
+
+                Ftotal = total + +deliCharge;
+
+                html +='<tr>                                                     ';
+                html +='<th colspan="4">Total</th>                               ';
+                html +='<td class="text-center" style="font-weight:600">'+ total +'</td> ';
+                html +='</tr>                                                    ';
+
+            html +=' <tr>                                                     ';
+            html +=' <th colspan="4">Delivary Charges</th>                    ';
+            html +=' <td class="text-center" style="font-weight:400">+ '+ deliCharge +' </td>';
+            html +=' </tr>                                                    ';
+
+              html += '<tr>                                                      ';
+              html += '<th colspan="4">Final Total</th>                          ';
+              html += '<td class="text-center" style="font-weight:900" >'+ Ftotal +'</td> ';
+              html += '</tr>                                                     ';
+
+
+                $(".OrderItems").html(html);
+
+                $(".OrdID").html(OrdID);
+
+
+
+            },
+
+        });
+     }
+
+
+
+
+
+
+    function LoadOrderList() {
+
+
+
+        $.ajax({
+            url: "/Customer/OrderHistoryList",
+            type: "GET",
+            //  data: JSON.stringify(empObj),
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+
+            success: function (result) {
+
+              //  alert("Hello");
+
+
+                var html = '';
+
+                $.each(result, function (key, item) {
+
+
+
+                    var MyProductLst = @Html.Raw(Json.Encode(ViewBag.MyProductLst));
+
+                    var DeliveryCharg = 0;
+                    var Product_Count = 0;
+                    var Prate = 0;
+                    var PQty = 0;
+                     DeliveryCharg = item.CustomerOrder.DeliveryCharges;
+
+                    var FinalAmt = 0;
+
+
+                    $.each(MyProductLst, function (key, item1)
+                    {
+                        if (item1.OP_OrderId == item.CustomerOrder.OrderID)
+                        {
+                            Prate += item1.OP_Rate;
+                            PQty += item1.OP_Qty;
+
+                            Product_Count++;
+                        }
+                    });
+
+                    FinalAmt = Prate * PQty + DeliveryCharg;
+
+               html += '     <div class="col-lg-12">                                                                                                                                                                                 ';
+               html += '                    <div class="orders-container">                                                                                                                                                           ';
+               html += '                        <div class="order-item">                                                                                                                                                             ';
+               html += '                            <table class="table table-responsive1">                                                                                                                                          ';
+               html += '                                <thead>                                                                                                                                                                      ';
+               html += '                                    <tr>                                                                                                                                                                     ';
+               html += '                                        <th class="px-3">My Orders</th>                                                                                                                                      ';
+               html += '                                        <th class="text-left">Items</th>                                                                                                                                     ';
+               html += '                                        <th class="text-right pr-5">Status</th>                                                                                                                              ';
+               html += '                                    </tr>                                                                                                                                                                    ';
+               html += '                                </thead>                                                                                                                                                                     ';
+               html += '                                <tbody>                                                                                                                                                                      ';
+               html += '                                    <tr>                                                                                                                                                                     ';
+               html += '                                        <td class="px-3 py-4">                                                                                                                                               ';
+               html += '                                            <div>                                                                                                                                                            ';
+               html += '                                                <h6 class="order-number">Order ID : '+item.CustomerOrder.OrderID +'</h6>                                                                                         ';
+
+               var jsonDate = new Date(+item.CustomerOrder.CustOrdDate.replace(/\/Date\((\d+)\)\//, '$1'));
+
+
+                    // best for date formating
+               var d = new Date(jsonDate);
+               var day = d.getDate();
+               var month = d.getMonth() + 1;
+               var year = d.getFullYear();
+               if (day < 10) {
+                   day = "0" + day;
+               }
+               if (month < 10) {
+                   month = "0" + month;
+               }
+               var date = day + "/" + month + "/" + year;
+                    // End Date formating
+
+
+
+
+
+               html += '                                                <p class="date"> '+ date +'</p>                                                             ';
+               html += '                                                <h6 class="order-number">Final Amt : &#8377; '+ FinalAmt +'</h6>                                                                           ';
+               html += '                                            </div>                                                                                                                                                           ';
+               html += '                                        </td>                                                                                                                                                                ';
+               html += '                                        <td class="text-center">                                                                                                                                             ';
+               html += '                                            <div>                                                                                                                                                            ';
+               html += '                                                 <div class="panel-group text-left">                                                                                                                         ';
+               html += '                                                    <div class="panel panel-default">                                                                                                                        ';
+               html += '                                                        <div class="panel-heading">                                                                                                                          ';
+               html += '                                                            <b class="panel-title">                                                                                                                          ';
+                    html += '                                                                <a class = "btn btn-info btn-sm rounded-9"  onclick = "View(' + item.CustomerOrder.OrderID + ')"  href="#">   ' + Product_Count +'  <i class = "fas fa-list-ol"></i></a>                                          ';
+               html += '                                                            </b>                                                                                                                                             ';
+               html += '                                                        </div>                                                                                                                                               ';
+
+
+
+
+               html += '                                                    </div>                                                                                                                                                   ';
+               html += '                                                </div>                                                                                                                                                       ';
+               html += '                                            </div>                                                                                                                                                           ';
+               html += '                                        </td>                                                                                                                                                                ';
+               html += '                                        <td class="text-right pr-5">                                                                                                                                         ';
+               html += '                                            <div class="pending">                                                                                                                                            ';
+               html += '                                                <span class="badge badge-success p-1" style="font-size:13px;font-weight:600">                                                                                ';
+               html += '                                                    '+item.CustomerDeliveryStatus.CDS_Name+'                                                                                                                    ';
+               html += '                                                </span>                                                                                                                                                      ';
+               html += '                                                <br />                                                                                                                                                       ';
+               html += '                                                <br />                                                                                                                                                       ';
+               if (item.CustomerDeliveryStatus.CDS_Name != "Delivered ")
+{
+    html += '                                                     <a class="btn btn-sm btn-outline-secondary rounded-0" href="#" onclick="CancleOrder(' + item.CustomerOrder.OrderID + ')">Cancle order</a>                      ';
+
+}
+
+               html += '                                            </div>                                                                                                                                                           ';
+               html += '                                        </td>                                                                                                                                                                ';
+               html += '                                    </tr>                                                                                                                                                                    ';
+               html += '                                </tbody>                                                                                                                                                                     ';
+               html += '                            </table>                                                                                                                                                                         ';
+               html += '                        </div>                                                                                                                                                                               ';
+               html += '                   </div>                                                                                                                                                                                    ';
+               html += '                </div>                                                                                                                                                                                       ';
+
+
+                });
+
+                $('#ItemsOrder').html(html);
+
+            },
+
+
+        });
+
+    }
+
+
+
+
+
+
+
+
+
+
+</script>
+

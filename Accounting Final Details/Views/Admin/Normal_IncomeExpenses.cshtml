@@ -1,0 +1,470 @@
+﻿@model Accounting_Final_Details.Models.NormalIncomeExpense
+
+@{
+
+    if (Session["Role"] != null)
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    }
+
+
+    DateTime dt = DateTime.Now;
+
+}
+
+
+<h3 style="padding-top:5px">
+    Normal Income and Expense !
+
+
+</h3>
+
+<hr />
+<section class="section alert-section">
+    <div class="alert alert-info" style="background:#29d2e4;">
+        <div class="alert-container">
+
+            <i class="fa fa-info-circle"></i>
+            <b class="alert-info" style="background:#29d2e4">Info alert:</b> You've got some friends nearby, stop looking at your phone and find them...
+        </div>
+    </div>
+</section>
+<div id="fieldsets">
+
+    <fieldset class="box">
+        <legend class="box">Normal Income and Expense Details !</legend>
+
+
+
+
+        @using (Html.BeginForm())
+        {
+
+
+            @Html.Hidden("NIE_ID", new { @class = "" })
+
+
+            <div class="form-row">
+
+                <div class="form-group col-md-3">
+                    <div class="">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <span class="fas fa-money-check"></span>
+                                </span>
+                            </div>
+                            @Html.EditorFor(model => model.NIE_Name, new { htmlAttributes = new { @class = "form-control", placeholder = "Income/Expense Name", required = "required" } })
+
+
+                        </div>
+                        @Html.ValidationMessageFor(model => model.NIE_Name, "", new { @class = "text-danger" })
+
+
+                    </div>
+                </div>
+
+
+                <div class="form-group col-md-3">
+                    <div class="">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <span class="far fa-list-alt"></span>
+                                </span>
+                            </div>
+                            @Html.DropDownListFor(model => model.NIE_Category, new List<SelectListItem>
+                            {
+                                new SelectListItem { Text = "Income" , Value = "Income"},
+                                new SelectListItem { Text = "Expense", Value = "Expense" }
+                            }, "-- Select Category --", new { @class = "form-control", required = "required" })
+
+
+                        </div>
+                        @Html.ValidationMessageFor(model => model.NIE_Category, "", new { @class = "text-danger" })
+
+
+                    </div>
+                </div>
+
+
+                <div class="form-group col-md-3">
+                    <div class="">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <span class="fas fa-rupee-sign"></span>
+                                </span>
+                            </div>
+                            @Html.EditorFor(model => model.NIE_Amt, new { htmlAttributes = new { @class = "form-control", placeholder = "Amount (Rs)", required = "required", type = "number" } })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.NIE_Amt, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group col-md-3">
+                    <div class="">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <span class="fas fa-calendar-alt"></span>
+                                </span>
+                            </div>
+
+                            <input type="date" name="NIE_Date" id="NIE_Date" value="@dt.ToString("yyyy-MM-dd")" onchange="BetweenDate()" class="form-control" required />
+
+                        </div>
+                        @Html.ValidationMessageFor(model => model.NIE_Date, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+
+
+            </div>
+
+            <div class="form-row">
+
+                <div class="form-group col-md-3">
+                    <div class="">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <span class="far fa-sticky-note"></span>
+                                </span>
+                            </div>
+                            @Html.TextAreaFor(model => model.NIE_Note, new { @class = "form-control", placeholder = "Note" })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.NIE_Note, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <div class="">
+                        <div class="alert alert-success" id="success-alert" style="display:none;padding:6px;margin:0" role="alert">
+                            <i class="far fa-check-circle"></i> @TempData["SaveRegMsg"]
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="form-group col-md-3">
+                    <div class="pt-4">
+                        <button class="btn btn-info" onclick="Clear_DB_ID()"><i class="far fa-save"></i> Save</button>
+                        &nbsp;
+                        <button class="btn btn-info"><i class="fas fa-sync"></i> Update</button>
+                    </div>
+                </div>
+
+
+
+
+            </div>
+
+
+
+
+        }
+    </fieldset>
+
+</div>
+
+
+@*<div id="fieldsets">*@
+
+<fieldset class="box">
+    <legend class="box">Search From Dates !</legend>
+
+    @using (Html.BeginForm())
+    {
+
+        <div class="row">
+
+            <div class="form-group col-md-3">
+                <div class="">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <i class="fas fa-calendar-alt" style="font-size:24px;padding-left:1px;padding-right:5px"></i>
+                            </span>
+                        </div>
+                        <input type="date" name="Fdate" id="Fdate" value="@dt.ToString("yyyy-MM-dd")" onchange="BetweenDate()" class="form-control" required />
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group col-md-1">
+                <label class="form-control border-0 text-center" style="font-weight:600;font-size:17px"> To </label>
+            </div>
+
+            <div class="form-group col-md-3">
+                <div class="">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <span class="fas fa-calendar-alt"></span>
+                            </span>
+                        </div>
+                        <input type="date" name="Ldate" id="Ldate" onchange="BetweenDate()" value="" class="form-control" required />
+                        <script>
+                            document.getElementById('Ldate').value = new Date().toISOString().substring(0, 10);
+                        </script>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group col-md-2">
+                <div class="">
+                    <button class="btn btn-info"><i class="fas fa-search"></i> Search</button>
+                </div>
+            </div>
+
+        </div>
+    }
+</fieldset>
+
+@*</div>*@
+
+
+
+
+
+
+<div class="card mb-4">
+    <div class="card-header"><i class="fas fa-table mr-1"></i>Normal Income and Expense</div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <td>
+                            <b>ID</b>
+                        </td>
+                        <th>
+                            Name
+                        </th>
+                        <th>
+                            Category
+                        </th>
+                        <th>
+                            Amount (Rs)
+                        </th>
+                        <th>
+                            Note
+                        </th>
+
+                        <th>
+                            Date
+                        </th>
+                        <th>
+                            Actions
+                        </th>
+
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <td>
+                            <b>ID</b>
+                        </td>
+                        <th>
+                            Name
+                        </th>
+                        <th>
+                            Category
+                        </th>
+                        <th>
+                            Amount (Rs)
+                        </th>
+                        <th>
+                            Note
+                        </th>
+
+                        <th>
+                            Date
+                        </th>
+                        <th>
+                            Actions
+                        </th>
+
+                    </tr>
+                </tfoot>
+                <tbody>
+
+                    @foreach (var item in ViewBag.NormalIncomeExpense)
+                    {
+                        <tr>
+                            <td>
+                                @item.NormalIncomeExpense.NIE_ID
+                            </td>
+                            <td>
+                                @item.NormalIncomeExpense.NIE_Name
+                            </td>
+                            <td>
+                                @item.NormalIncomeExpense.NIE_Category
+                            </td>
+                            <td>
+                                @item.NormalIncomeExpense.NIE_Amt
+                            </td>
+                            <td>
+                                @item.NormalIncomeExpense.NIE_Note
+                            </td>
+
+                            <td>
+                                @Convert.ToDateTime(item.NormalIncomeExpense.NIE_Date).ToString("dd-MM-yyyy")
+                            </td>
+                            <td>
+
+                                <a class="text-info" href="#" onclick="Edit(@item.NormalIncomeExpense.NIE_ID)"> <i class="fa fa-edit" style="font-size:23px"></i></a> &nbsp;
+
+                                <a class="text-danger" href="/Admin/Normal_IncomeExpenses_Delete/@item.NormalIncomeExpense.NIE_ID" onclick="return confirm('Are you sure?')"><i class="fas fa-trash-alt" style="font-size:23px"></i></a>
+
+                            </td>
+                        </tr>
+                    }
+
+
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+
+
+
+
+<script>
+
+    function Clear()
+    {
+          $('#NIE_ID').val("");
+        $('#NIE_Name').val("");
+    $('#NIE_Category').val("");
+         $('#NIE_Amt').val("");
+         $('#NIE_Note').val("");
+    }
+
+
+    function Clear_DB_ID()
+    {
+        $('#NIE_ID').val("");
+    }
+
+
+    $(document).ready(function () {
+        Clear();
+
+
+        var SaveMsg = "@TempData["SaveRegMsg"]";
+
+        if (SaveMsg != "") {
+            $("#success-alert").fadeTo(2000, 500).slideUp(500, function () {
+                $("#success-alert").slideUp(500);
+            });
+        }
+
+
+
+    });
+
+    function Edit(ID) {
+
+         $.ajax({
+
+             url: "/Admin/Fetch_Normal_IncomeExpenses/" + ID,
+
+            typr: "GET",
+
+            contentType: "application/json;charset=UTF-8",
+
+            dataType: "json",
+
+
+
+            success: function (result) {
+
+                $('#NIE_ID').val(result.NIE_ID);
+                $('#NIE_Name').val(result.NIE_Name);
+                $('#NIE_Category').val(result.NIE_Category);
+                $('#NIE_Amt').val(result.NIE_Amt);
+                $('#NIE_Note').val(result.NIE_Note);
+
+
+
+
+                var jsonDate = new Date(+result.NIE_Date.replace(/\/Date\((\d+)\)\//, '$1'));
+
+
+                // best for date formating
+                var d = new Date(jsonDate);
+                var day = d.getDate();
+                var month = d.getMonth() + 1;
+                var year = d.getFullYear();
+                if (day < 10) {
+                    day = "0" + day;
+                }
+                if (month < 10) {
+                    month = "0" + month;
+                }
+                var date = year + "-" + month + "-" + day;
+                // End Date formating
+
+
+                $('#NIE_Date').val(date);
+
+                //$('#NIE_Date').val(result.NIE_Date);
+
+
+
+            },
+
+
+        });
+
+        return false;
+
+    }
+
+</script>
+
+
+
+
+<style>
+    fieldset {
+        border: 1px solid #ddd;
+        border-left: 1px solid #ddd;
+        padding: 6px;
+        margin-bottom: 5px;
+        width: 100%;
+    }
+
+    legend {
+        width: auto;
+        font-size: 15px;
+        font-weight: 500;
+    }
+
+    #main:hover .box {
+        border-color: #1b76c4;
+    }
+</style>
+
+
+
+

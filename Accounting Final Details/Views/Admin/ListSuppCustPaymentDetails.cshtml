@@ -1,0 +1,348 @@
+﻿@model Accounting_Final_Details.Models.CustSuppPayment
+
+@{
+
+    //  Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+
+    if (Session["Role"] != null)
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    }
+}
+
+
+
+<main>
+    <div class="container-fluid">
+        <h2 class="mt-4">Customer / Supplier payments !</h2>
+        @*<ol class="breadcrumb mb-4">
+            <li class="breadcrumb-item"><a href="index">Dashboard</a></li>
+
+        </ol>*@
+
+
+
+
+
+        <hr />
+        <section class="section alert-section">
+            <div class="alert alert-info" style="background:#29d2e4;">
+                <div class="alert-container">
+
+                    <i class="fa fa-info-circle"></i>
+                    <b class="alert-info" style="background:#29d2e4">Info alert:</b> You've got some friends nearby, stop looking at your phone and find them...
+                </div>
+            </div>
+        </section>
+
+
+
+
+        @*<div class="container text-right" style="margin-bottom:10px;">
+            <button type="button" onclick="Create()" class="btn btn-info"><i class="fa fa-plus"></i> Add</button>
+        </div>*@
+
+
+        <div class="form-row">
+            <div class="col">
+                <div class="alert alert-success" id="success-alert" style="display:none" role="alert">
+                    <i class="far fa-check-circle"></i> @TempData["SaveRegMsg"] @TempData["UpdatRegMsg"]
+                </div>
+            </div>
+
+            <div class="col text-right" style="padding-top:10px;padding-bottom:10px">
+                <button type="button" onclick="Create()" class="btn btn-info"><i class="fa fa-plus"></i> Add</button>
+            </div>
+
+        </div>
+
+        <script>
+            $(document).ready(function () {
+
+                var SaveMsg = "@TempData["SaveRegMsg"]";
+
+                var UpdateMsg = "@TempData["UpdatRegMsg"]";
+
+
+                if (SaveMsg != "") {
+                    $("#success-alert").fadeTo(2000, 500).slideUp(500, function () {
+                        $("#success-alert").slideUp(500);
+                    });
+                }
+
+                if (UpdateMsg != "") {
+                    $("#success-alert").fadeTo(2000, 500).slideUp(500, function () {
+                        $("#success-alert").slideUp(500);
+                    });
+                }
+
+            });
+        </script>
+
+
+        <div class="card mb-4">
+            <div class="card-header"><i class="fas fa-table mr-1"></i>Customer / Supplier Payment</div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+
+                                <th>
+                                    SupCustID
+                                </th>
+                                <th>
+                                    SupCust Name
+                                </th>
+                                <th>
+                                    Bill No.
+                                </th>
+                                <th>
+                                    Bill Amt
+                                </th>
+                                @*<th>
+                                    Paid Amt
+
+                                </th>
+
+                                <th>
+                                    Outstand Amt
+
+                                </th>*@
+
+                                @*<th>
+                                    Status
+
+                                </th>*@
+
+                                <th>
+
+                                </th>
+                                <th>
+                                    Action
+
+                                </th>
+
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            @*cp.SupCustPayID = Convert.ToInt32(dr["SupCustPayID"]);
+                            cp.CustName = dr["CustName"].ToString();
+                            cp.SupCustBillNo = dr["SupCustBillNo"].ToString();
+                            cp.SupCustBillAmt = Convert.ToDecimal(dr["ReceivedAmt"]);*@
+
+
+
+
+
+
+                            @foreach (var item in ViewBag.ListSplrPymtDtl)
+                            {
+                                <tr>
+
+                                    <td>
+                                        @item.SupCustPayID
+                                    </td>
+                                    <td>
+                                        @item.CustName
+                                    </td>
+                                    <td>
+                                        @item.SupCustBillNo
+                                    </td>
+                                    <td>
+                                        @item.SupCustBillAmt
+                                    </td>
+
+
+                                    <td>
+                                        @Html.ActionLink("View", "ListCustSupTransaction", new { BillNo = item.SupCustBillNo }, new { @class = "", style = "font-weight:600;text-decoration:none" })
+
+
+                                    </td>
+
+                                    <td>
+                                        <a class="text-danger" href="/Admin/DeletePaymentfromSupplier/@item.SupCustPayID" onclick="return confirm('Are you sure?')"><i class="fas fa-trash-alt" style="font-size:23px"></i></a>
+
+                                    </td>
+
+                                </tr>
+
+
+                            }
+
+
+
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+
+
+
+
+
+
+
+
+@*Model Of Insert Update Delete*@
+
+    <div class="modal fade" id="ShowModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="Create" style="display:none;">Add Cust/Supp Payments</h4>
+                @*<h4 class="Edit" style="display:none;">Edit Cust/Supp Payments</h4>*@
+
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+
+
+
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm())
+                {
+
+
+                    @Html.HiddenFor(m => m.SupCustPayID, new { @class = "form-control RID", @name = "RID", })
+
+                   
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <span class="fas fa-file-invoice"></span>
+                                </span>
+                            </div>
+                            @Html.EditorFor(model => model.SupCustBillNo, new { htmlAttributes = new { @class = "form-control Name", placeholder = "Bill Number", onchange ="getPurchaseDtl()" } })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.SupCustBillNo, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <span class="fas fa-user-alt"></span>
+                                </span>
+                            </div>
+                            @Html.HiddenFor(model => model.SupCustID, new { @class = "form-control" })
+                                      
+                       
+
+                           <input class="form-control" type="text" id="CustSuppName" name="DspOnly" value="" readonly required/>
+
+                        </div>
+                        @Html.ValidationMessageFor(model => model.SupCustID, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <span class="fas fa-sort-amount-down"></span>
+                                </span>
+                            </div>
+                            @Html.EditorFor(model => model.SupCustBillAmt, new { htmlAttributes = new { @class = "form-control Name", placeholder = "Bill Amt", @readonly = "readonly" } })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.SupCustBillAmt, "", new { @class = "text-danger" })
+                    </div>
+                 
+
+                    <div class="form-group">
+                        <button class="btn btn-info form-control Create" type="submit" formaction="/Admin/AddPaymentFromSupplier" style="display:none;"><i class="glyphicon glyphicon-registration-mark"></i> Submit</button>
+                    </div>
+
+                    @*</form>*@
+
+                }
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@*End of the modal*@
+
+
+
+@Html.HiddenFor(model => model.Existance, new { @class = "form-control"})
+
+
+
+
+
+
+
+<script>
+
+    $(document).ready(function () {
+        var id = $("#Existance").val();
+        if (id != "") {
+            Create();
+        }
+
+        getPurchaseDtl();
+
+    });
+
+
+
+
+    function getPurchaseDtl() {
+
+        var BillNo = $("#SupCustBillNo").val();
+
+        $.ajax({
+
+            url: "/Admin/FetchBillDtl/",
+
+            data: { BillNo: BillNo},
+            dataType: "json",
+
+            success: function (result) {
+             
+
+                if (result == "") {
+                       $("#SupCustID").val("");
+                    $('#CustSuppName').val("");
+                    $("#SupCustBillAmt").val("");
+                }
+
+                $("#SupCustID").val(result.PurSuppCustId);
+                $('#CustSuppName').val(result.CustName);
+                $("#SupCustBillAmt").val(result.PrFinalTotal);
+
+             },
+
+
+        });
+        return false;
+
+
+
+    }
+
+
+
+
+    function Create() {
+        $("#ShowModal").modal();
+        $(".Edit").hide();
+        $(".Create").show();
+
+    }
+   
+
+</script>

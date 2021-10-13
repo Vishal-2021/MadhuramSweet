@@ -1,0 +1,404 @@
+﻿@model Accounting_Final_Details.Models.SaleWiGstPayment
+
+@{
+    ViewBag.Title = "SaleWiGst_Payment";
+    //  Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    if (Session["Role"] != null)
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    }
+}
+
+
+
+
+
+<main>
+    <div class="container-fluid">
+        <h2 class="mt-4">Sale payment !</h2>
+        <ol class="breadcrumb mb-4">
+            <li class="breadcrumb-item"><a href="index">Dashboard</a></li>
+
+        </ol>
+
+        <div class="container text-right" style="margin-bottom:10px;">
+            <button type="button" onclick="Create()" class="btn btn-info"><i class="fa fa-plus"></i> Add</button>
+        </div>
+
+
+        <div class="card mb-4">
+            <div class="card-header"><i class="fas fa-table mr-1"></i>Sale Payment</div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+
+                                <th>
+                                    SupCustID
+                                </th>
+                                <th>
+                                    SupCust Name
+                                </th>
+                                <th>
+                                    Bill No.
+                                </th>
+                                <th>
+                                    Bill Amt
+                                </th>
+                                @*<th>
+                                        Paid Amt
+
+                                    </th>
+
+                                    <th>
+                                        Outstand Amt
+
+                                    </th>*@
+
+                                @*<th>
+                                        Status
+
+                                    </th>*@
+
+                                <th>
+
+                                </th>
+                                <th>
+                                    Action
+
+                                </th>
+
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            @foreach (var item in ViewBag.ListSplrPymtDtl)
+                            {
+                                <tr>
+
+                                    <td>
+                                        @item.SaleWiGstPayment.SaleWiGstPayment_ID
+                                    </td>
+                                    <td>
+                                        @item.CustDtl.CustName
+                                    </td>
+                                    <td>
+                                        @item.SaleWiGstPayment.PaySalWiGst_CustSuppBillNo
+                                    </td>
+                                    <td>
+                                        @item.SalesBillWithoutGstDtl_Report.SalBiWiGst_Rpt_FinalTotal
+                                    </td>
+
+                                    @*<td>
+                                              @item.CustSuppPayment.SupCustPaidAmt
+
+                                        </td>
+                                        <td>
+                                           @{
+                                               decimal OutstandAmt = item.CustSuppPayment.SupCustBillAmt - item.CustSuppPayment.SupCustPaidAmt;
+                                           }
+                                               @OutstandAmt
+
+                                        </td>*@
+
+                                    @*<td>
+                                              @item.PaymentStatus.PayStName
+
+                                        </td>*@
+                                    <td>
+                                        @Html.ActionLink("View", "SaleWiGst_Transaction", new { BillNo = item.SaleWiGstPayment.PaySalWiGst_CustSuppBillNo }, new { @class = "", style = "font-weight:600;text-decoration:none" })
+
+
+
+                                    </td>
+
+                                    <td>
+                             
+                                        <a class="text-danger" href="/Admin/DeleteSaleWiGst_Payment/@item.SaleWiGstPayment.SaleWiGstPayment_ID" onclick="return confirm('Are you sure?')"><i class="fas fa-trash-alt" style="font-size:23px"></i></a>
+
+                                    </td>
+
+                                </tr>
+
+
+                            }
+
+
+
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+
+
+@*Model Of Insert Update Delete*@
+
+<div class="modal fade" id="ShowModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="Create" style="display:none;">Add Sale Payment</h4>
+                @*<h4 class="Edit" style="display:none;">Edit Cust/Supp Payments</h4>*@
+
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+
+
+
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm())
+                {
+
+
+                    @Html.HiddenFor(m => m.SaleWiGstPayment_ID, new { @class = "form-control RID", @name = "RID", })
+
+
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <span class="fas fa-file-invoice"></span>
+                                </span>
+                            </div>
+                            @Html.EditorFor(model => model.PaySalWiGst_CustSuppBillNo, new { htmlAttributes = new { @class = "form-control Name", placeholder = "Bill Number", onchange = "getSaleWithGstDetails()" } })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.PaySalWiGst_CustSuppBillNo, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <span class="fas fa-user-alt"></span>
+                                </span>
+                            </div>
+                            @Html.DropDownListFor(model => model.PaySalWiGst_SupCustID, ViewBag.ListCustSuppName as SelectList, "Select Customer/Supplier Name", new { @class = "form-control", @readonly = "readonly" })
+                       
+                         </div>
+                        @Html.ValidationMessageFor(model => model.PaySalWiGst_SupCustID, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <span class="fas fa-sort-amount-down"></span>
+                                </span>
+                            </div>
+                            @Html.EditorFor(model => model.PaySalWiGst_SupCustBillAmt, new { htmlAttributes = new { @class = "form-control Name", placeholder = "Bill Amt", @readonly = "readonly" } })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.PaySalWiGst_SupCustBillAmt, "", new { @class = "text-danger" })
+                    </div>
+
+
+                    @*<div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <span class="fas fa-sort-amount-down"></span>
+                                </span>
+                            </div>
+                            @Html.EditorFor(model => model.PaySalWiGst_SuppCustPaidAmt, new { htmlAttributes = new { @class = "form-control", placeholder = "Paid Amt", @readonly = "readonly" } })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.PaySalWiGst_SuppCustPaidAmt, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <span class="far fa-list-alt"></span>
+                                </span>
+                            </div>
+                            @Html.EditorFor(model => model.PaySalWiGst_SupCustoutstanding, new { htmlAttributes = new { @class = "form-control", placeholder = "Outstanding Amt", @readonly = "readonly" } })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.PaySalWiGst_SupCustoutstanding, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <span class="fas fa-list"></span>
+                                </span>
+                            </div>
+                            @Html.DropDownListFor(model => model.PaySalWiGst_SupCustStatus, ViewBag.PayStatusList as SelectList, "Payment Status", new { @class = "form-control Name", @readonly = "readonly" })
+                      
+                         </div>
+                        @Html.ValidationMessageFor(model => model.PaySalWiGst_SupCustStatus, "", new { @class = "text-danger" })
+                    </div>*@
+
+
+                    <div class="form-group">
+                        <button class="btn btn-info form-control Create" type="submit" formaction="/Admin/AddEditSaleWiGst_Payment" style="display:none;"><i class="glyphicon glyphicon-registration-mark"></i> Submit</button>
+                       
+                        @*<button class="btn btn-info form-control Edit" type="submit" formaction="/Admin/UpdatePaymentFromSupplier" style="display:none;"><i class="glyphicon glyphicon-registration-mark"></i> Update</button>*@
+
+                    </div>
+
+                    @*</form>*@
+
+                }
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@*End of the modal*@
+
+
+
+@Html.HiddenFor(model => model.PaySalWiGst_Existance, new { @class = "form-control" })
+
+
+
+
+
+<script>
+
+        $(document).ready(function () {
+            var id = $("#Existance").val();
+            if (id != "") {
+                 Create();
+            }
+       });
+
+       function Create() {
+            $("#ShowModal").modal();
+       }
+</script>
+
+<script>
+
+     function getSaleWithGstDetails()
+    {
+             
+      //   var BillNos = $("#PaySalWiGst_CustSuppBillNo").val();
+      
+         var obj = {
+              BillNos : $("#PaySalWiGst_CustSuppBillNo").val()
+
+         }
+        $.ajax({
+
+             contentType: 'application/json; charset=utf-8',
+             dataType: 'json',
+             type: 'GET',
+             url: '/Admin/FetchSaleWiGst_BillDtl',
+            // data: { BillNos: BillNos },
+             data: obj,
+
+             success: function (result) {
+                 $("#PaySalWiGst_SupCustID").val(result[0]);
+                 $("#PaySalWiGst_SupCustBillAmt").val(result[1]);
+              //    $("#SupCustStatus").val(1);
+
+             },
+
+
+         });
+         return false;
+
+    }
+
+
+
+
+    function Create() {
+        $("#ShowModal").modal();
+        $(".Edit").hide();
+        $(".Create").show();
+
+    }
+
+    function Edit(ID) {
+
+        $("#ShowModal").modal();
+        $(".Create").hide();
+        $(".Edit").show();
+
+
+        $.ajax({
+
+            url: "/Admin/FetchPaymentFromSupplierDtl/" + ID,
+
+            typr: "GET",
+
+            contentType: "application/json;charset=UTF-8",
+
+            dataType: "json",
+
+
+            success: function (result) {
+
+                $('#SupCustPayID').val(result.CustSuppPayment.SupCustPayID);
+                $('#SupCustID').val(result.CustSuppPayment.SupCustID);
+                $('#SupCustBillNo').val(result.CustSuppPayment.SupCustBillNo);
+                $('#SupCustBillAmt').val(result.CustSuppPayment.SupCustBillAmt);
+                $('#SupCustPaidAmt').val(result.CustSuppPayment.SupCustPaidAmt);
+                $('#SupCustoutstanding').val(result.CustSuppPayment.SupCustoutstanding);
+                $('#SupCustStatus').val(result.CustSuppPayment.SupCustStatus);
+
+           },
+
+        });
+        return false;
+    }
+
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

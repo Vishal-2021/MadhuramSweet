@@ -1,0 +1,297 @@
+﻿@model Accounting_Final_Details.Models.SalesGST_Payment
+
+@{
+    ViewBag.Title = "SalesGst_Payment";
+    // Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    if (Session["Role"] != null)
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    }
+}
+
+
+
+
+
+
+<main>
+    <div class="container-fluid">
+        <h2 class="mt-4">Sale payment !</h2>
+        @*<ol class="breadcrumb mb-4">
+            <li class="breadcrumb-item"><a href="index">Dashboard</a></li>
+
+        </ol>*@
+
+
+
+        <hr />
+        <section class="section alert-section">
+            <div class="alert alert-info" style="background:#29d2e4;">
+                <div class="alert-container">
+
+                    <i class="fa fa-info-circle"></i>
+                    <b class="alert-info" style="background:#29d2e4">Info alert:</b> You've got some friends nearby, stop looking at your phone and find them...
+                </div>
+            </div>
+        </section>
+
+
+
+
+
+
+
+
+        <div class="container text-right" style="margin-bottom:10px;">
+            <button type="button" onclick="Create()" class="btn btn-info"><i class="fa fa-plus"></i> Add</button>
+        </div>
+
+
+        <div class="card mb-4">
+            <div class="card-header"><i class="fas fa-table mr-1"></i>Sale Payment</div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+
+                                <th>
+                                    SupCustID
+                                </th>
+                                <th>
+                                    SupCust Name
+                                </th>
+                                <th>
+                                    Bill No.
+                                </th>
+                                <th>
+                                    Bill Amt
+                                </th>
+
+                                <th>
+
+                                </th>
+                                <th>
+                                    Action
+
+                                </th>
+
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+
+
+                            @foreach (var item in ViewBag.ListSplrPymtDtl)
+                            {
+                                <tr>
+
+                                    <td>
+                                        @item.SaleGstPay_ID
+                                    </td>
+                                    <td>
+                                        @item.CustName
+                                    </td>
+                                    <td>
+                                        @item.SaleGstPay_CustSuppBillNo
+                                    </td>
+                                    <td>
+                                        @item.FinalTotal
+                                    </td>
+
+                                    <td>
+                                        @Html.ActionLink("View", "SalesGst_Transaction", new { BillNo = item.SaleGstPay_CustSuppBillNo }, new { @class = "", style = "font-weight:600;text-decoration:none" })
+
+
+                                    </td>
+
+                                    <td>
+                                        <a class="text-danger" href="/Admin/DeleteSaleGst_Payment/@item.SaleGstPay_ID" onclick="return confirm('Are you sure?')"><i class="fas fa-trash-alt" style="font-size:23px"></i></a>
+                                    </td>
+
+                                </tr>
+
+
+                            }
+
+
+
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+
+
+@*Model Of Insert Update Delete*@
+
+<div class="modal fade" id="ShowModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="Create" style="display:none;">Add Sale Payment</h4>
+                @*<h4 class="Edit" style="display:none;">Edit Cust/Supp Payments</h4>*@
+
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+
+
+
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm())
+                {
+
+
+                    @Html.HiddenFor(m => m.SaleGstPay_ID, new { @class = "form-control RID", @name = "RID", })
+
+
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <span class="fas fa-file-invoice"></span>
+                                </span>
+                            </div>
+                            @Html.EditorFor(model => model.SaleGstPay_CustSuppBillNo, new { htmlAttributes = new { @class = "form-control Name", placeholder = "Bill Number", onchange = "getSaleWithGstDetails()" } })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.SaleGstPay_CustSuppBillNo, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <span class="fas fa-user-alt"></span>
+                                </span>
+                            </div>
+                         
+                            @Html.HiddenFor(model => model.SaleGstPay_SupCustID, new { @class = "form-control" })
+
+                            <input class="form-control" type="text" id="CustSuppName" name="DspOnly" value="" readonly required />
+
+                        </div>
+                        @Html.ValidationMessageFor(model => model.SaleGstPay_SupCustID, "", new { @class = "text-danger" })
+                    </div>
+
+
+
+
+
+
+
+
+
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <span class="fas fa-sort-amount-down"></span>
+                                </span>
+                            </div>
+                            @Html.EditorFor(model => model.SaleGstPay_SupCustBillAmt, new { htmlAttributes = new { @class = "form-control Name", placeholder = "Bill Amt", @readonly = "readonly" } })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.SaleGstPay_SupCustBillAmt, "", new { @class = "text-danger" })
+                    </div>
+
+
+                 
+
+
+                    <div class="form-group">
+                        <button class="btn btn-info form-control Create" type="submit" formaction="/Admin/AddEditSalesGst_Payment" style="display:none;"><i class="glyphicon glyphicon-registration-mark"></i> Submit</button>
+                    </div>
+
+                    @*</form>*@
+
+                }
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@*End of the modal*@
+
+
+
+@Html.HiddenFor(model => model.SaleGstPay_Existance, new { @class = "form-control" })
+
+
+
+
+
+
+
+<script>
+
+    $(document).ready(function () {
+        var id = $("#SaleGstPay_Existance").val();
+        if (id != "") {
+            Create();
+        }
+
+        getSaleWithGstDetails();
+
+    });
+
+
+
+    function getSaleWithGstDetails()
+    {
+
+    
+         var obj = {
+             BillNos: $("#SaleGstPay_CustSuppBillNo").val()
+
+         }
+        $.ajax({
+
+             contentType: 'application/json; charset=utf-8',
+             dataType: 'json',
+             type: 'GET',
+             url: '/Admin/FetchSaleGst_Report_onBill',
+            // data: { BillNos: BillNos },
+             data: obj,
+
+             success: function (result) {
+            
+                 if (result == "") {
+                     $("#SaleGstPay_SupCustID").val("");
+                     $('#CustSuppName').val("");
+                     $("#SaleGstPay_SupCustBillAmt").val("");
+                 }
+
+                 $("#SaleGstPay_SupCustID").val(result.SaleGST_SuppCustId);
+                 $('#CustSuppName').val(result.CustName);
+                 $("#SaleGstPay_SupCustBillAmt").val(result.SalesGST_Rpt_FinalTotal);
+
+             },
+
+
+         });
+         return false;
+
+    }
+
+    function Create() {
+        $("#ShowModal").modal();
+        $(".Edit").hide();
+        $(".Create").show();
+
+    }
+
+  
+
+</script>
+
+

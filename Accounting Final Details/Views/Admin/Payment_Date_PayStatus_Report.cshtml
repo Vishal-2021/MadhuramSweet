@@ -1,0 +1,1768 @@
+﻿
+@{
+    ViewBag.Title = "Payment_Date_PayStatus_Report";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+@{
+    decimal Paystatus = Convert.ToDecimal(ViewBag.PayStId);
+}
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/js/all.min.js" crossorigin="anonymous"></script>
+
+</head>
+<body>
+
+    <section class="section alert-section">
+        <div class="alert alert-info" style="background:#29d2e4;">
+            <div class="alert-container">
+
+                <i class="fa fa-info-circle"></i>
+                <b class="alert-info" style="background:#29d2e4">Info alert:</b> You've got some friends nearby, stop looking at your phone and find them...
+            </div>
+        </div>
+    </section>
+
+    <div id="fieldsets">
+
+        <fieldset class="box">
+            <legend class="box">Sale GST Report !</legend>
+
+            @*<div id="myRadioGroup" style="margin-bottom:20px">
+                    <b style="font-weight:600">Select searching options : </b>
+                    <input type="radio" name="cars" value="2" />  Customer Name
+                    <input type="radio" name="cars" value="3" /> Date
+                    <input type="radio" name="cars" value="4" /> Bill No
+
+                </div>
+
+                <script>
+                        $(document).ready(function () {
+                            $("input[name$='cars']").click(function () {
+                                var test = $(this).val();
+
+                                $("div.desc").hide();
+                                $("#Cars" + test).show();
+                            });
+                        });
+                </script>*@
+
+
+            <form action="/Admin/Payment_Date_PayStatus_Report" method="post">
+
+                <div class="form-row">
+                    @*<input type="hidden" name="Billno" id="Billno" value="" class="form-control" required />*@
+
+                    <div class="form-group col-md-3">
+                        <div class="">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-calendar-alt" style="font-size:24px;padding-left:1px;padding-right:5px"></i>
+                                    </span>
+                                </div>
+                                @*@Html.EditorFor(model => model.ComBiNo_BillID, new { htmlAttributes = new { @class = "form-control CBID", @readonly = "readonly" } })*@
+                                @{
+                                    DateTime dt = DateTime.Now;
+                                }
+
+                                <input type="date" name="Fdate" id="Fdate" value="@dt.ToString("yyyy-MM-dd")" onchange="BetweenDate()" class="form-control" required />
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-1">
+                        <label class="form-control border-0 text-center" style="font-weight:600;font-size:17px"> To </label>
+                    </div>
+
+                    <div class="form-group col-md-3">
+                        <div class="">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">
+                                        <span class="fas fa-calendar-alt"></span>
+                                    </span>
+                                </div>
+                                <input type="date" name="Ldate" id="Ldate" onchange="BetweenDate()" value="@dt.ToString("yyyy-MM-dd")" class="form-control" required />
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-3">
+                        <div class="">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-user-check" style="font-size:24px;padding-left:1px;padding-right:5px"></i>
+                                    </span>
+                                </div>
+                                @Html.DropDownList("PayStId", ViewBag.PaymentStatusList as SelectList, "-- Select Payment Status --", new { @class = "form-control", required = "required" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        <div class="">
+                            <input type="submit" id="BtnSubmit" value="Search" class="btn btn-info" />
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+
+
+
+
+        </fieldset>
+
+    </div>
+
+
+
+
+
+
+    <div style="width:50%;margin-top:10px;margin-bottom:20px">
+        <button type="button" id="Btnhide" class="btn btn-info btn-md mr-2" onclick="window.print()"><i class="fas fa-print"></i> PDF</button>
+    </div>
+
+    @if (ViewBag.ListCustDtl != null)
+    {
+
+
+        if (ViewBag.ListCustDtl.Count != 0)
+        {
+
+
+
+            if (ViewBag.ListOrgDtl != null)
+            {
+
+                <div class="print" id="printableArea">
+
+
+                    @if (ViewBag.ListBillNos != null)
+                    {
+                        decimal AllFinalTotalSum = 0;
+
+                        foreach (var itemss in ViewBag.ListBillNos)
+                        {
+
+                            string Billnos = itemss.SaleGST_BillNo;
+
+
+                            decimal discTot = 0;
+
+                            decimal FAmttotal = 0;
+
+
+
+                            //if (ViewBag.ProductsDtl != null)
+                            //{
+
+                            foreach (var item in ViewBag.ProductsDtl)
+                            {
+                                if (Billnos == item.SalesGST.SaleGST_BillNo)
+                                {
+                                    discTot += item.SalesGST.SaleGST_Discount;
+                                }
+
+                            }
+
+
+                            decimal BillAmtOutstand1 = 0;
+
+
+                            foreach (var item in ViewBag.ListDiscFitotalDtl)
+                            {
+
+                                if (Billnos == item.SalesGST_Report.SalesGST_Rpt_BillNo)
+                                {
+
+                                    BillAmtOutstand1 = item.SalesGST_Report.SalesGST_Rpt_FinalTotal;
+
+                                }
+                            }
+
+
+
+
+                            decimal ChkReciAmtTotal = 0;
+
+                            decimal Outstand1 = 0;
+
+                            foreach (var item in ViewBag.PaymentTransaction)
+                            {
+
+                                if (item.SGstTran_BillNo == Billnos)
+                                {
+
+                                    //  item.SGstTran_TranReciAmt
+
+                                    ChkReciAmtTotal += item.SGstTran_TranReciAmt;
+
+                                }
+                            }
+
+
+                            Outstand1 = BillAmtOutstand1 - ChkReciAmtTotal;
+
+
+                            if (Paystatus == 1)
+                            {
+                                if (Outstand1 == 0)
+                                {
+
+
+                                    <div class="container" style="border:1px solid;">
+
+                                        <div class="row">
+                                            <div class="col-md-3" style="margin:8px">
+                                                <img height="100" width="150" alt="@ViewBag.ListOrgDtl.OrganizationDetails.OrgImage" src="data:image/jpg;base64,@Convert.ToBase64String(ViewBag.ListOrgDtl.OrganizationDetails.OrgImage)" />
+                                            </div>
+                                            <div class="col-md-8">
+
+                                                <div class="row">
+                                                    <div class="col-sm-4"></div>
+                                                    <div class="col-sm-8">
+
+                                                        <h3><b style="font-weight:600">@ViewBag.ListOrgDtl.OrganizationDetails.OrgName</b></h3>
+
+                                                        <b>Mob : </b> <b style="font-weight:600">+91 @ViewBag.ListOrgDtl.OrganizationDetails.OrgContact</b><br />
+                                                        <b>Email-ID : </b> <b style="font-weight:600">@ViewBag.ListOrgDtl.OrganizationDetails.OrgEmailID</b><br />
+                                                        <b>Address : </b> <b style="font-weight:600">@ViewBag.ListOrgDtl.state.SName , @ViewBag.ListOrgDtl.OrganizationDetails.OrgAddress, pincode - @ViewBag.ListOrgDtl.OrganizationDetails.OrgPinCode </b> <br />
+
+                                                        <b>Fssai No : </b> <b style="font-weight:600">@ViewBag.ListOrgDtl.OrganizationDetails.OrgFssaiNumber</b><br />
+                                                        <b>Gst No : </b> <b style="font-weight:600">@ViewBag.ListOrgDtl.OrganizationDetails.OrgGstNumber</b><br />
+
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <br />
+                                        <div class="row">
+
+
+
+                                            <div class="col-sm-5" style="border:1px solid;border-right:none;border-left:none;padding:0">
+
+                                                <div class="text-center" style="border-bottom:1px solid">
+                                                    <b>Customer Details</b>
+                                                </div>
+                                                <div style="padding-left:5px">
+
+                                                    @foreach (var item in ViewBag.ListCustDtl)
+                                                    {
+                                                        if (Billnos == item.SalesGST.SaleGST_BillNo)
+                                                        {
+                                                            <b>Customer Name : </b> <b style="font-weight:600">@item.CustDtl.CustName</b><br />
+                                                            <b>Contact : </b> <b style="font-weight:600">+91 @item.CustDtl.CustContact</b><br />
+                                                            <b>Email-ID : </b> <b style="font-weight:600">@item.CustDtl.CustEmail</b><br />
+                                                            <b>Address : </b> <b style="font-weight:600">@item.state.SName, @item.district.DistName, @item.CustDtl.CustAddress,<br /> pincode - @item.CustDtl.CustPinCode</b><br />
+                                                            <b>Fssai No : </b> <b style="font-weight:600">@item.CustDtl.CustFssaiNumber </b><br />
+                                                            <b>GSTIN : </b> <b style="font-weight:600">@item.CustDtl.CustGstNumber </b>
+
+                                                            break;
+
+                                                        }
+                                                    }
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-7" style="border:1px solid;border-right:none;">
+
+                                                <div class="row">
+
+                                                    @foreach (var item in ViewBag.ListCustDtl)
+                                                    {
+
+                                                        if (Billnos == item.SalesGST.SaleGST_BillNo)
+                                                        {
+                                                            <div class="col-sm" style="border-right:1px solid;border-bottom:1px solid;">
+                                                                <div class="row">
+                                                                    <div class="col-sm"><b>Bill No : </b></div>
+                                                                    <div class="col-sm">
+                                                                        <b style="font-weight:600;color:red"> @item.SalesGST.SaleGST_BillNo </b>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm" style="border-bottom:1px solid;">
+                                                                <div class="row">
+                                                                    <div class="col-sm"><b>Date : </b></div>
+                                                                    <div class="col-sm">
+                                                                        <b style="font-weight:600"> @Convert.ToDateTime(item.SalesGST.SaleGST_Date).ToString("dd-MM-yyyy") </b>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            break;
+                                                        }
+                                                    }
+                                                </div>
+
+
+
+
+
+                                            </div>
+                                        </div>
+
+                                        <br />
+
+
+                                        <style>
+                                            table {
+                                                border: 1px solid black;
+                                                border-left: none;
+                                                border-right: none;
+                                            }
+
+                                            th {
+                                                border: 1px solid black;
+                                                border-left: 1px solid;
+                                                border-right: 1px solid;
+                                                padding-left: 20px;
+                                            }
+
+
+                                            td {
+                                                padding-left: 20px;
+                                                border-left: 1px solid;
+                                                border-right: 1px solid;
+                                            }
+
+                                            .bd {
+                                                border-top: 1px solid;
+                                            }
+
+                                            table {
+                                                border-collapse: collapse;
+                                            }
+                                        </style>
+
+
+
+
+                                        <div class="row">
+                                            <div class="col-md-12" style="padding:0">
+
+                                                <table style="width:100%;border-collapse: collapse;">
+                                                    <thead>
+
+                                                        <tr style="border-collapse: collapse;">
+                                                            <th rowspan="2" style="border-left:none">
+                                                                ID
+                                                            </th>
+                                                            <th rowspan="2">
+                                                                Product Name
+                                                            </th>
+                                                            <th rowspan="2">
+                                                                HSN Code
+                                                            </th>
+
+                                                            <th rowspan="2">
+                                                                Product Rate (Rs)
+                                                            </th>
+
+                                                            @if (discTot != 0)
+                                                            {
+
+                                                                <th rowspan="2">
+                                                                    Disc. (%)
+                                                                </th>
+                                                            }
+
+                                                            <th rowspan="2">
+                                                                Qnt.
+                                                            </th>
+
+                                                            @*<th rowspan="2">
+                                                                    Product Gst (%)
+                                                                </th>
+                                                                <th rowspan="2">
+                                                                    Product Gst (Rs)
+                                                                </th>*@
+
+
+                                                            <th colspan="2">
+                                                                CGST
+                                                            </th>
+
+                                                            <th colspan="2">
+                                                                SGST
+                                                            </th>
+
+
+                                                            <th rowspan="2" style="border-right:none">
+                                                                Product Total (Rs)
+                                                            </th>
+
+                                                        </tr>
+
+                                                        <tr style="border-collapse: collapse;">
+
+
+
+
+                                                            <th>
+                                                                %
+                                                            </th>
+                                                            <th>
+                                                                Rs
+                                                            </th>
+
+
+
+                                                            <th>
+                                                                %
+                                                            </th>
+                                                            <th>
+                                                                Rs
+                                                            </th>
+
+
+                                                        </tr>
+
+
+
+                                                    </thead>
+
+                                                    <tbody>
+                                                        @{
+                                                            int srno = 0;
+
+                                                            decimal ProdTotal = 0, GrandTo = 0, DiscTotl = 0, CnS_GST = 0;
+                                                            int QntTotal = 0;
+                                                            string NoInWord = "";
+                                                            int Ftl = 0;
+                                                        }
+
+
+                                                        @foreach (var item in ViewBag.ProductsDtl)
+                                                        {
+                                                            if (Billnos == item.SalesGST.SaleGST_BillNo)
+                                                            {
+
+                                                                <tr>
+                                                                    <td style="border-left:none">
+                                                                        @{
+
+
+                                                                            srno++;
+                                                                        }
+
+                                                                        @srno
+                                                                    </td>
+                                                                    <td>
+                                                                        @item.ProductDetails.ProductName
+                                                                    </td>
+                                                                    <td>
+                                                                        @item.ProductDetails.HSM_Code
+                                                                    </td>
+
+                                                                    <td>
+                                                                        @item.SalesGST.SaleGST_ProductRate
+                                                                        @{
+                                                                            ProdTotal += item.SalesGST.SaleGST_ProductRate;
+                                                                        }
+
+                                                                    </td>
+                                                                    @if (discTot != 0)
+                                                                    {
+                                                                        <td>
+                                                                            @item.SalesGST.SaleGST_Discount
+                                                                            @{
+                                                                                DiscTotl += item.SalesGST.SaleGST_Discount;
+                                                                            }
+                                                                        </td>
+                                                                    }
+
+                                                                    <td>
+                                                                        @item.SalesGST.SaleGST_Quantity
+                                                                        @{
+                                                                            QntTotal += item.SalesGST.SaleGST_Quantity;
+                                                                        }
+                                                                    </td>
+
+                                                                    @*<td>
+                                                                        @item.ProductGST.ProdGst*@
+                                                                    @{
+                                                                        decimal divGst = item.ProductGST.ProdGst / 2;
+                                                                    }
+                                                                    @*</td>*@
+
+
+                                                                    @*<td>
+                                                                        @item.SalesGST.SaleGST_GstRs*@
+                                                                    @{
+                                                                        decimal divRsGst = item.SalesGST.SaleGST_GstRs / 2;
+                                                                    }
+                                                                    @*</td>*@
+
+
+                                                                    <td>
+                                                                        @divGst
+                                                                    </td>
+
+                                                                    <td>
+
+                                                                        @Math.Round(divRsGst, 2)
+
+                                                                        @{
+                                                                            CnS_GST += divRsGst;
+                                                                        }
+                                                                    </td>
+
+                                                                    <td>
+                                                                        @divGst
+                                                                    </td>
+
+                                                                    <td>
+
+
+                                                                        @Math.Round(divRsGst, 2)
+                                                                    </td>
+
+
+                                                                    <td style="border-right:none">
+                                                                        @item.SalesGST.SaleGST_Total
+                                                                        @{
+                                                                            GrandTo += item.SalesGST.SaleGST_Total;
+                                                                        }
+                                                                    </td>
+                                                                </tr>
+                                                            }
+                                                        }
+
+                                                        <tr>
+                                                            <td colspan="3" class="bd text-center" style="border-left:none;padding:0"><b> Total</b></td>
+
+                                                            <td class="bd"><b style="font-weight:600">@ProdTotal</b></td>
+                                                            @if (discTot != 0)
+                                                            {
+                                                                <td class="bd"><b style="font-weight:600">@DiscTotl</b></td>
+
+                                                            }
+                                                            <td class="bd"><b style="font-weight:600">@QntTotal</b></td>
+                                                            @*<td class="bd"><b style="font-weight:600"></b></td>
+
+                                                                <td class="bd"><b style="font-weight:600"></b></td>*@
+
+
+                                                            <td class="bd"><b style="font-weight:600"></b></td>
+                                                            <td class="bd"><b style="font-weight:600">@Math.Round(CnS_GST, 2) </b></td>
+
+                                                            <td class="bd"><b style="font-weight:600"></b></td>
+                                                            <td class="bd"><b style="font-weight:600">@Math.Round(CnS_GST, 2)</b></td>
+
+                                                            <td class="bd" style="border-right:none;font-weight:600">@GrandTo </td>
+                                                        </tr>
+
+
+
+                                                    </tbody>
+                                                </table>
+
+
+                                            </div>
+                                        </div>
+
+                                        <br />
+
+
+
+                                        <div class="row">
+                                            <div class="col-md-6" style="border-top:1px solid;border-bottom:1px solid;border-right:1px solid;padding:0">
+                                                <div class="text-center" style="border-bottom:1px solid">
+                                                    <b>Final Total in word</b>
+                                                </div>
+                                                <div class="text-center" style="border-bottom:1px solid">
+
+                                                    <b style="font-weight:600;padding-left:15px">
+                                                        <b style="font-weight:600" id="FtotalWord"></b>
+
+
+                                                        @foreach (var item in ViewBag.ListDiscFitotalDtl)
+                                                        {
+                                                            if (Billnos == item.SalesGST_Report.SalesGST_Rpt_BillNo)
+                                                            {
+                                                                Ftl = item.SalesGST_Report.SalesGST_Rpt_FinalTotal;
+                                                            }
+                                                        }
+
+                                                        @{
+                                                            NoInWord = NumberToWords(Ftl);
+                                                        }
+
+                                                        @NoInWord rupees only.
+
+                                                    </b>
+                                                </div>
+
+
+                                                <div class="text-center" style="border-bottom:1px solid">
+                                                    <b>Bank Details</b>
+                                                </div>
+                                                <div class="" style="border-bottom:1px solid">
+
+
+
+
+
+                                                    @if (ViewBag.ListOrgBnkDtl != null)
+                                                    {
+                                                        if (ViewBag.ListOrgBnkDtl.Count != 0)
+                                                        {
+                                                            foreach (var item in ViewBag.ListOrgBnkDtl)
+                                                            {
+                                                                <div class="row">
+                                                                    <div class="col-sm-5 pl-4">
+                                                                        <b>Bank Name</b><br />
+                                                                        <b>Branch Name</b><br />
+                                                                        <b>Bank Account Number</b><br />
+                                                                        <b>Bank Branch IFSC</b>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <b style="font-weight:600">@item.BankDetails.BnkName</b><br />
+                                                                        <b style="font-weight:600">@item.BankDetails.BnkBranchName</b><br />
+                                                                        <b style="font-weight:600">@item.BankDetails.BnkAccountNumber</b><br />
+                                                                        <b style="font-weight:600">@item.BankDetails.BnkIFSCNumber</b>
+                                                                    </div>
+                                                                </div>
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            <div class="row">
+                                                                <div class="col-sm-5 pl-4">
+                                                                    <b>Bank Name</b><br />
+                                                                    <b>Branch Name</b><br />
+                                                                    <b>Bank Account Number</b><br />
+                                                                    <b>Bank Branch IFSC</b>
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    <b style="font-weight:600"> - </b><br />
+                                                                    <b style="font-weight:600"> - </b><br />
+                                                                    <b style="font-weight:600"> - </b><br />
+                                                                    <b style="font-weight:600"> - </b>
+                                                                </div>
+                                                            </div>
+                                                        }
+
+
+                                                    }
+
+
+
+
+
+
+
+
+                                                </div>
+
+
+
+
+                                                <div class="text-center" style="border-bottom:1px solid">
+                                                    <b>Terms and Conditions</b>
+                                                </div>
+                                                <div class="">
+
+                                                    <ol type="1">
+                                                        @foreach (var item in ViewBag.TermsNConditon)
+                                                        {
+                                                            if (Billnos == item.SalesGst_Tnc.SalesGst_BillNo)
+                                                            {
+                                                                <li style="font-weight:600">@item.TermsCondition.TurCon</li>
+                                                            }
+                                                        }
+                                                    </ol>
+
+                                                </div>
+
+
+
+
+                                            </div>
+                                            <div class="col-md-6" style="border-top:1px solid;border-bottom:1px solid;padding:0">
+
+
+                                                @foreach (var item in ViewBag.ListDiscFitotalDtl)
+                                                {
+
+                                                    if (Billnos == item.SalesGST_Report.SalesGST_Rpt_BillNo)
+                                                    {
+
+                                                        <div class="" style="border-bottom:1px solid">
+                                                            <div class="row">
+                                                                <div class="col-sm pl-4"> <b>Grand Total (Rs) :</b> </div>
+                                                                <div class="col-sm pr-4" style="text-align: right;"><b style="font-weight:600">@GrandTo  @*@item.SalesGST_Report.SalesGST_Rpt_GrandTotal*@ </b> </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="" style="border-bottom:1px solid">
+                                                            <div class="row">
+                                                                <div class="col-sm pl-4"> <b>Discount (%) :</b> </div>
+                                                                <div class="col-sm pr-4" style="text-align: right;"><b style="font-weight:600">@item.SalesGST_ChargeDisc.SalesGST_DiscountPer</b> </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="" style="border-bottom:1px solid">
+                                                            <div class="row">
+                                                                <div class="col-sm pl-4"> <b>Discount (Rs) :</b> </div>
+                                                                <div class="col-sm pr-4" style="text-align: right;"><b style="font-weight:600">@item.SalesGST_ChargeDisc.SalesGST_DiscountRs</b> </div>
+                                                            </div>
+                                                        </div>
+
+
+
+                                                        <div class="" style="border-bottom:1px solid">
+                                                            <div class="row">
+                                                                <div class="col-sm pl-4"> <b>Extra-Charges (Rs) :</b> </div>
+                                                                <div class="col-sm pr-4" style="text-align: right;"><b style="font-weight:600">@item.SalesGST_ChargeDisc.SalesGST_ChargesAmt</b> </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="" style="border-bottom:1px solid">
+                                                            <div class="row">
+                                                                <div class="col-sm pl-4"> <b>Add: CGST (Rs) :</b> </div>
+                                                                <div class="col-sm pr-4" style="text-align: right;"><b style="font-weight:600">@Math.Round(CnS_GST, 2)</b> </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="" style="border-bottom:1px solid">
+                                                            <div class="row">
+                                                                <div class="col-sm pl-4"> <b>Add: SGST (Rs) :</b> </div>
+                                                                <div class="col-sm pr-4" style="text-align: right;"><b style="font-weight:600">@Math.Round(CnS_GST, 2)</b> </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="" style="border-bottom:1px solid">
+                                                            <div class="row">
+                                                                <div class="col-sm pl-4"> <b>Final Total (Rs) :</b> </div>
+                                                                <div class="col-sm pr-4" style="text-align: right;">
+                                                                    <b style="font-weight:700;font-size:25px">
+                                                                        &#8377; @item.SalesGST_Report.SalesGST_Rpt_FinalTotal
+
+                                                                        @{
+
+                                                                            AllFinalTotalSum += item.SalesGST_Report.SalesGST_Rpt_FinalTotal;
+
+                                                                            FAmttotal = item.SalesGST_Report.SalesGST_Rpt_FinalTotal;
+                                                                        }
+                                                                    </b>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    }
+                                                }
+
+
+
+                                                <div class="text-center" style="border-bottom:1px solid">
+
+                                                    <b style="font-size:14px">Cetified that the particulars given above are true and correct.</b><br />
+
+                                                    <b style="font-size:25px">For @ViewBag.ListOrgDtl.OrganizationDetails.OrgName</b>
+                                                </div>
+
+
+                                                <div class="text-center" style="border-bottom:1px solid">
+
+                                                    <div style="padding:5px">
+                                                        <img height="80" width="170" alt="@ViewBag.ListOrgDtl.OrganizationDetails.OrgDegitalSignature" src="data:image/jpg;base64,@Convert.ToBase64String(ViewBag.ListOrgDtl.OrganizationDetails.OrgDegitalSignature)" />
+                                                    </div>
+
+
+                                                </div>
+
+                                                <div class="text-center">
+
+                                                    <b style="font-size:14px">Authorised Singnature</b>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+
+
+
+
+
+
+                                        <div style="margin-top:5px">
+
+
+                                            @*@foreach (var item in ViewBag.CustInfo)
+                                                {
+                                                    if (item.TranBillNo == BillNoChk)
+                                                    {
+                                                        <div style="width:100%;">
+                                                            <div style="float:left;"> <b>Bill No : </b> <b style="font-weight:600;color:red">@item.TranBillNo</b> </div>
+                                                            <div style="float:right;"> <b>Purchase Date : </b>   <b style="font-weight:600">@Convert.ToDateTime(item.PurDate).ToString("dd-MM-yyyy")</b> </div>
+                                                        </div>
+                                                        <br />
+                                                        <div>
+                                                            <b>Name : </b> <b style="font-weight:600">@item.CustName</b><br />
+                                                            <b>Bill Amt (Rs) : </b> <b style="font-weight:600">@item.BillAmt</b>
+                                                        </div>
+                                                    }
+
+                                                }
+                                                <br />*@
+
+
+                                            <table class="ProductTbl" style="width:100%">
+                                                <thead>
+                                                    <tr>
+                                                        <th>
+                                                            Transaction ID
+                                                        </th>
+                                                        <th>
+                                                            Received Amt (Rs)
+                                                        </th>
+                                                        <th>
+                                                            Payment Method
+                                                        </th>
+                                                        <th>
+                                                            Cheque No
+                                                        </th>
+                                                        <th>
+                                                            Note
+                                                        </th>
+                                                        <th>
+                                                            Date
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+
+                                                <tbody>
+                                                    @{
+                                                        decimal ReciAmtTotal = 0;
+                                                    }
+                                                    @foreach (var item in ViewBag.PaymentTransaction)
+                                                    {
+
+                                                        if (item.SGstTran_BillNo == Billnos)
+                                                        {
+
+                                                            <tr>
+                                                                <td>
+                                                                    @item.SGstTran_TranID
+                                                                </td>
+                                                                <td>
+                                                                    @item.SGstTran_TranReciAmt
+                                                                    @{
+                                                                        ReciAmtTotal += item.SGstTran_TranReciAmt;
+                                                                    }
+                                                                </td>
+                                                                <td>
+                                                                    @item.SGstTran_PayMethName
+                                                                </td>
+                                                                <td>
+                                                                    @item.SGstTran_Cheque
+                                                                </td>
+                                                                <td>
+                                                                    @item.SGstTran_TransactionNote
+                                                                </td>
+                                                                <td>
+                                                                    @Convert.ToDateTime(item.SGstTran_Date).ToString("dd-MM-yyyy")
+                                                                </td>
+                                                            </tr>
+                                                        }
+                                                    }
+                                                </tbody>
+                                            </table>
+
+                                            <br />
+
+
+                                            <div>
+
+                                                @*<b>Final Amt (Rs) : </b> <b style="font-weight:600;">@FAmttotal</b> <br />*@
+
+                                                <b>Total Received Amt (Rs) : </b> <b style="font-weight:600;">@ReciAmtTotal</b> <br />
+
+                                                <b>Outstanding Amt (Rs) : </b>    <b style="font-weight:600;">
+                                                    @{
+                                                        decimal Outstand = FAmttotal - ReciAmtTotal;
+                                                    }
+                                                    @Outstand
+                                                </b>
+                                            </div>
+
+                                            <br />
+
+                                        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                    </div>
+
+
+                                }
+                            }
+
+
+
+                            if (Paystatus == 2)
+                            {
+                                if (Outstand1 > 0)
+                                {
+
+                                    <div class="container" style="border:1px solid;">
+
+                                        <div class="row">
+                                            <div class="col-md-3" style="margin:8px">
+                                                <img height="100" width="150" alt="@ViewBag.ListOrgDtl.OrganizationDetails.OrgImage" src="data:image/jpg;base64,@Convert.ToBase64String(ViewBag.ListOrgDtl.OrganizationDetails.OrgImage)" />
+                                            </div>
+                                            <div class="col-md-8">
+
+                                                <div class="row">
+                                                    <div class="col-sm-4"></div>
+                                                    <div class="col-sm-8">
+
+                                                        <h3><b style="font-weight:600">@ViewBag.ListOrgDtl.OrganizationDetails.OrgName</b></h3>
+
+                                                        <b>Mob : </b> <b style="font-weight:600">+91 @ViewBag.ListOrgDtl.OrganizationDetails.OrgContact</b><br />
+                                                        <b>Email-ID : </b> <b style="font-weight:600">@ViewBag.ListOrgDtl.OrganizationDetails.OrgEmailID</b><br />
+                                                        <b>Address : </b> <b style="font-weight:600">@ViewBag.ListOrgDtl.state.SName , @ViewBag.ListOrgDtl.OrganizationDetails.OrgAddress, pincode - @ViewBag.ListOrgDtl.OrganizationDetails.OrgPinCode </b> <br />
+
+                                                        <b>Fssai No : </b> <b style="font-weight:600">@ViewBag.ListOrgDtl.OrganizationDetails.OrgFssaiNumber</b><br />
+                                                        <b>Gst No : </b> <b style="font-weight:600">@ViewBag.ListOrgDtl.OrganizationDetails.OrgGstNumber</b><br />
+
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <br />
+                                        <div class="row">
+
+
+
+                                            <div class="col-sm-5" style="border:1px solid;border-right:none;border-left:none;padding:0">
+
+                                                <div class="text-center" style="border-bottom:1px solid">
+                                                    <b>Customer Details</b>
+                                                </div>
+                                                <div style="padding-left:5px">
+
+                                                    @foreach (var item in ViewBag.ListCustDtl)
+                                                    {
+                                                        if (Billnos == item.SalesGST.SaleGST_BillNo)
+                                                        {
+                                                            <b>Customer Name : </b> <b style="font-weight:600">@item.CustDtl.CustName</b><br />
+                                                            <b>Contact : </b> <b style="font-weight:600">+91 @item.CustDtl.CustContact</b><br />
+                                                            <b>Email-ID : </b> <b style="font-weight:600">@item.CustDtl.CustEmail</b><br />
+                                                            <b>Address : </b> <b style="font-weight:600">@item.state.SName, @item.district.DistName, @item.CustDtl.CustAddress,<br /> pincode - @item.CustDtl.CustPinCode</b><br />
+                                                            <b>Fssai No : </b> <b style="font-weight:600">@item.CustDtl.CustFssaiNumber </b><br />
+                                                            <b>GSTIN : </b> <b style="font-weight:600">@item.CustDtl.CustGstNumber </b>
+
+                                                            break;
+
+                                                        }
+                                                    }
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-7" style="border:1px solid;border-right:none;">
+
+                                                <div class="row">
+
+                                                    @foreach (var item in ViewBag.ListCustDtl)
+                                                    {
+
+                                                        if (Billnos == item.SalesGST.SaleGST_BillNo)
+                                                        {
+                                                            <div class="col-sm" style="border-right:1px solid;border-bottom:1px solid;">
+                                                                <div class="row">
+                                                                    <div class="col-sm"><b>Bill No : </b></div>
+                                                                    <div class="col-sm">
+                                                                        <b style="font-weight:600;color:red"> @item.SalesGST.SaleGST_BillNo </b>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm" style="border-bottom:1px solid;">
+                                                                <div class="row">
+                                                                    <div class="col-sm"><b>Date : </b></div>
+                                                                    <div class="col-sm">
+                                                                        <b style="font-weight:600"> @Convert.ToDateTime(item.SalesGST.SaleGST_Date).ToString("dd-MM-yyyy") </b>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            break;
+                                                        }
+                                                    }
+                                                </div>
+
+
+
+
+
+                                            </div>
+                                        </div>
+
+                                        <br />
+
+
+                                        <style>
+                                            table {
+                                                border: 1px solid black;
+                                                border-left: none;
+                                                border-right: none;
+                                            }
+
+                                            th {
+                                                border: 1px solid black;
+                                                border-left: 1px solid;
+                                                border-right: 1px solid;
+                                                padding-left: 20px;
+                                            }
+
+
+                                            td {
+                                                padding-left: 20px;
+                                                border-left: 1px solid;
+                                                border-right: 1px solid;
+                                            }
+
+                                            .bd {
+                                                border-top: 1px solid;
+                                            }
+
+                                            table {
+                                                border-collapse: collapse;
+                                            }
+                                        </style>
+
+
+
+
+                                        <div class="row">
+                                            <div class="col-md-12" style="padding:0">
+
+                                                <table style="width:100%;border-collapse: collapse;">
+                                                    <thead>
+
+                                                        <tr style="border-collapse: collapse;">
+                                                            <th rowspan="2" style="border-left:none">
+                                                                ID
+                                                            </th>
+                                                            <th rowspan="2">
+                                                                Product Name
+                                                            </th>
+                                                            <th rowspan="2">
+                                                                HSN Code
+                                                            </th>
+
+
+
+                                                            <th rowspan="2">
+                                                                Product Rate (Rs)
+                                                            </th>
+
+                                                            @if (discTot != 0)
+                                                            {
+
+                                                                <th rowspan="2">
+                                                                    Disc. (%)
+                                                                </th>
+                                                            }
+
+                                                            <th rowspan="2">
+                                                                Qnt.
+                                                            </th>
+
+                                                            @*<th rowspan="2">
+                                                                    Product Gst (%)
+                                                                </th>
+                                                                <th rowspan="2">
+                                                                    Product Gst (Rs)
+                                                                </th>*@
+
+
+                                                            <th colspan="2">
+                                                                CGST
+                                                            </th>
+
+                                                            <th colspan="2">
+                                                                SGST
+                                                            </th>
+
+
+                                                            <th rowspan="2" style="border-right:none">
+                                                                Product Total (Rs)
+                                                            </th>
+
+                                                        </tr>
+
+                                                        <tr style="border-collapse: collapse;">
+
+
+
+
+                                                            <th>
+                                                                %
+                                                            </th>
+                                                            <th>
+                                                                Rs
+                                                            </th>
+
+
+
+                                                            <th>
+                                                                %
+                                                            </th>
+                                                            <th>
+                                                                Rs
+                                                            </th>
+
+
+                                                        </tr>
+
+
+
+                                                    </thead>
+
+                                                    <tbody>
+                                                        @{
+                                                            int srno = 0;
+
+                                                            decimal ProdTotal = 0, GrandTo = 0, DiscTotl = 0, CnS_GST = 0;
+                                                            int QntTotal = 0;
+                                                            string NoInWord = "";
+                                                            int Ftl = 0;
+                                                        }
+
+
+                                                        @foreach (var item in ViewBag.ProductsDtl)
+                                                        {
+                                                            if (Billnos == item.SalesGST.SaleGST_BillNo)
+                                                            {
+
+                                                                <tr>
+                                                                    <td style="border-left:none">
+                                                                        @{
+
+
+                                                                            srno++;
+                                                                        }
+
+                                                                        @srno
+                                                                    </td>
+                                                                    <td>
+                                                                        @item.ProductDetails.ProductName
+                                                                    </td>
+                                                                    <td>
+                                                                        @item.ProductDetails.HSM_Code
+                                                                    </td>
+
+                                                                    <td>
+                                                                        @item.SalesGST.SaleGST_ProductRate
+                                                                        @{
+                                                                            ProdTotal += item.SalesGST.SaleGST_ProductRate;
+                                                                        }
+
+                                                                    </td>
+                                                                    @if (discTot != 0)
+                                                                    {
+                                                                        <td>
+                                                                            @item.SalesGST.SaleGST_Discount
+                                                                            @{
+                                                                                DiscTotl += item.SalesGST.SaleGST_Discount;
+                                                                            }
+                                                                        </td>
+                                                                    }
+
+                                                                    <td>
+                                                                        @item.SalesGST.SaleGST_Quantity
+                                                                        @{
+                                                                            QntTotal += item.SalesGST.SaleGST_Quantity;
+                                                                        }
+                                                                    </td>
+
+                                                                    @*<td>
+                                                                        @item.ProductGST.ProdGst*@
+                                                                    @{
+                                                                        decimal divGst = item.ProductGST.ProdGst / 2;
+                                                                    }
+                                                                    @*</td>*@
+
+
+                                                                    @*<td>
+                                                                        @item.SalesGST.SaleGST_GstRs*@
+                                                                    @{
+                                                                        decimal divRsGst = item.SalesGST.SaleGST_GstRs / 2;
+                                                                    }
+                                                                    @*</td>*@
+
+
+                                                                    <td>
+                                                                        @divGst
+                                                                    </td>
+
+                                                                    <td>
+
+                                                                        @Math.Round(divRsGst, 2)
+
+                                                                        @{
+                                                                            CnS_GST += divRsGst;
+                                                                        }
+                                                                    </td>
+
+                                                                    <td>
+                                                                        @divGst
+                                                                    </td>
+
+                                                                    <td>
+
+
+                                                                        @Math.Round(divRsGst, 2)
+                                                                    </td>
+
+
+                                                                    <td style="border-right:none">
+                                                                        @item.SalesGST.SaleGST_Total
+                                                                        @{
+                                                                            GrandTo += item.SalesGST.SaleGST_Total;
+                                                                        }
+                                                                    </td>
+                                                                </tr>
+                                                            }
+                                                        }
+
+                                                        <tr>
+                                                            <td colspan="3" class="bd text-center" style="border-left:none;padding:0"><b> Total</b></td>
+
+                                                            <td class="bd"><b style="font-weight:600">@ProdTotal</b></td>
+                                                            @if (discTot != 0)
+                                                            {
+                                                                <td class="bd"><b style="font-weight:600">@DiscTotl</b></td>
+
+                                                            }
+                                                            <td class="bd"><b style="font-weight:600">@QntTotal</b></td>
+                                                            @*<td class="bd"><b style="font-weight:600"></b></td>
+
+                                                                <td class="bd"><b style="font-weight:600"></b></td>*@
+
+
+                                                            <td class="bd"><b style="font-weight:600"></b></td>
+                                                            <td class="bd"><b style="font-weight:600">@Math.Round(CnS_GST, 2) </b></td>
+
+                                                            <td class="bd"><b style="font-weight:600"></b></td>
+                                                            <td class="bd"><b style="font-weight:600">@Math.Round(CnS_GST, 2)</b></td>
+
+                                                            <td class="bd" style="border-right:none;font-weight:600">@GrandTo </td>
+                                                        </tr>
+
+
+
+                                                    </tbody>
+                                                </table>
+
+
+                                            </div>
+                                        </div>
+
+                                        <br />
+
+
+
+                                        <div class="row">
+                                            <div class="col-md-6" style="border-top:1px solid;border-bottom:1px solid;border-right:1px solid;padding:0">
+                                                <div class="text-center" style="border-bottom:1px solid">
+                                                    <b>Final Total in word</b>
+                                                </div>
+                                                <div class="text-center" style="border-bottom:1px solid">
+
+                                                    <b style="font-weight:600;padding-left:15px">
+                                                        <b style="font-weight:600" id="FtotalWord"></b>
+
+
+                                                        @foreach (var item in ViewBag.ListDiscFitotalDtl)
+                                                        {
+                                                            if (Billnos == item.SalesGST_Report.SalesGST_Rpt_BillNo)
+                                                            {
+                                                                Ftl = item.SalesGST_Report.SalesGST_Rpt_FinalTotal;
+                                                            }
+                                                        }
+
+                                                        @{
+                                                            NoInWord = NumberToWords(Ftl);
+                                                        }
+
+                                                        @NoInWord rupees only.
+
+                                                    </b>
+                                                </div>
+
+
+                                                <div class="text-center" style="border-bottom:1px solid">
+                                                    <b>Bank Details</b>
+                                                </div>
+                                                <div class="" style="border-bottom:1px solid">
+
+
+                                                    @foreach (var item in ViewBag.ListOrgBnkDtl)
+                                                    {
+                                                        <div class="row">
+                                                            <div class="col-sm-5 pl-4">
+                                                                <b>Bank Name</b><br />
+                                                                <b>Branch Name</b><br />
+                                                                <b>Bank Account Number</b><br />
+                                                                <b>Bank Branch IFSC</b>
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <b style="font-weight:600">@item.BankDetails.BnkName</b><br />
+                                                                <b style="font-weight:600">@item.BankDetails.BnkBranchName</b><br />
+                                                                <b style="font-weight:600">@item.BankDetails.BnkAccountNumber</b><br />
+                                                                <b style="font-weight:600">@item.BankDetails.BnkIFSCNumber</b>
+                                                            </div>
+                                                        </div>
+
+                                                        break;
+
+                                                    }
+
+                                                </div>
+
+
+
+
+                                                <div class="text-center" style="border-bottom:1px solid">
+                                                    <b>Terms and Conditions</b>
+                                                </div>
+                                                <div class="">
+
+                                                    <ol type="1">
+                                                        @foreach (var item in ViewBag.TermsNConditon)
+                                                        {
+                                                            if (Billnos == item.SalesGst_Tnc.SalesGst_BillNo)
+                                                            {
+                                                                <li style="font-weight:600">@item.TermsCondition.TurCon</li>
+                                                            }
+                                                        }
+                                                    </ol>
+
+                                                </div>
+
+
+
+
+                                            </div>
+                                            <div class="col-md-6" style="border-top:1px solid;border-bottom:1px solid;padding:0">
+
+
+                                                @foreach (var item in ViewBag.ListDiscFitotalDtl)
+                                                {
+
+                                                    if (Billnos == item.SalesGST_Report.SalesGST_Rpt_BillNo)
+                                                    {
+
+                                                        <div class="" style="border-bottom:1px solid">
+                                                            <div class="row">
+                                                                <div class="col-sm pl-4"> <b>Grand Total (Rs) :</b> </div>
+                                                                <div class="col-sm pr-4" style="text-align: right;"><b style="font-weight:600">@GrandTo  @*@item.SalesGST_Report.SalesGST_Rpt_GrandTotal*@ </b> </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="" style="border-bottom:1px solid">
+                                                            <div class="row">
+                                                                <div class="col-sm pl-4"> <b>Discount (%) :</b> </div>
+                                                                <div class="col-sm pr-4" style="text-align: right;"><b style="font-weight:600">@item.SalesGST_ChargeDisc.SalesGST_DiscountPer</b> </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="" style="border-bottom:1px solid">
+                                                            <div class="row">
+                                                                <div class="col-sm pl-4"> <b>Discount (Rs) :</b> </div>
+                                                                <div class="col-sm pr-4" style="text-align: right;"><b style="font-weight:600">@item.SalesGST_ChargeDisc.SalesGST_DiscountRs</b> </div>
+                                                            </div>
+                                                        </div>
+
+
+
+                                                        <div class="" style="border-bottom:1px solid">
+                                                            <div class="row">
+                                                                <div class="col-sm pl-4"> <b>Extra-Charges (Rs) :</b> </div>
+                                                                <div class="col-sm pr-4" style="text-align: right;"><b style="font-weight:600">@item.SalesGST_ChargeDisc.SalesGST_ChargesAmt</b> </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="" style="border-bottom:1px solid">
+                                                            <div class="row">
+                                                                <div class="col-sm pl-4"> <b>Add: CGST (Rs) :</b> </div>
+                                                                <div class="col-sm pr-4" style="text-align: right;"><b style="font-weight:600">@Math.Round(CnS_GST, 2)</b> </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="" style="border-bottom:1px solid">
+                                                            <div class="row">
+                                                                <div class="col-sm pl-4"> <b>Add: SGST (Rs) :</b> </div>
+                                                                <div class="col-sm pr-4" style="text-align: right;"><b style="font-weight:600">@Math.Round(CnS_GST, 2)</b> </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="" style="border-bottom:1px solid">
+                                                            <div class="row">
+                                                                <div class="col-sm pl-4"> <b>Final Total (Rs) :</b> </div>
+                                                                <div class="col-sm pr-4" style="text-align: right;">
+                                                                    <b style="font-weight:700;font-size:25px">
+                                                                        &#8377; @item.SalesGST_Report.SalesGST_Rpt_FinalTotal
+
+                                                                        @{
+
+                                                                            AllFinalTotalSum += item.SalesGST_Report.SalesGST_Rpt_FinalTotal;
+
+                                                                            FAmttotal = item.SalesGST_Report.SalesGST_Rpt_FinalTotal;
+                                                                        }
+                                                                    </b>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    }
+                                                }
+
+
+
+                                                <div class="text-center" style="border-bottom:1px solid">
+
+                                                    <b style="font-size:14px">Cetified that the particulars given above are true and correct.</b><br />
+
+                                                    <b style="font-size:25px">For @ViewBag.ListOrgDtl.OrganizationDetails.OrgName</b>
+                                                </div>
+
+
+                                                <div class="text-center" style="border-bottom:1px solid">
+
+                                                    <div style="padding:5px">
+                                                        <img height="80" width="170" alt="@ViewBag.ListOrgDtl.OrganizationDetails.OrgDegitalSignature" src="data:image/jpg;base64,@Convert.ToBase64String(ViewBag.ListOrgDtl.OrganizationDetails.OrgDegitalSignature)" />
+                                                    </div>
+
+
+                                                </div>
+
+                                                <div class="text-center">
+
+                                                    <b style="font-size:14px">Authorised Singnature</b>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+
+
+
+
+
+
+                                        <div style="margin-top:5px">
+
+
+                                            @*@foreach (var item in ViewBag.CustInfo)
+                                                {
+                                                    if (item.TranBillNo == BillNoChk)
+                                                    {
+                                                        <div style="width:100%;">
+                                                            <div style="float:left;"> <b>Bill No : </b> <b style="font-weight:600;color:red">@item.TranBillNo</b> </div>
+                                                            <div style="float:right;"> <b>Purchase Date : </b>   <b style="font-weight:600">@Convert.ToDateTime(item.PurDate).ToString("dd-MM-yyyy")</b> </div>
+                                                        </div>
+                                                        <br />
+                                                        <div>
+                                                            <b>Name : </b> <b style="font-weight:600">@item.CustName</b><br />
+                                                            <b>Bill Amt (Rs) : </b> <b style="font-weight:600">@item.BillAmt</b>
+                                                        </div>
+                                                    }
+
+                                                }
+                                                <br />*@
+
+
+                                            <table class="ProductTbl" style="width:100%">
+                                                <thead>
+                                                    <tr>
+                                                        <th>
+                                                            Transaction ID
+                                                        </th>
+                                                        <th>
+                                                            Received Amt (Rs)
+                                                        </th>
+                                                        <th>
+                                                            Payment Method
+                                                        </th>
+                                                        <th>
+                                                            Cheque No
+                                                        </th>
+                                                        <th>
+                                                            Note
+                                                        </th>
+                                                        <th>
+                                                            Date
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+
+                                                <tbody>
+                                                    @{
+                                                        decimal ReciAmtTotal = 0;
+                                                    }
+                                                    @foreach (var item in ViewBag.PaymentTransaction)
+                                                    {
+
+                                                        if (item.SGstTran_BillNo == Billnos)
+                                                        {
+
+                                                            <tr>
+                                                                <td>
+                                                                    @item.SGstTran_TranID
+                                                                </td>
+                                                                <td>
+                                                                    @item.SGstTran_TranReciAmt
+                                                                    @{
+                                                                        ReciAmtTotal += item.SGstTran_TranReciAmt;
+                                                                    }
+                                                                </td>
+                                                                <td>
+                                                                    @item.SGstTran_PayMethName
+                                                                </td>
+                                                                <td>
+                                                                    @item.SGstTran_Cheque
+                                                                </td>
+                                                                <td>
+                                                                    @item.SGstTran_TransactionNote
+                                                                </td>
+                                                                <td>
+                                                                    @Convert.ToDateTime(item.SGstTran_Date).ToString("dd-MM-yyyy")
+                                                                </td>
+                                                            </tr>
+                                                        }
+                                                    }
+                                                </tbody>
+                                            </table>
+
+                                            <br />
+
+
+                                            <div>
+
+                                                @*<b>Final Amt (Rs) : </b> <b style="font-weight:600;">@FAmttotal</b> <br />*@
+
+                                                <b>Total Received Amt (Rs) : </b> <b style="font-weight:600;">@ReciAmtTotal</b> <br />
+
+                                                <b>Outstanding Amt (Rs) : </b>    <b style="font-weight:600;">
+                                                    @{
+                                                        decimal Outstand = FAmttotal - ReciAmtTotal;
+                                                    }
+                                                    @Outstand
+                                                </b>
+                                            </div>
+
+                                            <br />
+
+                                        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                    </div>
+
+                                }
+                            }
+
+
+
+
+
+
+
+                            <br />
+                            <br />
+                        }
+
+                        <hr style="border:2px solid" />
+
+                        <b style="font-weight:700">Final Total Amt (Rs) :-<b style="font-weight:600"> @AllFinalTotalSum</b></b>
+                    }
+
+
+                </div>
+
+            }
+            else
+            {
+                <h4 class="text-center text-danger" style="border:1px solid #ddd;font-weight:600;margin-top:15px"> Organization is Not Available</h4>
+            }
+        }
+        else
+        {
+            <h4 class="text-center text-danger" style="border:1px solid #ddd;font-weight:600;margin-top:15px">Data is Not Available </h4>
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    @functions{
+
+        public static string NumberToWords(int number)
+        {
+            if (number == 0)
+                return "zero";
+
+            if (number < 0)
+                return "minus " + NumberToWords(Math.Abs(number));
+
+            string words = "";
+
+            if ((number / 1000000) > 0)
+            {
+                words += NumberToWords(number / 1000000) + " million ";
+                number %= 1000000;
+            }
+
+            if ((number / 1000) > 0)
+            {
+                words += NumberToWords(number / 1000) + " thousand ";
+                number %= 1000;
+            }
+
+            if ((number / 100) > 0)
+            {
+                words += NumberToWords(number / 100) + " hundred ";
+                number %= 100;
+            }
+
+            if (number > 0)
+            {
+                if (words != "")
+                    words += "and ";
+
+                var unitsMap = new[] { "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen" };
+                var tensMap = new[] { "zero", "ten", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety" };
+
+                if (number < 20)
+                    words += unitsMap[number];
+                else
+                {
+                    words += tensMap[number / 10];
+                    if ((number % 10) > 0)
+                        words += "-" + unitsMap[number % 10];
+                }
+            }
+
+            return words;
+        }
+
+    }
+
+
+
+    <style type="text/css">
+        @@media print {
+
+            #Btnhide, #fieldsets {
+                display: none;
+            }
+        }
+
+        table, td, th {
+            border: 1px solid;
+        }
+
+        table {
+            width: 100%;
+        }
+    </style>
+
+    <style>
+        fieldset {
+            border: 1px solid #ddd;
+            border-left: 1px solid #ddd;
+            padding: 6px;
+            margin-bottom: 5px;
+            width: 100%;
+        }
+
+        legend {
+            width: auto;
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        #main:hover .box {
+            border-color: #1b76c4;
+        }
+    </style>
+
+
+</body>
+</html>
+
+
+
+
+
+
+
+

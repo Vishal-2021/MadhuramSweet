@@ -1,0 +1,14 @@
+﻿@model Accounting_Final_Details.Models.SalesBillWithoutGstDtl
+
+<option value="">--- Select Bill No ---</option>
+
+
+@if (ViewBag.BillNo != null)
+{
+    foreach (var item in ViewBag.BillNo)
+    {
+        <option value="@item.Value">@item.Text</option>
+    }
+
+}
+

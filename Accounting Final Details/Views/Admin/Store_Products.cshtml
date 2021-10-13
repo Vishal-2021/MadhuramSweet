@@ -1,0 +1,504 @@
+﻿@model Accounting_Final_Details.Models.Store_AddProduct
+
+
+@{
+    ViewBag.Title = "Store_Products";
+    //  Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    if (Session["Role"] != null)
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    }
+
+}
+
+<style>
+    .zoom {
+       
+    }
+
+        .zoom:hover {
+            -ms-transform: scale(9.5); /* IE 9 */
+            -webkit-transform: scale(9.5); /* Safari 3-8 */
+            transform: scale(9.5);
+           
+            
+        }
+</style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<main>
+    <div class="container-fluid">
+        <h2 class="mt-4">Store Products !</h2>
+        @*<ol class="breadcrumb mb-4">
+            <li class="breadcrumb-item"><a href="index">Dashboard</a></li>
+
+        </ol>*@
+
+        <hr />
+        <section class="section alert-section">
+            <div class="alert alert-info" style="background:#29d2e4;">
+                <div class="alert-container">
+
+                    <i class="fa fa-info-circle"></i>
+                    <b class="alert-info" style="background:#29d2e4">Info alert:</b> You've got some friends nearby, stop looking at your phone and find them...
+                </div>
+            </div>
+        </section>
+
+
+
+
+
+
+
+
+        <div class="form-row">
+            <div class="col">
+                <div class="alert alert-success" id="success-alert" style="display:none" role="alert">
+                    <i class="far fa-check-circle"></i> @TempData["SaveRegMsg"] @TempData["UpdatRegMsg"]
+                </div>
+            </div>
+
+            <div class="col text-right" style="padding-top:10px;padding-bottom:10px">
+                <button type="button" onclick="Create()" class="btn btn-info"><i class="fa fa-plus"></i> Add</button>
+            </div>
+
+        </div>
+
+        @*<script>
+             $(document).ready(function () {
+
+                 var SaveMsg = "@TempData["SaveRegMsg"]";
+
+                 var UpdateMsg = "@TempData["UpdatRegMsg"]";
+
+
+                 if (SaveMsg != "") {
+                     $("#success-alert").fadeTo(2000, 500).slideUp(500, function () {
+                         $("#success-alert").slideUp(500);
+                     });
+                 }
+
+                 if (UpdateMsg != "") {
+                     $("#success-alert").fadeTo(2000, 500).slideUp(500, function () {
+                         $("#success-alert").slideUp(500);
+                     });
+                 }
+
+             });
+        </script>*@
+
+
+
+
+
+
+
+        <div class="card mb-4">
+            <div class="card-header"><i class="fas fa-table mr-1"></i>Store Products</div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>
+                                    ID
+                                </th>
+
+                                <th>
+                                    Product Name
+                                </th>
+                                <th>
+                                    Rate
+                                </th>
+                                <th>
+                                    Category
+                                </th>
+                                <th>
+                                    Images
+                                </th>
+                                <th>
+                                    Descriptions
+                                </th>
+                                <th>
+                                    Status
+                                </th>
+
+                                <th style="padding-right:60px">
+                                    Actions
+                                </th>
+
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>
+                                    ID
+                                </th>
+
+                                <th>
+                                    Product Name
+                                </th>
+                                <th>
+                                    Rate
+                                </th>
+                                <th>
+                                    Category
+                                </th>
+                                <th>
+                                    Images
+                                </th>
+                                <th>
+                                    Descriptions
+                                </th>
+                                <th>
+                                    Status
+                                </th>
+
+                                <th style="padding-right:60px">
+                                    Actions
+                                </th>
+
+                            </tr>
+                        </tfoot>
+                        <tbody>
+
+
+                            @foreach (var item in ViewBag.StoreProductList)
+                            {
+                                <tr>
+                                    <td>
+                                        @item.Store_AddProduct.Sp_ID
+                                    </td>
+                                    <td>
+                                        @item.Store_AddProduct.Sp_ProductName
+                                    </td>
+                                    <td>
+                                        @item.Store_AddProduct.Sp_Rate
+                                    </td>
+                                    <td>
+                                        @item.Product_Catagory.Category_Name
+                                    </td>
+                                    <td>
+                                        <img height="25" width="25" alt="" src="~/StoreProductImgs/@item.Store_AddProduct.Sp_PImageName" />
+                                    </td>
+                                    <td>
+                                        @item.Store_AddProduct.Sp_Description
+                                    </td>
+                                    <td>
+                                        <div class="image-container">
+                                            <a href="/Admin/ActiveStatusStoreProduct/@item.Store_AddProduct.Sp_ID" class="status-tag" style="padding:0px;padding-left:1px;padding-right:1px;display:inline-block; border-radius:4px; color:#fff;width:70px;text-align:center; text-decoration:none">@item.ActStats.ActStsName</a>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <a class="text-info" href="#" onclick="Edit(@item.Store_AddProduct.Sp_ID)"> <i class="fa fa-edit" style="font-size:23px"></i></a> &nbsp;
+                                        <a class="text-danger" href="/Admin/StoreProduct_Delete/@item.Store_AddProduct.Sp_ID" onclick="return confirm('Are you sure?')"><i class="fas fa-trash-alt" style="font-size:23px"></i></a>
+                                    </td>
+                                </tr>
+                            }
+
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+
+
+
+
+@*Model Of Insert Update Delete*@
+
+<div class="modal fade bd-example-modal-lg" id="ShowModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="Create" style="display:none;">Add Product</h4>
+                <h4 class="Edit" style="display:none;">Edit Product</h4>
+
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+
+
+
+            </div>
+            <div class="modal-body">
+                @*@using (Html.BeginForm())
+                    {*@
+                @*formaction="/Admin/"*@
+
+               
+
+                @using (Html.BeginForm("AddEditStore_Products", "Admin", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+
+                    @Html.HiddenFor(m => m.Sp_ID, new { @class = "form-control", @name = "Sp_ID", })
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <div class="">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <span class="fa fa-user"></span>
+                                        </span>
+                                    </div>
+                                    @Html.EditorFor(model => model.Sp_ProductName, new { htmlAttributes = new { @class = "form-control", placeholder = "Product Name", onchange = "CheckOrgNameExistorNot()", required = "required" } })
+                                    <div class="d-flex align-items-center" style="">
+                                        <i id="Valid" class="fas fa-check-circle text-success" style="display:none;   margin-left:10px;"></i>
+                                        <i id="Invalid" class="fas fa-exclamation-circle text-danger" style="display:none;margin-left:10px;"></i>
+                                    </div>
+                                </div>
+                                @Html.ValidationMessageFor(model => model.Sp_ProductName, "", new { @class = "text-danger" })
+                                <div class="text-danger" style="display:none;" id="wrong"><i class="fas fa-exclamation fa-xs"></i> Your Organization Name already Exist.</div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div class="">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-rupee-sign"></i>
+                                        </span>
+                                    </div>
+                                    @Html.EditorFor(model => model.Sp_Rate, new { htmlAttributes = new { @class = "form-control", placeholder = "Rate", required = "required" } })
+                                </div>
+                                @Html.ValidationMessageFor(model => model.Sp_Rate, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <div class="">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <span class="far fa-list-alt"></span>
+                                        </span>
+                                    </div>
+                                   @Html.DropDownListFor(model => model.Sp_Category, ViewBag.ProductCategoryList as SelectList, "-- Select Category --", new { @class = "form-control", required = "required" })
+                                </div>
+                                @Html.ValidationMessageFor(model => model.Sp_Category, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+ 
+                        <div class="form-group col-md-6">
+                            <div class="">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-file-image" style="font-size:24px;padding-left:1px;padding-right:5px"></i>
+                                        </span>
+                                    </div>
+                                    <input class="form-control SpPImage" type="file" onchange="readURL(this);" name="SpPImage" placeholder="Product Image" required />
+                                  
+                                    <img class="zoom"  height="37" width="37" id="SpImages" src="" />
+        
+
+                                 </div>
+                                @Html.ValidationMessageFor(model => model.Sp_PImage, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+   
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <div class="">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <i class="far fa-sticky-note"></i>
+                                        </span>
+                                    </div>
+                                    @Html.TextAreaFor(model => model.Sp_Description, new { @class = "form-control", placeholder = "Description", required = "required" } )
+                                </div>
+                                @Html.ValidationMessageFor(model => model.Sp_Description, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            @*<div class="">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-sync"></i>
+                                        </span>
+                                    </div>
+                                    @Html.DropDownListFor(model => model.Sp_Status, ViewBag.ActStatusList as SelectList, "-- Select Status --", new { @class = "form-control",required = "required" })
+                                </div>
+                                @Html.ValidationMessageFor(model => model.Sp_Status, "", new { @class = "text-danger" })
+                            </div>*@
+                        </div>
+                    </div>
+
+                  
+
+                    <div class="form-group">
+                        <button class="btn btn-info form-control Create" type="submit" formaction="/Admin/AddEditStore_Products" style="display:none;"><i class="glyphicon glyphicon-registration-mark"></i> Submit</button>
+                        <button class="btn btn-info form-control Edit" type="submit" formaction="/Admin/AddEditStore_Products" style="display:none;"><i class="glyphicon glyphicon-registration-mark"></i> Update</button>
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@*End of the modal*@
+
+
+
+<script>
+
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                //$('#blah')
+                //    .attr('src', e.target.result)
+                //    .width(150)
+                //    .height(200);
+
+                $("#SpImages").attr("src", e.target.result);
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+
+    function Create() {
+        $("#ShowModal").modal();
+        $(".Edit").hide();
+        $(".Create").show();
+
+
+                 $('#Sp_ID').val("");
+        $('#Sp_ProductName').val("");
+               $('#Sp_Rate').val("");
+           $('#Sp_Category').val("");
+             $('#Sp_PImage').val("");
+        $('#Sp_Description').val("");
+        $('#Sp_Status').val("");
+    }
+
+
+    function Edit(ID) {
+
+        $("#ShowModal").modal();
+        $(".Create").hide();
+        $(".Edit").show();
+
+      var aa =  $("#takeImage").val();
+
+
+
+       // alert(ID);
+
+
+
+        $.ajax({
+
+            url: "/Admin/FetchStoreProductDtls/" + ID,
+
+            typr: "GET",
+
+            contentType: "application/json;charset=UTF-8",
+
+            dataType: "json",
+
+
+
+            success: function (result) {
+
+                
+                $('#Sp_ID').val(result.Sp_ID);
+                $('#Sp_ProductName').val(result.Sp_ProductName);
+                $('#Sp_Rate').val(result.Sp_Rate);
+                $('#Sp_Category').val(result.Sp_Category);
+
+            
+
+                $('#Sp_Description').val(result.Sp_Description);
+                $('#Sp_Status').val(result.Sp_Status);
+                 
+
+             
+             
+
+
+                $("#SpImages").attr("src", "/StoreProductImgs/" + result.Sp_PImageName);
+
+
+            },
+
+
+        });
+
+        return false;
+
+    }
+
+
+
+    @* <----------- Organization Name Exist Or Not --------->*@
+    function CheckOrgNameExistorNot() {
+
+    var empObj = {
+        Sp_ProductName: $('#Sp_ProductName').val(),
+    };
+
+    $.ajax({
+        url: "/Admin/StoreProductNameExistOrNot",
+        data: JSON.stringify(empObj),
+        type: "POST",
+        contentType: "application/json;charset=utf-8",
+        dataType: "json",
+        success: function (result) {
+
+            if (result == 0) {
+                $('#Sp_ProductName').val('');
+                $('#Valid').hide();
+                $('#Invalid').show();
+
+                $('#wrong').show();
+            }
+            else {
+                $('#wrong').hide();
+                $('#Invalid').hide();
+                $('#Valid').show();
+
+
+
+            }
+        },
+        error: function (ts) { alert(ts.responseText) }
+
+    });
+}
+
+    @* <----------- End UserName Exist Or Not --------->*@
+
+
+
+
+
+</script>

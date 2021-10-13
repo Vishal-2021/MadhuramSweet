@@ -1,0 +1,57 @@
+﻿@model Accounting_Final_Details.Models.PurchaseDtl
+
+@{
+
+     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+
+ //   Layout = null;
+
+}
+
+
+
+
+
+@foreach (var item in ViewBag.lst)
+{
+   
+    string str2 = item.F_Images;
+
+    int QumaCnt = 0;
+
+    int lng =  str2.Length;
+
+    for (int i = 0; i < lng; i++)
+    {
+        if (str2[i] == ',')
+        {
+            QumaCnt++;
+        }
+    }
+
+    <h1 class="bg-danger">@QumaCnt</h1>
+
+    for (int ci = 1; ci < QumaCnt; ci++)
+    {
+        string str1 = "";
+
+        for (int i = 0; i < lng; i++)
+        {
+
+            if (str2[i] == ',')
+            {
+              <h1 class="bg-info">@str1</h1>
+                break;
+            }
+
+            str1 += str2[i];
+
+
+
+        }
+
+    }
+
+
+  
+}

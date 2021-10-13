@@ -1,0 +1,256 @@
+﻿@{
+    ViewBag.Title = "ListPurchase_Report";
+    Layout = null;
+}
+
+@{
+
+    // Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    if (Session["Role"] != null)
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    }
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+</head>
+<body>
+
+    <style>
+        table, td, th {
+            border: 1px solid black;
+        }
+
+        table {
+            border-collapse: collapse;
+        }
+    </style>
+
+
+
+    <div class="print" id="printableArea">
+
+        <h1 class="text-center">
+            @ViewBag.name
+        </h1>
+
+        <table style="width:100%">
+
+            <thead>
+                <tr>
+                    <th>
+                        Bill No
+                    </th>
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        Date
+                    </th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var item in ViewBag.ListPurchaseDtl)
+            {
+                    <tr>
+                        <td>
+                     
+                            @item.PurchaseDtl.PurBillNo
+                        </td>
+                        <td>
+                            @item.CustDtl.CustName
+                        </td>
+                        <td>
+                            @Convert.ToDateTime(item.PurchaseDtl.PurDate).ToString("dd-MM-yyyy")
+                        </td>
+                    </tr>
+
+                break;
+            }
+            </tbody>
+        </table>
+        <br />
+        <table class="ProductTbl" style="width:100%">
+                <thead>
+                    <tr>
+
+                        <th>
+                            Product Name
+                        </th>
+                        <th>
+                            Product Rate
+                        </th>
+                        <th>
+                            Gst (%)
+                        </th>
+                        <th>
+                            Quantity
+                        </th>
+                        <th>
+                            Discount (%)
+                        </th>
+                        <th>
+                            Gst (Rs.)
+                        </th>
+                        <th>
+                            Total
+                        </th>
+
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @foreach (var item in ViewBag.ListPurchaseDtl)
+                {
+                        <tr>
+
+                            <td>
+                                @item.ProductDetails.ProductName
+                            </td>
+                            <td>
+                                @item.PurchaseDtl.PurProductRate
+                            </td>
+                            <td>
+                                @item.ProductGST.ProdGst
+                            </td>
+                            <td>
+                                @item.PurchaseDtl.PurQuantity
+                            </td>
+                            <td>
+                                @item.PurchaseDtl.PurDiscount
+                            </td>
+                            <td>
+                                @item.PurchaseDtl.PurGstRs
+                            </td>
+                            <td>
+                                @item.PurchaseDtl.PurTotal
+                            </td>
+                        </tr>
+                }
+                </tbody>
+            </table>
+        <br />
+        <table style="width:100%">
+
+            <thead>
+                <tr>
+                    <th>
+                        Discount (%)
+                    </th>
+                    <th>
+                        Discount (Rs)
+                    </th>
+                    <th>
+                        Charges (Rs)
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in ViewBag.ListPurchaseDtl)
+                {
+                    <tr>
+
+                        <td>
+                            @item.PurchaseReportBill.PrRBDiscountPer
+                        </td>
+                        <td>
+                            @item.PurchaseReportBill.PrRBDiscountRs
+                        </td>
+                        <td>
+                            @item.PurchaseReportBill.PrRBCharges
+                        </td>
+
+                    </tr>
+
+                    break;
+                }
+            </tbody>
+        </table>
+        <br />
+        <table style="width:100%">
+
+                <thead>
+                    <tr>
+                        <th>
+                            Grand Total (Rs)
+                        </th>
+                        <th>
+                            Gst Total (Rs)
+                        </th>
+                        <th>
+                            Final Total (Rs)
+                        </th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var item in ViewBag.ListPurchaseDtl)
+                {
+                        <tr>
+
+                            <td>
+                                @item.PurchaseForReport.PrGrandTotal
+                            </td>
+                            <td>
+                                @ViewBag.SumGst
+                            </td>
+                            <td>
+                                @item.PurchaseForReport.PrFinalTotal
+                            </td>
+
+                        </tr>
+
+                    break;
+                }
+                </tbody>
+            </table>
+
+    </div>
+
+
+    <div style="width:50%;margin-top:50px;">
+        @*<button class="btn btn-info" onclick="printDiv('printableArea')" style="float:right;">Print</button>*@
+        <button type="button" id="Btnhide" class="btn btn-info btn-md mr-2" onclick="window.print()"><i class="fas fa-print"></i> PDF</button>
+    
+     </div>
+
+
+    <style type="text/css">
+        @@media print {
+
+            #Btnhide {
+                display:none;
+            }
+        }
+
+        table, td, th {
+            border: 1px solid;
+         
+        }
+
+        table{
+              width:100%;
+        }
+    </style>
+
+    @*<script>
+        $(document).ready(function () {
+            window.print();
+        })
+    </script>*@
+
+
+</body>
+</html>
+
+

@@ -1,0 +1,299 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_LayoutCustomer.cshtml";
+
+    ViewBag.Title = "checkoutCart";
+}
+
+
+    @if(TempData["MsgPinc"] != null) {
+<script>
+        alert(@TempData["MsgPinc"]);
+</script>
+
+}
+
+
+
+<!-- dashboard-section start -->
+<section class="dashboard-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-7">
+
+                <div class="form-item billing-item bg-color-white box-shadow p-3 p-lg-5 border-radius5">
+                    <h6>User Accounts</h6>
+                    <form action="#" class="billing-form">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="input-item">
+                                    <label>Customer Name*</label>
+
+
+                                    <input type="hidden" name="Ftotal" class="FCartTotal" required>
+
+
+                                    <input type="text" name="CustName" id="CustName" required>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="input-item">
+                                    <label>Contact Number*</label>
+                                    <input type="text" name="CustNumber" id="ContactNo" required>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-12">
+                                <div class="input-item">
+                                    <label>Address*</label>
+                                    <input type="text" name="CustAddress" required>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="input-item">
+                                    <label>Pincode*</label>
+                                    <input type="text" id="CustPincode" name="CustPincode" onchange="CheckAvailabitityPincode()" required>
+                                </div>
+                            </div>
+
+
+                            <div class="col-lg-6">
+                                <div class="input-item">
+                                    <label>Pyament mode*</label>
+                                    <div class="flux-custom-select">
+                                        <select name="CustPaymentMode" required>
+                                            <option value="">-- Select Payment Mode --</option>
+                                            <option value="Cash">Cash</option>
+                                            <option value="GPay">GPay</option>
+                                            <option value="Paytm"> Paytm</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-lg-6">
+                                <div class="input-item">
+                                    <label>Status*</label>
+                                    <div class="flux-custom-select">
+                                        <select name="CustStatus" required>
+                                            <option value="">-- Select Status --</option>
+                                            <option value="Home Delivery">Home Delivery</option>
+                                            <option value="Pickup">Pickup</option>
+
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                            <div class="col-lg-6">
+                                <div class="input-item">
+                                    <label>Your Delivery Time*</label>
+                                    @*<div class="flux-custom-select" onchange="YourOrdrs()" >*@
+
+
+                                    <select id="DelivaryTime" onchange="YourOrdrs()" name="DelivaryTime" style="height: 46px;" class="DelivaryTime form-control form-control" required>
+                                        <option value="">-- Select Orders --</option>
+                                        <option value="Today only">Today only</option>
+                                        <option value="Some Others Day">Some Others Day</option>
+                                    </select>
+
+
+                                    @*</div>*@
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4" style="display:none" id="DateBox">
+                                <div class="input-item">
+                                    <label>Date*</label>
+                                    <input type="date" name="CustOrdDate">
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4" style="display:none" id="TimeBox">
+                                <div class="input-item">
+                                    <label>Time*</label>
+                                    <input type="time" name="DeliTime">
+                                </div>
+                            </div>
+
+
+
+
+
+
+
+
+                        </div>
+
+                        <div class="text-right">
+                            <button formaction="/Customer/AddPlaceOrder" class="place-order-btn border-0"> Place Order </button>
+                        </div>
+                    </form>
+                </div>
+
+
+            </div>
+            <div class="col-lg-5">
+                <div class="cart-item sitebar-cart bg-color-white box-shadow p-3 p-lg-5 border-radius5">
+
+                    <div class="Checkcart-product-container">
+
+
+
+
+
+
+
+
+
+                    </div>
+
+                    <div class="cart-footer">
+                        @*<div class="product-other-charge">
+                                <p class="d-flex justify-content-between">
+                                    <span>Delevery charge</span>
+                                    <span>$8.00</span>
+                                </p>
+                                <a href="#">Do you have a voucher?</a>
+                            </div>*@
+
+                        <div class="cart-total">
+                            <p class="saving d-flex justify-content-between">
+                                <span>Total (Rs)</span>
+                                <span id="CartTotal"> 0 </span>
+                            </p>
+
+                            <p class="saving d-flex justify-content-between">
+                                <span>Delivery Charges (Rs)</span>
+                                <span id="DeliveryCharg"> 0 </span>
+                            </p>
+
+                            <p class="total-price d-flex justify-content-between">
+                                <span>Final Total</span>
+                                <span> &#8377; <span class="FCartTotal">0</span>  </span>
+                            </p>
+
+                        </div>
+                    </div>
+
+
+
+
+
+
+
+
+
+                </div>
+
+
+
+
+            </div>
+        </div>
+    </div>
+</section>
+<!-- dashboard-section end -->
+
+
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+
+function YourOrdrs() {
+
+
+    var DeliTime = $("#DelivaryTime").val();
+
+   // alert(DeliTime);
+
+    if (DeliTime == "Today only") {
+
+        $("#DateBox").hide();
+        $("#TimeBox").hide();
+
+    }
+
+
+    if (DeliTime == "Some Others Day") {
+        $("#DateBox").show();
+        $("#TimeBox").show();
+    }
+
+
+}
+
+
+    $(document).ready(function () {
+
+        var Title = "@ViewBag.Title";
+
+        if (Title == "checkoutCart") {
+
+
+            $("#SearchProduct").attr("class", "search-form d-none")
+        }
+
+    });
+
+    function CheckAvailabitityPincode() {
+
+        var pin = $("#CustPincode").val();
+
+        if (pin != "") {
+            $.ajax({
+                url: "/Customer/CheckAvailabitityPincode/",
+                data: { CustPincode: pin },
+                type: "GET",
+                dataType: "json",
+
+                success: function (result) {
+
+                    if (result[0] == 0) {
+                        alert("Delivery not available on this picode");
+                        $("#CustPincode").val("");
+                        $("#CustPincode").css("border", "1px solid red");
+                        $(".DeliveryCharg").html(0);
+
+                    }
+                    else {
+                        $("#CustPincode").css("border", "1px solid #ddd");
+                        $("#DeliveryCharg").html(result[1]);
+
+                        var DeliCharge = result[1];
+                        var GTotal = $("#CartTotal").text();
+
+                        FTotal = parseInt(GTotal) + +DeliCharge;
+
+                        $(".FCartTotal").html(FTotal);
+                        $('.FCartTotal').val(FTotal);
+                    }
+
+                },
+
+
+            });
+        }
+        else {
+            $("#DeliveryCharg").html(0);
+        }
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+</script>

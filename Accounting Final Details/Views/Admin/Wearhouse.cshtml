@@ -1,0 +1,354 @@
+﻿@model  Tuple<Accounting_Final_Details.Models.Wearhouse, IEnumerable<Accounting_Final_Details.Models.Wearhouse>>
+
+
+
+@{
+    ViewBag.Title = "Wearhouse";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+
+<main>
+    <div class="container-fluid">
+        <div class="row border mb-2 table-hover">
+            
+            <div class="col-12 d-flex align-items-center">
+                <img class="img-fluid" src="~/Logo/Icons/warehouse.png" style="width:30px" />
+
+                <span  class="h4 mt-2">&nbsp;  Wearhouse !</span>
+            </div>
+        </div>
+      
+
+       
+        <section class="section alert-section">
+            <div class="alert alert-info" style="background:#29d2e4;">
+                <div class="alert-container">
+
+                    <i class="fa fa-info-circle"></i>
+                    <b class="alert-info" style="background:#29d2e4">Info alert:</b> You've got some friends nearby, stop looking at your phone and find them...
+                </div>
+            </div>
+        </section>
+
+
+
+        <div class="form-row">
+            <div class="col">
+                <div class="alert alert-success" id="success-alert" style="display:none" role="alert">
+                    <i class="far fa-check-circle"></i> @TempData["SaveRegMsg"] @TempData["UpdatRegMsg"]
+                </div>
+            </div>
+
+            <div class="col text-right" style="padding-top:10px;padding-bottom:10px">
+                <button type="button" onclick="Create()" class="btn btn-light border font-weight-bold">
+
+                    <img class="img-fluid" src="~/Logo/Icons/add-button.png" style="width:20px" />
+                    New wearhouse
+                </button>
+            </div>
+
+        </div>
+
+        <script>
+            $(document).ready(function () {
+
+                var SaveMsg = "@TempData["SaveRegMsg"]";
+
+                var UpdateMsg = "@TempData["UpdatRegMsg"]";
+
+
+                if (SaveMsg != "") {
+                    $("#success-alert").fadeTo(2000, 500).slideUp(500, function () {
+                        $("#success-alert").slideUp(500);
+                    });
+                }
+
+                if (UpdateMsg != "") {
+                    $("#success-alert").fadeTo(2000, 500).slideUp(500, function () {
+                        $("#success-alert").slideUp(500);
+                    });
+                }
+
+            });
+        </script>
+
+
+
+
+
+
+
+        <div class="card mb-4">
+            <div class="card-header p-1">
+
+               
+
+                <div class="row">
+                    <div class="col-12 vertical-center">
+                        <div class="container">
+                            <div >
+                                <img class="img-fluid" src="~/Logo/Icons/warehouse.png" style="width:25px" />
+                            </div>
+                            <div >
+                                <span class="h6 font-weight-bold"> Wearhouse</span>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm table-bordered table-hover text-center" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>
+                                   ID
+                                </th>
+                                <th>
+                                    Name
+                                </th>
+                                <th>
+                                    Address
+                                </th>
+                                <th>
+                                   Status
+                                </th>
+
+                                <th>
+                                    Actions
+                                </th>
+                            </tr>
+                        </thead>
+                        
+                        <tbody>
+                            @foreach (var item in Model.Item2)
+                            {
+                            <tr>
+                                <td>
+                                   @item.Id
+                                </td>
+                                <td>
+                                    @item.Name
+                                </td>
+                                <td>
+                                    @item.Address
+                                </td>
+                                <td>
+                                  
+
+                                    @if (item.Status == true)
+                                    {
+                                        <button type="button" class="btn bg-gradient-success btn-xs font-weight-bold">Active</button>
+                                    }
+                                    else
+                                    {
+                                        <button type="button" class="btn bg-gradient-danger btn-xs font-weight-bold">Deactive</button>
+                                    }
+
+                                </td>
+                                <td>
+                                    <a class="text-info" href="#" onclick="Edit(@item.Id)">
+                                       @* <i class="fa fa-edit" style="font-size:23px"></i>*@
+                                        <img class="img-fluid" src="~/Logo/Icons/edit.png"  style="width:20px"/>
+                                    </a> | 
+                                    <a class="text-danger" href="/Admin/Wearhouse_Delete/@item.Id" onclick="return confirm('Are you sure?')">
+                                        @*<i class="fas fa-trash-alt" style="font-size:23px"></i>*@
+                                        <img class="img-fluid text-danger" src="~/Logo/Icons/trash-bin.png" style="width:20px;" />
+
+                                    </a>
+                                </td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+
+
+
+
+
+
+@*Model Of Insert Update Delete*@
+
+<div class="modal fade bd-example-modal-md" id="ShowModal">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header p-0">
+                <div class="container border m-1">
+                    <div class="row mt-2">
+                        <div class="col-1">
+                            <img class="img-fluid" src="~/Logo/Icons/warehouse.png"  />
+                        </div>
+                        <div class="col-10">
+                            <h4 class="Create" style="display:none;">
+                              Add  Wearhouse
+                            </h4>
+                            <h4 class="Edit" style="display:none;">Edit Wearhouse</h4>
+                        </div>
+                        <div class="col-1">
+                            <a href="#" class="close" data-dismiss="modal">&times;</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body p-0">
+               
+                <div class="border m-1 p-1">
+                    @using (Html.BeginForm("Wearhouse_AddUpdate", "Admin", FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <div class="form-horizontal">
+                          
+                            @Html.HiddenFor(model =>model.Item1.Id)
+                         
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.Item1.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-12">
+                                    @Html.EditorFor(model => model.Item1.Name, new { htmlAttributes = new { @class = "form-control",onchange= "CheckWearhouseExistorNot()" } })
+                                    @Html.ValidationMessageFor(model => model.Item1.Name, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.Item1.Address, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-12">
+                                    @Html.TextAreaFor(model => model.Item1.Address, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.Item1.Address, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-md-10">
+                                    <div class="checkbox">
+                                        <label class="font-weight-normal">
+                                          
+                                           @* @Html.CheckBoxFor(model => model.Item1.Status, new { htmlAttributes = new { @class = "form-control",value="true" } })*@
+
+                                            <input type="checkbox" id="Item1_Status" name="Item1.Status" value="true" checked/>
+                                            &nbsp; Active wearhouse
+                                        </label> 
+                                    
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group mb-1">
+                                <div class="col-md-offset-2 col-md-10">
+                                    @*<input type="submit" value="Create" class="btn btn-default" />*@
+                                    <button type="submit" class="btn btn btn-light border">
+
+                                        <img class="img-fluid" src="~/Logo/Icons/diskette.png" style="width:12px"/>  save
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                </div>
+              
+            </div>
+        </div>
+    </div>
+</div>
+
+@*End of the modal*@
+
+
+
+<script>
+
+    function Create() {
+        $("#ShowModal").modal();
+        $(".Edit").hide();
+        $(".Create").show();
+
+        $('#Item1_Id').val("");
+        $('#Item1_Name').val("");
+        $('#Item1_Address').val("");
+        $('#Item1_Status').val("");
+     
+    }
+
+    function Edit(ID) {
+
+        $("#ShowModal").modal();
+        $(".Create").hide();
+        $(".Edit").show();
+
+        $.ajax({
+
+            url: "/Admin/WearhouseGetById/" + ID,
+
+            typr: "GET",
+
+            contentType: "application/json;charset=UTF-8",
+
+            dataType: "json",
+
+
+
+            success: function (result) {
+
+                $('#Item1_Id').val(result.Id);
+                $('#Item1_Name').val(result.Name);
+                $('#Item1_Address').val(result.Address);
+
+
+                $("#Item1_Status").prop('checked', false);
+
+                if (result.Status == true) {
+                    $("#Item1_Status").prop('checked', true);
+
+                }
+
+            },
+
+
+        });
+
+        return false;
+
+    }
+
+    function CheckWearhouseExistorNot() {
+
+        $.ajax({
+            url: "/Admin/WearhouseExistance",
+            data: { wearhouseName: $('#Item1_Name').val() },
+            type: "POST",
+            dataType: "json",
+            success: function (result) {
+
+                if (result == true) {
+                    $('#Item1_Name').val('');
+                    alert("Wearhouse already exist !");
+                }
+              
+            },
+        });
+    }
+
+</script>
+
+
+
+
+
+
+
+
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>

@@ -1,0 +1,160 @@
+﻿@model IEnumerable<Accounting_Final_Details.Models.SalesBillWithoutGstDtl>
+
+@{
+    ViewBag.Title = "ListSaleBillWithoutGst";
+ 
+    if (Session["Role"] != null)
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    }
+}
+ 
+
+
+<main>
+    <div class="container-fluid">
+       
+        <div class="row border mb-2 table-hover">
+            <div class="col-12 d-flex align-items-center">
+                <img class="img-fluid" src="~/Logo/Icons/acquisition.png" style="width:30px" />
+
+                <span class="h4 mt-2">&nbsp;  Sales bill without GST !</span>
+            </div>
+        </div>
+
+
+        <section class="section alert-section">
+            <div class="alert alert-info" style="background:#29d2e4;">
+                <div class="alert-container">
+                    <i class="fa fa-info-circle"></i>
+                    <b class="alert-info" style="background:#29d2e4">Info alert:</b> You've got some friends nearby, stop looking at your phone and find them...
+                </div>
+            </div>
+        </section>
+
+
+        <div class="form-row">
+            <div class="col">
+                <div class="alert" id="success-alert" style="display:none;color:#fff;background-color:#41B314;border-color:#3ca512;" role="alert">
+                    <i class="far fa-check-circle"></i> @TempData["Msg"]
+                </div>
+            </div>
+
+            <div class="col text-right" style="padding-top:10px;padding-bottom:10px">
+                <a href="/Admin/Trash_TempSalesWiGst" class="btn btn-sm bg-gradient-info"><i class="fa fa-plus"></i> New sale</a>
+            </div>
+        </div>
+
+        <script>
+            $(document).ready(function () {
+
+                var Msg = "@TempData["Msg"]";
+                if (Msg != "") {
+                    $("#success-alert").fadeTo(2000, 500).slideUp(500, function () {
+                        $("#success-alert").slideUp(500);
+                    });
+                }
+            });
+        </script>
+
+
+
+        <div class="card mb-4">
+            <div class="card-header p-1">
+                <div class="row">
+                    <div class="col-12 vertical-center">
+                        <div class="container">
+                            <div>
+                                <img class="img-fluid" src="~/Logo/Icons/acquisition.png" style="width:25px">
+                            </div>
+                            <div>
+                                <span class="h6 font-weight-bold"> Sales bill without GST</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Bill No
+                                </th>
+                                <th>
+                                    Supplier/Customer Name
+                                </th>
+                                <th>
+                                    Date
+                                </th>
+                                <th>
+                                    Actions
+                                </th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>
+                                    Bill No
+                                </th>
+                                <th>
+                                    Supplier/Customer Name
+                                </th>
+                                <th style="padding-right:60px">
+                                    Date
+                                </th>
+                                <th>
+                                    Actions
+                                </th>
+                            </tr>
+                        </tfoot>
+                        <tbody>
+
+                            @foreach (var item in ViewBag.ListSaleWiGstDtl)
+                            {
+                                <tr>
+                                    <td>
+                                        <b class="text-danger">
+                                            @item.SalBilWiGSTBillNo
+                                        </b>
+                                    </td>
+                                    <td>
+                                        @item.SaleBiWiGstSuppCustName
+                                    </td>
+                                    <td>
+                                        @Convert.ToDateTime(item.SalBilWiGSTDate).ToString("dd/MM/yyyy")
+                                    </td>
+                                    <td>
+                                        @Html.ActionLink("Edit", "CreateTempSaleWiGstDetails", new { BillNo = item.SalBilWiGSTBillNo }, new { @Class = "btn btn-info btn-sm", style = "font-weight:600" })
+                                        &nbsp;
+                                        @Html.ActionLink("Delete", "Delete_SaleBillWithoutGst", new { BillNo = item.SalBilWiGSTBillNo }, new { @Class = "btn btn-danger btn-sm", style = "font-weight:600", @onclick = "return confirm('Are you sure?')" })
+
+                                        &nbsp;
+                                        @Html.ActionLink("Report", "ListSaleWiGst_Report", new { BillNo = item.SalBilWiGSTBillNo }, new { @Class = "btn btn-info btn-sm", style = "font-weight:600" })
+                                    </td>
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+
+
+
+
+
+
+

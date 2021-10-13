@@ -1,0 +1,599 @@
+﻿@*@model IEnumerable<Accounting_Final_Details.Models.OrganizationDetails>*@
+
+@model Accounting_Final_Details.Models.OrganizationDetails
+
+
+@{
+    ViewBag.Title = "ListOrganizationDetails";
+    //  Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+
+    if (Session["Role"] != null)
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    }
+
+}
+
+<main>
+    <div class="container-fluid">
+        <h2 class="mt-4">Organization !</h2>
+        @*<ol class="breadcrumb mb-4">
+            <li class="breadcrumb-item"><a href="index">Dashboard</a></li>
+
+        </ol>*@
+
+        <hr />
+        <section class="section alert-section">
+            <div class="alert alert-info" style="background:#29d2e4;">
+                <div class="alert-container">
+
+                    <i class="fa fa-info-circle"></i>
+                    <b class="alert-info" style="background:#29d2e4">Info alert:</b> You've got some friends nearby, stop looking at your phone and find them...
+                </div>
+            </div>
+        </section>
+
+
+
+
+
+        @*<div class="card mb-4">
+            <div class="card-body">DataTables is a third party plugin that is used to generate the demo table below. For more information about DataTables, please visit the <a target="_blank" href="https://datatables.net/">official DataTables documentation</a>.</div>
+        </div>*@
+        @*<div class="container text-right" style="margin-bottom:10px;">
+            <button type="button" onclick="Create()" class="btn btn-info"><i class="fa fa-plus"></i> Add</button>
+        </div>*@
+
+        <div class="form-row">
+            <div class="col">
+                <div class="alert alert-success" id="success-alert" style="display:none" role="alert">
+                    <i class="far fa-check-circle"></i> @TempData["SaveRegMsg"] @TempData["UpdatRegMsg"]
+                </div>
+            </div>
+
+            <div class="col text-right" style="padding-top:10px;padding-bottom:10px">
+                <button type="button" onclick="Create()" class="btn btn-info"><i class="fa fa-plus"></i> Add</button>
+            </div>
+
+        </div>
+
+        <script>
+            $(document).ready(function () {
+
+                var SaveMsg = "@TempData["SaveRegMsg"]";
+
+                var UpdateMsg = "@TempData["UpdatRegMsg"]";
+
+
+                if (SaveMsg != "") {
+                    $("#success-alert").fadeTo(2000, 500).slideUp(500, function () {
+                        $("#success-alert").slideUp(500);
+                    });
+                }
+
+                if (UpdateMsg != "") {
+                    $("#success-alert").fadeTo(2000, 500).slideUp(500, function () {
+                        $("#success-alert").slideUp(500);
+                    });
+                }
+
+            });
+        </script>
+
+
+
+
+
+
+
+        <div class="card mb-4">
+            <div class="card-header"><i class="fas fa-table mr-1"></i>Organization</div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.OrgID)
+                                </th>
+
+                                <th>
+                                    @Html.DisplayNameFor(model => model.OrgName)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.OrgContact)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.OrgEmailID)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.OrgAddress)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.OrgFssaiNumber)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.OrgGstNumber)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.OrgPinCode)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.OrgState)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.OrgImage)
+                                </th>
+
+                                <th>
+                                    @Html.DisplayNameFor(model => model.OrgDegitalSignature)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.OrgStatus)
+                                </th>
+                                <th style="padding-right:60px">
+                                    Actions
+                                </th>
+
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.OrgID)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.OrgName)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.OrgContact)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.OrgEmailID)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.OrgAddress)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.OrgFssaiNumber)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.OrgGstNumber)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.OrgPinCode)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.OrgState)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.OrgImage)
+                                </th>
+
+                                <th>
+                                    @Html.DisplayNameFor(model => model.OrgDegitalSignature)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.OrgStatus)
+                                </th>
+                                <th>
+                                    Actions
+                                </th>
+
+                            </tr>
+                        </tfoot>
+                        <tbody>
+
+
+                            @foreach (var item in ViewBag.ListOrgDtl)
+                            {
+                                <tr>
+
+                                    <td>
+                                        @item.OrganizationDetails.OrgID
+                                    </td>
+                                    <td>
+                                        @item.OrganizationDetails.OrgName
+                                    </td>
+                                    <td>
+                                        @item.OrganizationDetails.OrgContact
+                                    </td>
+                                    <td>
+                                        @item.OrganizationDetails.OrgEmailID
+                                    </td>
+                                    <td>
+                                        @item.OrganizationDetails.OrgAddress
+                                    </td>
+                                    <td>
+                                        @item.OrganizationDetails.OrgFssaiNumber
+                                    </td>
+                                    <td>
+                                        @item.OrganizationDetails.OrgGstNumber
+                                    </td>
+                                    <td>
+                                        @item.OrganizationDetails.OrgPinCode
+                                    </td>
+                                    <td>
+                                        @item.state.SName
+                                    </td>
+                                    <td>
+
+                                        <img height="25" width="25" alt="@item.OrganizationDetails.OrgImage" src="data:image/jpg;base64,@Convert.ToBase64String(item.OrganizationDetails.OrgImage)" />
+
+                                    </td>
+
+                                    <td>
+
+                                        <img height="25" width="25" alt="@item.OrganizationDetails.OrgDegitalSignature" src="data:image/jpg;base64,@Convert.ToBase64String(item.OrganizationDetails.OrgDegitalSignature)" />
+
+
+                                    </td>
+                                    <td>
+
+                                        <div class="image-container">
+                                            <a href="/Admin/ActiveStatusOrgnization/@item.OrganizationDetails.OrgID" class="status-tag" style="padding:0px;padding-left:1px;padding-right:1px;display:inline-block; border-radius:4px; color:#fff;width:70px;text-align:center; text-decoration:none">@item.ActStats.ActStsName</a>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <a class="text-info" href="#" onclick="Edit(@item.OrganizationDetails.OrgID)"> <i class="fa fa-edit" style="font-size:23px"></i></a> &nbsp;
+                                        <a class="text-danger" href="/Admin/DeletOrgnization/@item.OrganizationDetails.OrgID" onclick="return confirm('Are you sure?')"><i class="fas fa-trash-alt" style="font-size:23px"></i></a>
+                                        &nbsp; <a class="text-info" href="#"><i class="fas fa-share" style="font-size:23px"></i></a>
+
+                                    </td>
+                                </tr>
+                            }
+
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+
+
+
+
+@*Model Of Insert Update Delete*@
+
+<div class="modal fade bd-example-modal-lg" id="ShowModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="Create" style="display:none;">Add Organization</h4>
+                <h4 class="Edit" style="display:none;">Edit Organization</h4>
+
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+
+
+
+            </div>
+            <div class="modal-body">
+             @*@using (Html.BeginForm())
+             {*@
+                @*formaction="/Admin/"*@
+            
+
+               @using (Html.BeginForm("CreateOrganizationDetails", "Admin", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+
+                @Html.HiddenFor(m => m.OrgID, new { @class = "form-control OrgID", @name = "OrgID", })
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <div class="">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <span class="fa fa-user"></span>
+                                        </span>
+                                    </div>
+                                    @Html.EditorFor(model => model.OrgName, new { htmlAttributes = new { @class = "form-control OrgName", placeholder = "Organization Name", onchange = "CheckOrgNameExistorNot()" } })
+                                    <div class="d-flex align-items-center" style="">
+                                        <i id="Valid" class="fas fa-check-circle text-success" style="display:none;   margin-left:10px;"></i>
+                                        <i id="Invalid" class="fas fa-exclamation-circle text-danger" style="display:none;margin-left:10px;"></i>
+                                    </div>
+                                </div>
+                                @Html.ValidationMessageFor(model => model.OrgName, "", new { @class = "text-danger" })
+                                <div class="text-danger" style="display:none;" id="wrong"><i class="fas fa-exclamation fa-xs"></i> Your Organization Name already Exist.</div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div class="">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-phone"></i>
+                                        </span>
+                                    </div>
+                                    @Html.EditorFor(model => model.OrgContact, new { htmlAttributes = new { @class = "form-control OrgContact", placeholder = "Contact Number" } })
+                                </div>
+                                @Html.ValidationMessageFor(model => model.OrgContact, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <div class="">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <span class="fa fa-paper-plane"></span>
+                                        </span>
+                                    </div>
+                                    @Html.EditorFor(model => model.OrgEmailID, new { htmlAttributes = new { @class = "form-control OrgEmailID", placeholder = "Email Address" } })
+                                </div>
+                                @Html.ValidationMessageFor(model => model.OrgEmailID, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div class="">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-address-card"></i>
+                                        </span>
+                                    </div>
+                                    @Html.EditorFor(model => model.OrgAddress, new { htmlAttributes = new { @class = "form-control OrgAddress", placeholder = "Address" } })
+                                </div>
+                                @Html.ValidationMessageFor(model => model.OrgAddress, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <div class="">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-hamburger"></i>
+
+                                        </span>
+                                    </div>
+                                    @Html.EditorFor(model => model.OrgFssaiNumber, new { htmlAttributes = new { @class = "form-control OrgFssaiNumber", placeholder = "Fssai Number" } })
+                                </div>
+                                @Html.ValidationMessageFor(model => model.OrgFssaiNumber, "", new { @class = "text-danger" })
+
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                        <div class="">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <i class="fas fa-money-check-alt"></i>
+                                </span>
+                            </div>
+                            @Html.EditorFor(model => model.OrgGstNumber, new { htmlAttributes = new { @class = "form-control OrgGstNumber", placeholder = "GST Number" } })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.OrgGstNumber, "", new { @class = "text-danger" })
+                    </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <div class="">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-map-marker-alt"></i>
+                                        </span>
+                                    </div>
+                                    @Html.EditorFor(model => model.OrgPinCode, new { htmlAttributes = new { @class = "form-control OrgPinCode", placeholder = "Pin Code" } })
+                                </div>
+                                @Html.ValidationMessageFor(model => model.OrgPinCode, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div class="">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-flag"></i>
+                                        </span>
+                                    </div>
+                                    @*@Html.EditorFor(model => model.ProductSelection, new { htmlAttributes = new { @class = "form-control", placeholder = "Supplier/Cutomer" } })*@
+                                    @Html.DropDownListFor(model => model.OrgState, ViewBag.StateList as SelectList,"Select State", new { @class = "form-control OrgState" } )
+                                </div>
+                                @Html.ValidationMessageFor(model => model.OrgState, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <div class="">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-file-image" style="font-size:24px;padding-left:1px;padding-right:5px"></i>
+                                        </span>
+                                    </div>
+                                    @*@Html.EditorFor(model => model.ProductSelection, new { htmlAttributes = new { @class = "form-control", placeholder = "Supplier/Cutomer" } })*@
+                                    <input class="form-control OrgImg" type="file" name="OrgImg" placeholder="Organization Image" @*required*@ />
+                            
+                                </div>
+                                @Html.ValidationMessageFor(model => model.OrgImage, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-6">
+                       
+                            <div class="Edit">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-sync"></i>
+                                        </span>
+                                    </div>
+                                    @Html.DropDownListFor(model => model.OrgStatus, ViewBag.ActStatusList as SelectList, "Select Status", new { @class = "form-control OrgStatus" })
+                                </div>
+                                @Html.ValidationMessageFor(model => model.OrgStatus, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <div class="">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-file-signature"></i>
+                                        </span>
+                                    </div>
+                                      <input class="form-control SignatureImg" type="file" name="SignatureImg" value="" placeholder="Digital Singnature" @*required*@ />
+                                    </div>
+                                @Html.ValidationMessageFor(model => model.OrgDegitalSignature, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                       </div>
+                    </div>
+
+                   <div class="form-group">
+                        <button class="btn btn-info form-control Create" type="submit"  style="display:none;"><i class="glyphicon glyphicon-registration-mark"></i> Submit</button>
+                        <button class="btn btn-info form-control Edit" type="submit" formaction="/Admin/EditOrgDetails" style="display:none;"><i class="glyphicon glyphicon-registration-mark"></i> Update</button>
+                   </div>
+             }
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@*End of the modal*@
+
+
+
+<script>
+    function Create() {
+        $("#ShowModal").modal();
+        $(".Edit").hide();
+        $(".Create").show();
+
+          $('.OrgID').val("");
+        $('.OrgName').val("");
+     $('.OrgContact').val("");
+     $('.OrgEmailID').val("");
+     $('.OrgAddress').val("");
+ $('.OrgFssaiNumber').val("");
+   $('.OrgGstNumber').val("");
+     $('.OrgPinCode').val("");
+       $('.OrgState').val("");
+      $('.OrgStatus').val("");
+         $('.OrgImg').val("");  
+        $('.SignatureImg').val("");
+
+
+        $(".OrgImg").prop('required', true);
+        $(".SignatureImg").prop('required', true);
+
+    }
+  
+
+    function Edit(ID) {
+
+        $("#ShowModal").modal();
+        $(".Create").hide();
+        $(".Edit").show();
+
+
+        $(".OrgImg").prop('required', false);
+        $(".SignatureImg").prop('required', false);
+
+
+
+        $.ajax({
+
+            url: "/Admin/FetchOrgDetails/" + ID,
+
+            typr: "GET",
+
+            contentType: "application/json;charset=UTF-8",
+
+            dataType: "json",
+
+
+
+            success: function (result) {
+              
+                $('.OrgID').val(result.OrgID);
+                $('.OrgName').val(result.OrgName);
+                $('.OrgContact').val(result.OrgContact);
+                $('.OrgEmailID').val(result.OrgEmailID);
+                $('.OrgAddress').val(result.OrgAddress);
+                $('.OrgFssaiNumber').val(result.OrgFssaiNumber);
+                $('.OrgGstNumber').val(result.OrgGstNumber);
+                $('.OrgPinCode').val(result.OrgPinCode);
+                $('.OrgState').val(result.OrgState);
+                $('.OrgStatus').val(result.OrgStatus);
+
+                $('.OrgImg').val(result.OrgImage);              
+                $('.SignatureImg').val(result.OrgDegitalSignature);
+
+
+            },
+
+
+        });
+
+        return false;
+
+    }
+    
+    
+    @* <----------- Organization Name Exist Or Not --------->*@
+    function CheckOrgNameExistorNot() {
+
+    var empObj = {
+        OrgName : $('.OrgName').val(),
+    };
+
+    $.ajax({
+        url: "/Admin/OrgNameExistOrNot",
+        data: JSON.stringify(empObj),
+        type: "POST",
+        contentType: "application/json;charset=utf-8",
+        dataType: "json",
+        success: function (result) {
+
+            if (result == 0) {
+                $('.OrgName').val('');
+                $('#Valid').hide();
+                $('#Invalid').show();
+                
+                $('#wrong').show();
+            }
+            else {
+                $('#wrong').hide();
+                $('#Invalid').hide();
+                $('#Valid').show();
+
+
+             
+            }
+        },
+        error: function (ts) { alert(ts.responseText) }
+
+    });
+}
+   
+    @* <----------- End UserName Exist Or Not --------->*@
+
+
+
+
+
+</script>

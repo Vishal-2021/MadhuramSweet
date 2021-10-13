@@ -1,0 +1,298 @@
+﻿@model Accounting_Final_Details.Models.TermsCondition
+
+@{
+    ViewBag.Title = "TermsAndConditions";
+    // Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    if (Session["Role"] != null)
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    }
+}
+
+
+
+
+
+<main>
+    <div class="container-fluid">
+        <h2 class="mt-4">Terms & Conditions !</h2>
+        @*<ol class="breadcrumb mb-4">
+            <li class="breadcrumb-item"><a href="index">Dashboard</a></li>
+
+        </ol>*@
+
+        <hr />
+        <section class="section alert-section">
+            <div class="alert alert-info" style="background:#29d2e4;">
+                <div class="alert-container">
+
+                    <i class="fa fa-info-circle"></i>
+                    <b class="alert-info" style="background:#29d2e4">Info alert:</b> You've got some friends nearby, stop looking at your phone and find them...
+                </div>
+            </div>
+        </section>
+
+
+
+
+
+        @*<div class="card mb-4">
+            <div class="card-body">DataTables is a third party plugin that is used to generate the demo table below. For more information about DataTables, please visit the <a target="_blank" href="https://datatables.net/">official DataTables documentation</a>.</div>
+        </div>*@
+        @*<div class="container text-right" style="margin-bottom:10px;">
+            <button type="button" onclick="Create()" class="btn btn-info"><i class="fa fa-plus"></i> Add</button>
+        </div>*@
+
+
+
+        <div class="form-row">
+            <div class="col">
+                <div class="alert alert-success" id="success-alert" style="display:none" role="alert">
+                    <i class="far fa-check-circle"></i> @TempData["SaveRegMsg"] @TempData["UpdatRegMsg"]
+                </div>
+            </div>
+
+            <div class="col text-right" style="padding-top:10px;padding-bottom:10px">
+                <button type="button" onclick="Create()" class="btn btn-info"><i class="fa fa-plus"></i> Add</button>
+            </div>
+
+        </div>
+
+        <script>
+            $(document).ready(function () {
+
+                var SaveMsg = "@TempData["SaveRegMsg"]";
+
+                var UpdateMsg = "@TempData["UpdatRegMsg"]";
+
+
+                if (SaveMsg != "") {
+                    $("#success-alert").fadeTo(2000, 500).slideUp(500, function () {
+                        $("#success-alert").slideUp(500);
+                    });
+                }
+
+                if (UpdateMsg != "") {
+                    $("#success-alert").fadeTo(2000, 500).slideUp(500, function () {
+                        $("#success-alert").slideUp(500);
+                    });
+                }
+
+            });
+        </script>
+
+
+
+
+
+        <div class="card mb-4">
+            <div class="card-header"><i class="fas fa-table mr-1"></i>Terms & Conditions</div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+
+                                <th>
+                                    T&C ID
+                                </th>
+                                <th>
+                                    Terms & Conditions
+                                </th>
+                                <th>
+                                    Bill Type
+                                </th>
+
+                                <th>
+                                    Actions
+                                </th>
+
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>
+                                    T&C ID
+                                </th>
+                                <th>
+                                    Terms & Conditions
+                                </th>
+                                <th>
+                                    Bill Type
+                                </th>
+
+                                <th>
+                                    Actions
+                                </th>
+
+                            </tr>
+                        </tfoot>
+                        <tbody>
+
+                            @foreach (var item in ViewBag.TermsAndCondition)
+                            {
+                                <tr>
+
+                                    <td>
+                                        @item.TermsCondition.TCID
+                                    </td>
+                                    <td>
+                                        @item.TermsCondition.TurCon
+                                    </td>
+                                    <td>
+                                        @item.BillTypes.BillTypeName
+                                    </td>
+
+
+                                    <td>
+
+                                        <a class="text-info" href="#" onclick="Edit(@item.TermsCondition.TCID)"> <i class="fa fa-edit" style="font-size:23px"></i></a> &nbsp;
+                                        <a class="text-danger" href="/Admin/DeleteTermsAndConditions/@item.TermsCondition.TCID" onclick="return confirm('Are you sure?')"><i class="fas fa-trash-alt" style="font-size:23px"></i></a>
+
+                                    </td>
+                                </tr>
+                            }
+
+
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+
+@*Model Of Insert Update Delete*@
+
+<div class="modal fade" id="ShowModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="Create" style="display:none;">Add Registration</h4>
+                <h4 class="Edit" style="display:none;">Edit Registration</h4>
+
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+
+
+
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm())
+                {
+                    @*<form id="Registration" action="/Admin/AddRegistrationDetail" method="post">*@
+
+                    @*@Html.HiddenFor(model => model.RID, new { htmlAttributes = new { @class = "form-control RID"} })*@
+
+
+                    @Html.HiddenFor(m => m.TCID, new { @class = "form-control RID", @name = "RID", })
+
+
+
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <i class="fas fa-sync"></i>
+                                </span>
+                            </div>
+                            @Html.DropDownListFor(model => model.BTID, ViewBag.BillType as SelectList, "Select Bill Type", new { @class = "form-control ActiveStatus" })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.BTID, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-group">
+
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <span class="fa fa-user"></span>
+                                </span>
+                            </div>
+                            @Html.TextAreaFor(model => model.TurCon,  new { @class = "form-control Name", placeholder = "Add Terms & Conditions" } )
+                            
+                        </div>
+                        @Html.ValidationMessageFor(model => model.TurCon, "", new { @class = "text-danger" })
+                    </div>
+          
+
+                  
+
+                    <div class="form-group">
+                        <button class="btn btn-info form-control Create" type="submit" formaction="/Admin/AddEditTermsCondition" style="display:none;"><i class="glyphicon glyphicon-registration-mark"></i> Submit</button>
+                        <button class="btn btn-info form-control Edit" type="submit" formaction="/Admin/AddEditTermsCondition" style="display:none;"><i class="glyphicon glyphicon-registration-mark"></i> Update</button>
+
+                    </div>
+
+                    @*</form>*@
+
+                }
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@*End of the modal*@
+
+
+    <script>
+
+        function Clear()
+        {
+            $('#TCID').val("");
+            $('#BTID').val("");
+            $('#TurCon').val("");
+                
+        }
+        function Create() {
+            $("#ShowModal").modal();
+            $(".Edit").hide();
+            $(".Create").show();
+            Clear();
+
+        }
+        function Edit(ID) {
+
+            $("#ShowModal").modal();
+            $(".Create").hide();
+            $(".Edit").show();
+
+
+
+
+
+
+           $.ajax({
+
+               url: "/Admin/FetchTnc/" + ID,
+
+                typr: "GET",
+
+                contentType: "application/json;charset=UTF-8",
+
+                dataType: "json",
+
+
+
+                success: function (result) {
+                    
+                    $('#TCID').val(result.TCID);
+                    $('#BTID').val(result.BTID);
+                    $('#TurCon').val(result.TurCon);
+               },
+
+
+            });
+
+            return false;
+
+        }
+
+    </script>

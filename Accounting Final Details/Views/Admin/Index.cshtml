@@ -1,0 +1,788 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+
+   // string Role = Session["Role"].ToString();
+
+    if (Session["Role"] != null)
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    }
+
+}
+
+<style>
+    .vif{
+
+       font-size:22px;font-weight:600;
+    }
+</style>
+
+
+<style>
+  
+
+    .order-card {
+        color: #fff;
+    }
+
+    .bg-c-blue {
+        background: linear-gradient(45deg,#4099ff,#73b4ff);
+    }
+
+    .bg-c-green {
+        background: linear-gradient(45deg,#2ed8b6,#59e0c5);
+    }
+
+    .bg-c-yellow {
+        background: linear-gradient(45deg,#FFB64D,#ffcb80);
+    }
+
+    .bg-c-pink {
+        background: linear-gradient(45deg,#FF5370,#ff869a);
+    }
+
+
+    .card {
+        border-radius: 5px;
+        -webkit-box-shadow: 0 1px 2.94px 0.06px rgba(4,26,55,0.16);
+        box-shadow: 0 1px 2.94px 0.06px rgba(4,26,55,0.16);
+        border: none;
+        margin-bottom: 30px;
+        -webkit-transition: all 0.3s ease-in-out;
+        transition: all 0.3s ease-in-out;
+    }
+
+        .card .card-block {
+            padding: 25px;
+        }
+
+    .order-card i {
+        font-size: 26px;
+    }
+
+    .f-left {
+        float: left;
+    }
+
+    .f-right {
+        float: right;
+    }
+</style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<main>
+    @*<h1 class="text-center" style="background:#FFF2CC">Dashboard</h1>*@
+
+    <div class="alert alert-info p-0 pl-2 rounded-0" role="alert" style="font-size:35px;background-color:#f7941d;border-color:#f7941d">
+        Dashboard
+    </div>
+
+
+
+    <div class="card collapsed-card rounded-0" style="border:1px solid #ddd">
+        <div class="card-header border-transparent">
+            <h3 class="card-title" style="font-weight:600">Delivery Dashboard</h3>
+
+            <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-plus"></i>
+                </button>
+                @*<button type="button" class="btn btn-tool" data-card-widget="remove">
+                        <i class="fas fa-times"></i>
+                    </button>*@
+            </div>
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body p-2" style="display: none;">
+
+
+
+
+
+            <style>
+                .hr-sect {
+                    display: flex;
+                    flex-basis: 100%;
+                    align-items: center;
+                    color: rgba(0, 0, 0, 0.35);
+                    margin: 8px 0px;
+                }
+
+                    .hr-sect:before,
+                    .hr-sect:after {
+                        content: "";
+                        flex-grow: 1;
+                        background: rgba(0, 0, 0, 0.35);
+                        height: 1px;
+                        font-size: 0px;
+                        line-height: 0px;
+                        margin: 0px 8px;
+                    }
+            </style>
+
+            <div class="hr-sect">Delivered Orders</div>
+
+
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4 col-xl-4">
+                        <div class="card bg-c-blue order-card">
+                            <div class="card-block">
+                                <h6 class="m-b-20">Delivered Orders</h6>
+                                <h2 class="text-right"><i class="ion ion-bag f-left"></i><span>@ViewBag.DeliOrderNow</span></h2>
+                                <p class="m-b-0">Current date@*<span class="f-right">351</span>*@</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 col-xl-4">
+                        <div class="card bg-c-green order-card">
+                            <div class="card-block">
+                                <h6 class="m-b-20">Delivered Orders</h6>
+                                <h2 class="text-right"><i class="ion ion-bag f-left"></i><span>@ViewBag.DeliOrderWeekly</span></h2>
+                                <p class="m-b-0">Last Week@*<span class="f-right">351</span>*@</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 col-xl-4">
+                        <div class="card bg-c-yellow order-card">
+                            <div class="card-block">
+                                <h6 class="m-b-20">Delivered Orders</h6>
+                                <h2 class="text-right"><i class="ion ion-bag f-left"></i><span>@ViewBag.DeliOrderMonthly</span></h2>
+                                <p class="m-b-0">Past one month@*<span class="f-right">351</span>*@</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--<div class="col-md-4 col-xl-3">
+                    <div class="card bg-c-pink order-card">
+                        <div class="card-block">
+                            <h6 class="m-b-20">Delivery Orders</h6>
+                            <h2 class="text-right"><i class="ion ion-bag f-left"></i><span>486</span></h2>
+                            <p class="m-b-0">Completed Orders-->
+                    @*<span class="f-right">351</span>*@
+                    <!--</p>
+                            </div>
+                        </div>
+                    </div>-->
+                </div>
+            </div>
+
+
+
+
+
+
+            <div class="hr-sect">Total Delivered Sale</div>
+
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4 col-xl-4">
+                        <div class="card bg-c-blue order-card">
+                            <div class="card-block">
+                                <h6 class="m-b-20">Total Delivered Sale</h6>
+                                <h2 class="text-right"><i class="ion ion-bag f-left"></i><span>&#8377;  @ViewBag.DeliOrderNowSale</span></h2>
+                                <p class="m-b-0">Daily@*<span class="f-right">351</span>*@</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 col-xl-4">
+                        <div class="card bg-c-green order-card">
+                            <div class="card-block">
+                                <h6 class="m-b-20">Total Delivered Sale</h6>
+                                <h2 class="text-right"><i class="ion ion-bag f-left"></i><span>&#8377; @ViewBag.DeliOrderWeeklySale</span></h2>
+                                <p class="m-b-0">Weekly@*<span class="f-right">351</span>*@</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 col-xl-4">
+                        <div class="card bg-c-yellow order-card">
+                            <div class="card-block">
+                                <h6 class="m-b-20">Total Delivered Sale</h6>
+                                <h2 class="text-right"><i class="ion ion-bag f-left"></i><span>&#8377; @ViewBag.DeliOrderMonthlySale</span></h2>
+                                <p class="m-b-0">Monthly@*<span class="f-right">351</span>*@</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--<div class="col-md-4 col-xl-3">
+                    <div class="card bg-c-pink order-card">
+                        <div class="card-block">
+                            <h6 class="m-b-20">Delivery Orders</h6>
+                            <h2 class="text-right"><i class="ion ion-bag f-left"></i><span>486</span></h2>
+                            <p class="m-b-0">Completed Orders-->
+                    @*<span class="f-right">351</span>*@
+                    <!--</p>
+                            </div>
+                        </div>
+                    </div>-->
+                </div>
+            </div>
+
+
+
+
+
+
+
+        </div>
+        <!-- /.card-body -->
+        <div class="card-footer clearfix" style="display: none;">
+
+        </div>
+        <!-- /.card-footer -->
+    </div>
+
+
+
+
+
+
+
+    <div class="container-fluid">
+
+
+
+
+
+
+
+        <div style="width: 100%; height: 20px; border-bottom: 1px solid #ddd; text-align: center">
+            <span style="font-size: 25px; background:#fff; padding: 0 10px; border-top-right-radius:18px; border-bottom-left-radius: 18px">
+                Dashboard
+            </span>
+        </div>
+
+
+
+
+
+
+        <div class="container mt-5">
+            <div class="row">
+                <div class="col-md-4 col-xl-4">
+                    <div class="card bg-c-blue order-card">
+                        <div class="card-block">
+                            <h6 class="m-b-20">Dashboard</h6>
+                            <h2 class="text-right"><i class="ion ion-bag f-left"></i><span>@ViewBag.TotalProducts</span></h2>
+                            <p class="m-b-0">Total Products@*<span class="f-right">351</span>*@</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-xl-4">
+                    <div class="card bg-c-green order-card">
+                        <div class="card-block">
+                            <h6 class="m-b-20">Dashboard</h6>
+                            <h2 class="text-right"><i class="fas fa-user-alt f-left"></i><span>@ViewBag.TotalUsers</span></h2>
+                            <p class="m-b-0">Total Users@*<span class="f-right">351</span>*@</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-xl-4">
+                    <div class="card bg-c-yellow order-card">
+                        <div class="card-block">
+                            <h6 class="m-b-20">Dashboard</h6>
+                            <h2 class="text-right"><i class="fas fa-user-check f-left"></i><span>@ViewBag.TotalCustomer</span></h2>
+                            <p class="m-b-0">Total Customers@*<span class="f-right">351</span>*@</p>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+        <div style="width: 100%; height: 20px; border-bottom: 1px solid #ddd; text-align: center">
+            <span style="font-size: 25px; background:#fff; padding: 0 10px; border-top-right-radius:18px; border-bottom-left-radius: 18px">
+                Purchase Orders
+            </span>
+        </div>
+
+
+
+
+
+        <div class="container mt-5">
+            <div class="row">
+                <div class="col-md-4 col-xl-3">
+                    <div class="card bg-c-blue order-card">
+                        <div class="card-block">
+                            <h6 class="m-b-20">Purchase Orders</h6>
+                            <h2 class="text-right"><i class="ion ion-bag f-left"></i><span>&#8377; @ViewBag.TotalDailyPurchase</span></h2>
+                            <p class="m-b-0">Total  Daily Purchase@*<span class="f-right">351</span>*@</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-xl-3">
+                    <div class="card bg-c-green order-card">
+                        <div class="card-block">
+                            <h6 class="m-b-20">Purchase Orders</h6>
+                            <h2 class="text-right"><i class="ion ion-bag f-left"></i><span>&#8377; @ViewBag.TotalWeekPurchase </span></h2>
+                            <p class="m-b-0">Total  Weekly Purchase@*<span class="f-right">351</span>*@</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-xl-3">
+                    <div class="card bg-c-yellow order-card">
+                        <div class="card-block">
+                            <h6 class="m-b-20">Purchase Orders</h6>
+                            <h2 class="text-right"><i class="ion ion-bag f-left"></i><span>&#8377; @ViewBag.TotalMonthlyPurchase</span></h2>
+                            <p class="m-b-0">Total Monthly Purchase@*<span class="f-right">351</span>*@</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-xl-3">
+                    <div class="card bg-c-pink order-card">
+                        <div class="card-block">
+                            <h6 class="m-b-20">Purchase Orders</h6>
+                            <h2 class="text-right"><i class="ion ion-bag f-left"></i><span>&#8377;  @ViewBag.TotalYearlyPurchase</span></h2>
+                            <p class="m-b-0">Total Yearly Purchase@*<span class="f-right">351</span>*@</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 col-xl-3">
+                    <div class="card bg-c-blue order-card">
+                        <div class="card-block">
+                            <h6 class="m-b-20">Purchase Orders</h6>
+                            <h2 class="text-right"><i class="ion ion-bag f-left"></i><span>&#8377; @ViewBag.TotalDailyPurchase_ReceivedAmt</span></h2>
+                            <p class="m-b-0">Total Daily Received Amount@*<span class="f-right">351</span>*@</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-xl-3">
+                    <div class="card bg-c-green order-card">
+                        <div class="card-block">
+                            <h6 class="m-b-20">Purchase Orders</h6>
+                            <h2 class="text-right"><i class="ion ion-bag f-left"></i><span>&#8377; @ViewBag.TotalWeeklyPurchase_ReceivedAmt</span></h2>
+                            <p class="m-b-0">Total  Weekly Received Amount@*<span class="f-right">351</span>*@</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-xl-3">
+                    <div class="card bg-c-yellow order-card">
+                        <div class="card-block">
+                            <h6 class="m-b-20">Purchase Orders</h6>
+                            <h2 class="text-right"><i class="ion ion-bag f-left"></i><span>&#8377;  @ViewBag.TotalMonthlyPurchase_ReceivedAmt</span></h2>
+                            <p class="m-b-0">Total Monthly Received Amount@*<span class="f-right">351</span>*@</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-xl-3">
+                    <div class="card bg-c-pink order-card">
+                        <div class="card-block">
+                            <h6 class="m-b-20">Purchase Orders</h6>
+                            <h2 class="text-right"><i class="ion ion-bag f-left"></i><span>&#8377; @ViewBag.TotalYearlyPurchase_ReceivedAmt</span></h2>
+                            <p class="m-b-0">Total Yearly Received Amount@*<span class="f-right">351</span>*@</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 col-xl-3">
+                    <div class="card bg-c-blue order-card">
+                        <div class="card-block">
+                            <h6 class="m-b-20">Purchase Orders</h6>
+                            <h2 class="text-right"><i class="ion ion-bag f-left"></i><span>&#8377; @ViewBag.OutstandingAmt</span></h2>
+                            <p class="m-b-0">Total Outstanding Amount to be Received@*<span class="f-right">351</span>*@</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-xl-3">
+                    <div class="card bg-c-green order-card">
+                        <div class="card-block">
+                            <h6 class="m-b-20">Purchase Orders</h6>
+                            <h2 class="text-right"><i class="ion ion-bag f-left"></i><span>@ViewBag.TotalBills</span></h2>
+                            <p class="m-b-0">Total  Bills@*<span class="f-right">351</span>*@</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!--<div class="col-md-4 col-xl-3">
+                <div class="card bg-c-yellow order-card">
+                    <div class="card-block">
+                        <h6 class="m-b-20">Delivery Orders</h6>
+                        <h2 class="text-right"><i class="ion ion-bag f-left"></i><span>486</span></h2>
+                        <p class="m-b-0">Completed Orders-->
+                @*<span class="f-right">351</span>*@
+                <!--</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-xl-3">
+                    <div class="card bg-c-pink order-card">
+                        <div class="card-block">
+                            <h6 class="m-b-20">Delivery Orders</h6>
+                            <h2 class="text-right"><i class="ion ion-bag f-left"></i><span>486</span></h2>
+                            <p class="m-b-0">Completed Orders-->
+                @*<span class="f-right">351</span>*@
+                <!--</p>
+                        </div>
+                    </div>
+                </div>-->
+
+            </div>
+        </div>
+
+        @*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*@
+
+
+
+
+
+
+        <div style="width: 100%; height: 20px; border-bottom: 1px solid #ddd; text-align: center">
+            <span style="font-size: 25px; background:#fff; padding: 0 10px; border-top-right-radius:18px; border-bottom-left-radius: 18px">
+                Sales without GST
+            </span>
+        </div>
+
+
+
+
+
+
+
+
+
+
+        <div class="container mt-5">
+            <div class="row">
+                <div class="col-md-4 col-xl-3">
+                    <div class="card bg-c-blue order-card">
+                        <div class="card-block">
+                            <h6 class="m-b-20">Sales without GST</h6>
+                            <h2 class="text-right"><i class="ion ion-bag f-left"></i><span>&#8377; @ViewBag.TotalDaily_SaleWithoutGst</span></h2>
+                            <p class="m-b-0">Total  Daily Sale@*<span class="f-right">351</span>*@</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-xl-3">
+                    <div class="card bg-c-green order-card">
+                        <div class="card-block">
+                            <h6 class="m-b-20">Sales without GST</h6>
+                            <h2 class="text-right"><i class="ion ion-bag f-left"></i><span>&#8377; @ViewBag.TotalWeekly_SaleWithoutGst</span></h2>
+                            <p class="m-b-0">Total  Weekly Sale@*<span class="f-right">351</span>*@</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-xl-3">
+                    <div class="card bg-c-yellow order-card">
+                        <div class="card-block">
+                            <h6 class="m-b-20">Sales without GST</h6>
+                            <h2 class="text-right"><i class="ion ion-bag f-left"></i><span>&#8377; @ViewBag.TotalMonthly_SaleWithoutGst</span></h2>
+                            <p class="m-b-0">Total Monthly Sale@*<span class="f-right">351</span>*@</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-xl-3">
+                    <div class="card bg-c-pink order-card">
+                        <div class="card-block">
+                            <h6 class="m-b-20">Sales without GST</h6>
+                            <h2 class="text-right"><i class="ion ion-bag f-left"></i><span>&#8377; @ViewBag.TotalYearly_SaleWithoutGst</span></h2>
+                            <p class="m-b-0">Total Yearly Sale@*<span class="f-right">351</span>*@</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 col-xl-3">
+                    <div class="card bg-c-blue order-card">
+                        <div class="card-block">
+                            <h6 class="m-b-20">Sales without GST</h6>
+                            <h2 class="text-right"><i class="ion ion-bag f-left"></i><span> @ViewBag.TotalBills_SaleWithoutGst</span></h2>
+                            <p class="m-b-0">Total  Bills@*<span class="f-right">351</span>*@</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-xl-3">
+                    <div class="card bg-c-green order-card">
+                        <div class="card-block">
+                            <h6 class="m-b-20">Sales without GST</h6>
+                            <h2 class="text-right"><i class="ion ion-bag f-left"></i><span>@ViewBag.Outsand_SaleWithoutGst</span></h2>
+                            <p class="m-b-0">Outstanding Bills@*<span class="f-right">351</span>*@</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+        <div style="width: 100%; height: 20px; border-bottom: 1px solid #ddd; text-align: center">
+            <span style="font-size: 25px; background:#fff;  padding: 0 10px; border-top-right-radius:18px; border-bottom-left-radius: 18px">
+                Sales with GST
+            </span>
+        </div>
+
+
+
+
+
+
+        <div class="container mt-5">
+            <div class="row">
+                <div class="col-md-4 col-xl-3">
+                    <div class="card bg-c-blue order-card">
+                        <div class="card-block">
+                            <h6 class="m-b-20">Sales with GST</h6>
+                            <h2 class="text-right"><i class="ion ion-bag f-left"></i><span>&#8377; @ViewBag.TotalDaily_SaleWithGst</span></h2>
+                            <p class="m-b-0">Total  Daily Sale@*<span class="f-right">351</span>*@</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-xl-3">
+                    <div class="card bg-c-green order-card">
+                        <div class="card-block">
+                            <h6 class="m-b-20">Sales with GST</h6>
+                            <h2 class="text-right"><i class="ion ion-bag f-left"></i><span>&#8377; @ViewBag.TotalWeekly_SaleWithGst</span></h2>
+                            <p class="m-b-0">Total  Weekly Sale@*<span class="f-right">351</span>*@</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-xl-3">
+                    <div class="card bg-c-yellow order-card">
+                        <div class="card-block">
+                            <h6 class="m-b-20">Sales with GST</h6>
+                            <h2 class="text-right"><i class="ion ion-bag f-left"></i><span>&#8377; @ViewBag.TotalMonthly_SaleWithGst</span></h2>
+                            <p class="m-b-0">Total Monthly Sale@*<span class="f-right">351</span>*@</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-xl-3">
+                    <div class="card bg-c-pink order-card">
+                        <div class="card-block">
+                            <h6 class="m-b-20">Sales with GST</h6>
+                            <h2 class="text-right"><i class="ion ion-bag f-left"></i><span>&#8377; @ViewBag.TotalYearly_SaleWithGst</span></h2>
+                            <p class="m-b-0">Total Yearly Sale@*<span class="f-right">351</span>*@</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 col-xl-3">
+                    <div class="card bg-c-blue order-card">
+                        <div class="card-block">
+                            <h6 class="m-b-20">Sales with GST</h6>
+                            <h2 class="text-right"><i class="ion ion-bag f-left"></i><span>&#8377; @ViewBag.TotalDailySaleWithGst_Received </span></h2>
+                            <p class="m-b-0">Total Monthly Received Amount@*<span class="f-right">351</span>*@</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-xl-3">
+                    <div class="card bg-c-green order-card">
+                        <div class="card-block">
+                            <h6 class="m-b-20">Sales with GST</h6>
+                            <h2 class="text-right"><i class="ion ion-bag f-left"></i><span>&#8377; @ViewBag.TotalWeeklySaleWithGst_Received</span></h2>
+                            <p class="m-b-0"> Total  Weekly Received Amount@*<span class="f-right">351</span>*@</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-xl-3">
+                    <div class="card bg-c-yellow order-card">
+                        <div class="card-block">
+                            <h6 class="m-b-20">Sales with GST</h6>
+                            <h2 class="text-right"><i class="ion ion-bag f-left"></i><span>&#8377; @ViewBag.TotalMonthlySaleWithGst_Received</span></h2>
+                            <p class="m-b-0">Completed Orders@*<span class="f-right">351</span>*@</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-xl-3">
+                    <div class="card bg-c-pink order-card">
+                        <div class="card-block">
+                            <h6 class="m-b-20">Sales with GST</h6>
+                            <h2 class="text-right"><i class="ion ion-bag f-left"></i><span>&#8377; @ViewBag.TotalYearlySaleWithGst_Received</</span></h2>
+                            <p class="m-b-0">Total Yearly Received Amount@*<span class="f-right">351</span>*@</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 col-xl-3">
+                    <div class="card bg-c-blue order-card">
+                        <div class="card-block">
+                            <h6 class="m-b-20">Sales with GST</h6>
+                            <h2 class="text-right"><i class="ion ion-bag f-left"></i><span>&#8377; @ViewBag.TotalOutstanding</span></h2>
+                            <p class="m-b-0">Total Outstanding Amount to be Received@*<span class="f-right">351</span>*@</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-xl-3">
+                    <div class="card bg-c-green order-card">
+                        <div class="card-block">
+                            <h6 class="m-b-20">Sales with GST</h6>
+                            <h2 class="text-right"><i class="ion ion-bag f-left"></i><span>@ViewBag.TotalBills_SaleWithGst</span></h2>
+                            <p class="m-b-0">Total  Bills@*<span class="f-right">351</span>*@</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-xl-3">
+                    <div class="card bg-c-yellow order-card">
+                        <div class="card-block">
+                            <h6 class="m-b-20">Sales with GST</h6>
+                            <h2 class="text-right"><i class="ion ion-bag f-left"></i><span>@ViewBag.OutStandingBill</span></h2>
+                            <p class="m-b-0">Outstanding Bills@*<span class="f-right">351</span>*@</p>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+
+
+
+
+        <div style="width: 100%; height: 20px; border-bottom: 1px solid #ddd; text-align: center">
+            <span style="font-size: 25px; background:#fff; padding: 0 10px; border-top-right-radius:18px; border-bottom-left-radius: 18px">
+                Sales & Purchases
+            </span>
+        </div>
+
+
+
+
+        <div class="container mt-5">
+            <div class="row">
+                <div class="col-md-4 col-xl-3">
+                    <div class="card bg-c-blue order-card">
+                        <div class="card-block">
+                            <h6 class="m-b-20">Purchase</h6>
+                            <h2 class="text-right"><i class="ion ion-bag f-left"></i><span>&#8377; @ViewBag.TotalMonthlyPurchase</span></h2>
+                            <p class="m-b-0">Monthly Purchase Amount@*<span class="f-right">351</span>*@</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-xl-3">
+                    <div class="card bg-c-green order-card">
+                        <div class="card-block">
+                            <h6 class="m-b-20">Sale without GST</h6>
+                            <h2 class="text-right"><i class="ion ion-bag f-left"></i><span>&#8377; @ViewBag.TotalMonthly_SaleWithoutGst</span></h2>
+                            <p class="m-b-0"> Monthly Sales Amount (Without GST)@*<span class="f-right">351</span>*@</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-xl-3">
+                    <div class="card bg-c-yellow order-card">
+                        <div class="card-block">
+                            <h6 class="m-b-20">Sale with GST</h6>
+                            <h2 class="text-right"><i class="ion ion-bag f-left"></i><span>&#8377; @ViewBag.TotalMonthly_SaleWithGst</span></h2>
+                            <p class="m-b-0">Monthly Sales Amount (With GST)@*<span class="f-right">351</span>*@</p>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+
+        <hr style="border:1px solid #ddd" />
+        @*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </div>
+</main>
+

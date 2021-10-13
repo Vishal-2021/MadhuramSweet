@@ -1,0 +1,735 @@
+﻿@{
+    ViewBag.Title = "ListCreditNotes_Report";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/js/all.min.js" crossorigin="anonymous"></script>
+
+</head>
+<body>
+ 
+
+
+    <div style="width:50%;margin-top:10px;margin-bottom:20px">
+        <button type="button" id="Btnhide" class="btn btn-info btn-md mr-2" onclick="window.print()"><i class="fas fa-print"></i> PDF</button>
+    </div>
+
+    @{
+        decimal discTot = 0;
+        foreach (var item in ViewBag.ListCreditNotes)
+        {
+            discTot += item.CreditNotes.CreditNotes_PDiscount;
+        }
+    }
+
+
+
+    <div class="print" id="printableArea">
+        <div class="container" style="border:1px solid;">
+
+            <div class="row">
+                <div class="col-md-3" style="margin:8px">
+                    <img height="100" width="150" alt="@ViewBag.ListOrgDtl.OrganizationDetails.OrgImage" src="data:image/jpg;base64,@Convert.ToBase64String(ViewBag.ListOrgDtl.OrganizationDetails.OrgImage)" />
+                </div>
+                <div class="col-md-8">
+
+                    <div class="row">
+                        <div class="col-sm-4"></div>
+                        <div class="col-sm-8">
+
+                            <h3><b style="font-weight:600">@ViewBag.ListOrgDtl.OrganizationDetails.OrgName</b></h3>
+
+                            <b>Mob : </b> <b style="font-weight:600">+91 @ViewBag.ListOrgDtl.OrganizationDetails.OrgContact</b><br />
+                            <b>Email-ID : </b> <b style="font-weight:600">@ViewBag.ListOrgDtl.OrganizationDetails.OrgEmailID</b><br />
+                            <b>Address : </b> <b style="font-weight:600">@ViewBag.ListOrgDtl.state.SName , @ViewBag.ListOrgDtl.OrganizationDetails.OrgAddress, pincode - @ViewBag.ListOrgDtl.OrganizationDetails.OrgPinCode </b> <br />
+
+                            <b>Fssai No : </b> <b style="font-weight:600">@ViewBag.ListOrgDtl.OrganizationDetails.OrgFssaiNumber</b><br />
+                            <b>Gst No : </b> <b style="font-weight:600">@ViewBag.ListOrgDtl.OrganizationDetails.OrgGstNumber</b><br />
+
+                        </div>
+                    </div>
+
+
+
+
+                </div>
+            </div>
+
+            <br />
+            <div class="row">
+
+                @*<div class="col-12" style="border-top:1px solid;font-size:20px">
+
+                        <div class="row">
+                            <div class="col-sm" style="font-size:20px;">
+                                <b>GSTIN : </b> <b style="font-weight:600">@ViewBag.ListCustDtl.CustDtl.CustGstNumber </b>
+                            </div>
+                            <div class="col-sm" style="text-align:right;padding-bottom:3px;">
+                                <b style="font-size:15px;font-weight:600">ORIGINAL FOR RECIPIENT</b>
+                            </div>
+                        </div>
+
+
+
+                        <b></b>
+                    </div>*@
+
+
+
+                @*<div class="col-sm" style="border:1px solid">
+                        <b>Orgnization Name : </b> <b style="font-weight:600">@ViewBag.ListOrgDtl.OrganizationDetails.OrgName</b><br />
+
+                        <b>Contact : </b> <b style="font-weight:600">+91 @ViewBag.ListOrgDtl.OrganizationDetails.OrgContact</b><br />
+                        <b>Email-ID : </b> <b style="font-weight:600">@ViewBag.ListOrgDtl.OrganizationDetails.OrgEmailID</b><br />
+                        <b>Address : </b> <b style="font-weight:600">@ViewBag.ListOrgDtl.state.SName , @ViewBag.ListOrgDtl.OrganizationDetails.OrgAddress, pincode - @ViewBag.ListOrgDtl.OrganizationDetails.OrgPinCode </b><br />
+
+                        <b>Fssai No : </b> <b style="font-weight:600">@ViewBag.ListOrgDtl.OrganizationDetails.OrgFssaiNumber</b><br />
+                        <b>Gst No : </b> <b style="font-weight:600">@ViewBag.ListOrgDtl.OrganizationDetails.OrgGstNumber</b><br />
+
+                    </div>*@
+
+                <div class="col-sm-5" style="border:1px solid;border-right:none;border-left:none;padding:0">
+
+                    <div class="text-center" style="border-bottom:1px solid">
+                        <b>Customer Details</b>
+                    </div>
+                    <div style="padding-left:5px">
+
+                        
+
+                        <b>Customer Name : </b> <b style="font-weight:600">@ViewBag.ListCreditNotes[0].CustDtl.CustName</b><br />
+                        <b>Contact : </b> <b style="font-weight:600">+91 @ViewBag.ListCreditNotes[0].CustDtl.CustContact</b><br />
+                        <b>Email-ID : </b> <b style="font-weight:600">@ViewBag.ListCreditNotes[0].CustDtl.CustEmail</b><br />
+                        <b>Address : </b> <b style="font-weight:600">@ViewBag.ListCreditNotes[0].state.SName, @ViewBag.ListCreditNotes[0].district.DistName, @ViewBag.ListCreditNotes[0].CustDtl.CustAddress,<br /> pincode - @ViewBag.ListCreditNotes[0].CustDtl.CustPinCode</b><br />
+                        <b>Fssai No : </b> <b style="font-weight:600">@ViewBag.ListCreditNotes[0].CustDtl.CustFssaiNumber </b><br />
+                        <b>GSTIN : </b> <b style="font-weight:600">@ViewBag.ListCreditNotes[0].CustDtl.CustGstNumber </b>
+
+                    </div>
+                </div>
+                <div class="col-sm-7" style="border:1px solid;border-right:none;">
+
+                    <div class="row">
+
+                        <div class="col-sm" style="border-right:1px solid;border-bottom:1px solid;">
+                            <div class="row">
+                                <div class="col-sm"><b>Bill No : </b></div>
+                                <div class="col-sm">
+                                    <b style="font-weight:600;color:red"> 
+                                        @{ 
+                                            string billNN = "00"+ ViewBag.ListCreditNotes[0].CreditNotes.CreditNotes_BillNo;
+                                        }
+                                         @billNN
+
+                                     </b>
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <div class="col-sm" style="border-bottom:1px solid;">
+                            <div class="row">
+                                <div class="col-sm"><b>Date : </b></div>
+                                <div class="col-sm">
+                                    <b style="font-weight:600"> @Convert.ToDateTime(ViewBag.ListCreditNotes[0].CreditNotes.CreditNotes_Date).ToString("dd-MM-yyyy") </b>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-sm" style="border-right:1px solid;border-bottom:1px solid;">
+                            <div class="row">
+                                <div class="col-sm-4"><b>Reference Bill No : </b></div>
+                                <div class="col-sm">
+                                    <b style="font-weight:600;color:red"> @ViewBag.ListCreditNotes[0].CreditNotes.CreditNotes_SaleWithGSTBillNo </b>
+                                </div>
+                            </div>
+                        </div>
+
+                      
+
+                    </div>
+
+
+                    <div class="row">
+
+                        <div class="col-sm" style="border-right:1px solid;border-bottom:1px solid;">
+                            <div class="row">
+                                <div class="col-sm-3"><b>Bill Type : </b></div>
+                                <div class="col-sm">
+                                 <b>Credit Notes</b>   
+                                </div>
+                            </div>
+                        </div>
+                    
+                     
+                    </div>
+
+
+
+
+
+                    @*<b>Status : </b> <b style="font-weight:600"> @ViewBag.ListCustDtl.PaymentStatus.PayStName </b><br />*@
+
+                </div>
+            </div>
+
+            <br />
+
+
+            <style>
+                /*table, td, th {
+                    border: 1px solid black;
+                    padding:0;
+                    margin:0;
+                }*/
+
+                table {
+                    border: 1px solid black;
+                    border-left: none;
+                    border-right: none;
+                }
+
+                th {
+                    border: 1px solid black;
+                    border-left: 1px solid;
+                    border-right: 1px solid;
+                    padding-left: 20px;
+                }
+
+
+                td {
+                    padding-left: 20px;
+                    border: 1px solid black;
+                    border-left: 1px solid;
+                    border-right: 1px solid;
+                }
+
+                .bd {
+                    border-top: 1px solid;
+                }
+
+                table {
+                    border-collapse: collapse;
+                }
+            </style>
+
+
+
+
+            <div class="row">
+                <div class="col-md-12" style="padding:0">
+
+                    <table style="width:100%;border-collapse: collapse;margin-top:5px">
+                        <thead>
+
+                            <tr style="border-collapse: collapse;">
+                                <th rowspan="2" style="border-left:none">
+                                    ID
+                                </th>
+                                <th rowspan="2">
+                                    Product Name
+                                </th>
+                                @if (ViewBag.ProductCount != 0)
+                                {
+                                    <th rowspan="2">
+                                        HSN Code
+                                    </th>
+                                }
+
+
+                                <th rowspan="2">
+                                    Product Rate (Rs)
+                                </th>
+
+                                @if (discTot != 0)
+                                {
+
+                                    <th rowspan="2">
+                                        Disc. (%)
+                                    </th>
+                                }
+
+                                <th rowspan="2">
+                                    Qnt.
+                                </th>
+                                @*<th rowspan="2">
+                                        Product Gst (%)
+                                    </th>
+                                    <th rowspan="2">
+                                        Product Gst (Rs)
+                                    </th>*@
+
+
+                                <th colspan="2">
+                                    CGST
+                                </th>
+
+                                <th colspan="2">
+                                    SGST
+                                </th>
+
+
+                                <th rowspan="2" style="border-right:none">
+                                    Product Total (Rs)
+                                </th>
+
+                            </tr>
+
+                            <tr style="border-collapse: collapse;">
+
+
+
+
+                                <th>
+                                    %
+                                </th>
+                                <th>
+                                    Rs
+                                </th>
+
+
+
+                                <th>
+                                    %
+                                </th>
+                                <th>
+                                    Rs
+                                </th>
+
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+                            @{
+                                int srno = 0;
+
+                                decimal ProdTotal = 0, GrandTo = 0, DiscTotl = 0, CnS_GST = 0;
+                                int QntTotal = 0;
+                                string NoInWord = "";
+                                int Ftl = 0;
+                            }
+
+
+                            @foreach (var item in ViewBag.ListCreditNotes)
+                            {
+
+                                <tr>
+                                    <td style="border-left:none">
+                                        @{
+
+
+                                            srno++;
+                                        }
+
+                                        @srno
+                                    </td>
+                                    <td>
+                                        @item.ProductDetails.ProductName
+                                    </td>
+                                    @if (ViewBag.ProductCount != 0)
+                                    {
+                                        <td>
+                                            @item.ProductDetails.HSM_Code
+                                        </td>
+                                    }
+                                    <td>
+                                        @item.CreditNotes.CreditNotes_ProductRate
+                                        @{
+                                            ProdTotal += item.CreditNotes.CreditNotes_ProductRate;
+                                        }
+
+                                    </td>
+                                    @if (discTot != 0)
+                                    {
+                                        <td>
+                                            @item.CreditNotes.CreditNotes_PDiscount
+                                            @{
+                                                DiscTotl += item.CreditNotes.CreditNotes_PDiscount;
+                                            }
+                                        </td>
+                                     }
+
+                                    <td>
+                                        @item.CreditNotes.CreditNotes_Quantity
+                                        @{
+                                            QntTotal += item.CreditNotes.CreditNotes_Quantity;
+                                        }
+                                    </td>
+
+                                    @*<td>
+                    @item.ProductGST.ProdGst*@
+                                    @{
+                                        decimal divGst = item.ProductGST.ProdGst / 2;
+                                    }
+                                    @*</td>*@
+
+
+                                    @*<td>
+                    @item.SalesGST.SaleGST_GstRs*@
+                                    @{
+                                        decimal divRsGst = item.CreditNotes.CreditNotes_GstRs / 2;
+                                    }
+                                    @*</td>*@
+
+
+                                    <td>
+                                        @divGst
+                                    </td>
+
+                                    <td>
+
+                                        @Math.Round(divRsGst, 2)
+
+                                        @{
+                                            CnS_GST += divRsGst;
+                                        }
+                                    </td>
+
+                                    <td>
+                                        @divGst
+                                    </td>
+
+                                    <td>
+                                        @Math.Round(divRsGst, 2)
+                                    </td>
+
+
+                                    <td style="border-right:none">
+                                        @item.CreditNotes.CreditNotes_Total
+                                        @{
+                                            GrandTo += item.CreditNotes.CreditNotes_Total;
+                                        }
+                                    </td>
+                                </tr>
+
+                                            }
+
+
+                            <tr>
+                                @if (ViewBag.ProductCount != 0)
+                                {
+                                    <td colspan="3" class="bd text-center" style="border-left:none;padding:0"><b> Total</b></td>
+                                }
+                                else
+                                {
+                                    <td colspan="2" class="bd text-center" style="border-left:none;padding:0"><b> Total</b></td>
+                                }
+
+                                <td class="bd"><b style="font-weight:600">@ProdTotal</b></td>
+                                @if (discTot != 0)
+                                {
+                                    <td class="bd"><b style="font-weight:600">@DiscTotl</b></td>
+
+                                }
+                                <td class="bd"><b style="font-weight:600">@QntTotal</b></td>
+                                @*<td class="bd"><b style="font-weight:600"></b></td>
+
+                                <td class="bd"><b style="font-weight:600"></b></td>*@
+
+
+                                <td class="bd"><b style="font-weight:600"></b></td>
+                                <td class="bd"><b style="font-weight:600">@Math.Round(CnS_GST, 2) </b></td>
+
+
+                                <td class="bd"><b style="font-weight:600"></b></td>
+                                <td class="bd"><b style="font-weight:600">@Math.Round(CnS_GST, 2)</b></td>
+
+
+
+                                <td class="bd" style="border-right:none;font-weight:600">@GrandTo </td>
+                            </tr>
+
+
+
+                        </tbody>
+
+
+
+                       
+                    </table>
+
+
+                </div>
+            </div>
+
+            <br />
+
+
+
+            <div class="row">
+                <div class="col-md-6" style="border-top:1px solid;border-bottom:1px solid;border-right:1px solid;padding:0">
+                    <div class="text-center" style="border-bottom:1px solid">
+                        <b>Final Total in word</b>
+                    </div>
+                    <div class="text-center" style="border-bottom:1px solid">
+
+                        <b style="font-weight:600;padding-left:15px">
+                            <b style="font-weight:600" id="FtotalWord"></b>
+
+
+                            @*@foreach (var item in ViewBag.ListDiscFitotalDtl)
+                            {
+                                Ftl = item.SalesGST_Report.SalesGST_Rpt_FinalTotal;
+                            }*@
+
+
+                            @{
+                                Ftl = Convert.ToInt32(ViewBag.ListCreditNotes[0].CreditNotes.TempSaleGST_FTotalAmt);
+                                NoInWord = NumberToWords(Ftl);
+                            }
+
+                            @NoInWord rupees only.
+
+                        </b>
+                    </div>
+
+
+                    <div class="text-center" style="border-bottom:1px solid">
+                        <b>Bank Details</b>
+                    </div>
+                    <div class="" style="border-bottom:1px solid">
+
+
+                        @foreach (var item in ViewBag.ListOrgBnkDtl)
+                        {
+                            <div class="row">
+                                <div class="col-sm-5 pl-4">
+                                    <b>Bank Name</b><br />
+                                    <b>Branch Name</b><br />
+                                    <b>Bank Account Number</b><br />
+                                    <b>Bank Branch IFSC</b>
+                                </div>
+                                <div class="col-sm-6">
+                                    <b style="font-weight:600">@item.BankDetails.BnkName</b><br />
+                                    <b style="font-weight:600">@item.BankDetails.BnkBranchName</b><br />
+                                    <b style="font-weight:600">@item.BankDetails.BnkAccountNumber</b><br />
+                                    <b style="font-weight:600">@item.BankDetails.BnkIFSCNumber</b>
+                                </div>
+                            </div>
+                        }
+
+                    </div>
+
+
+
+
+                    <div class="text-center" style="border-bottom:1px solid">
+                        <b>Terms and Conditions</b>
+                    </div>
+                    <div class="">
+
+                        <ol type="1">
+                            @foreach (var item in ViewBag.TermsNConditon)
+                            {
+                                <li style="font-weight:600">@item.TermsCondition.TurCon</li>
+                            }
+
+                        </ol>
+
+                    </div>
+
+
+
+
+                </div>
+                <div class="col-md-6" style="border-top:1px solid;border-bottom:1px solid;padding:0">
+
+
+                    @*@foreach (var item in ViewBag.ListDiscFitotalDtl)
+                    {*@
+
+                        <div class="" style="border-bottom:1px solid">
+                            <div class="row">
+                                <div class="col-sm pl-4"> <b>Grand Total (Rs) :</b> </div>
+                                <div class="col-sm pr-4" style="text-align: right;"><b style="font-weight:600">@GrandTo  </b> </div>
+                            </div>
+                        </div>
+
+                        <div class="" style="border-bottom:1px solid">
+                            <div class="row">
+                                <div class="col-sm pl-4"> <b>Discount (%) :</b> </div>
+                                <div class="col-sm pr-4" style="text-align: right;"><b style="font-weight:600"> @ViewBag.ListCreditNotes[0].CreditNotes.TempSaleGST_DiscPer  @*@item.SalesGST_ChargeDisc.SalesGST_DiscountPer*@</b> </div>
+                            </div>
+                        </div>
+
+                        <div class="" style="border-bottom:1px solid">
+                            <div class="row">
+                                <div class="col-sm pl-4"> <b>Discount (Rs) :</b> </div>
+                                <div class="col-sm pr-4" style="text-align: right;"><b style="font-weight:600">  @ViewBag.ListCreditNotes[0].CreditNotes.TempSaleGST_DiscRs @*@item.SalesGST_ChargeDisc.SalesGST_DiscountRs*@</b> </div>
+                            </div>
+                        </div>
+
+
+
+                        <div class="" style="border-bottom:1px solid">
+                            <div class="row">
+                                <div class="col-sm pl-4"> <b>Extra-Charges (Rs) :</b> </div>
+                                <div class="col-sm pr-4" style="text-align: right;"><b style="font-weight:600"> @ViewBag.ListCreditNotes[0].CreditNotes.TempSaleGST_ChargesAmt @*@item.SalesGST_ChargeDisc.SalesGST_ChargesAmt*@</b> </div>
+                            </div>
+                        </div>
+
+
+
+                        @*<div class="" style="border-bottom:1px solid">
+                                <div class="row">
+                                    <div class="col-sm pl-4"> <b>GST (Rs) :</b> </div>
+                                    <div class="col-sm pr-4" style="text-align: right;"><b style="font-weight:600">10.00</b> </div>
+                                </div>
+                            </div>*@
+
+                        <div class="" style="border-bottom:1px solid">
+                            <div class="row">
+                                <div class="col-sm pl-4"> <b>Add: CGST (Rs) :</b> </div>
+                                <div class="col-sm pr-4" style="text-align: right;"><b style="font-weight:600">@Math.Round(CnS_GST, 2)</b> </div>
+                            </div>
+                        </div>
+
+                        <div class="" style="border-bottom:1px solid">
+                            <div class="row">
+                                <div class="col-sm pl-4"> <b>Add: SGST (Rs) :</b> </div>
+                                <div class="col-sm pr-4" style="text-align: right;"><b style="font-weight:600">@Math.Round(CnS_GST, 2)</b> </div>
+                            </div>
+                        </div>
+
+                        <div class="" style="border-bottom:1px solid">
+                            <div class="row">
+                                <div class="col-sm pl-4"> <b>Final Total (Rs) :</b> </div>
+                                <div class="col-sm pr-4" style="text-align: right;">
+                                    <b style="font-weight:700;font-size:25px">
+                                        &#8377; @ViewBag.ListCreditNotes[0].CreditNotes.TempSaleGST_FTotalAmt @*@item.SalesGST_Report.SalesGST_Rpt_FinalTotal*@
+
+                                    </b>
+                                </div>
+                            </div>
+                        </div>
+
+                    @*}*@
+
+
+
+                    <div class="text-center" style="border-bottom:1px solid">
+
+                        <b style="font-size:14px">Cetified that the particulars given above are true and correct.</b><br />
+
+                        <b style="font-size:25px">For @ViewBag.ListOrgDtl.OrganizationDetails.OrgName</b>
+
+                    </div>
+
+
+                    <div class="text-center" style="border-bottom:1px solid">
+
+                        <div style="padding:5px">
+                            <img height="80" width="170" alt="@ViewBag.ListOrgDtl.OrganizationDetails.OrgDegitalSignature" src="data:image/jpg;base64,@Convert.ToBase64String(ViewBag.ListOrgDtl.OrganizationDetails.OrgDegitalSignature)" />
+                        </div>
+
+
+                    </div>
+
+                    <div class="text-center">
+
+                        <b style="font-size:14px">Authorised Singnature</b>
+                    </div>
+
+                </div>
+            </div>
+
+
+
+
+
+
+
+
+
+        </div>
+
+
+
+        <br />
+    </div>
+
+
+
+
+    @functions{
+
+        public static string NumberToWords(int number)
+        {
+            if (number == 0)
+                return "zero";
+
+            if (number < 0)
+                return "minus " + NumberToWords(Math.Abs(number));
+
+            string words = "";
+
+            if ((number / 1000000) > 0)
+            {
+                words += NumberToWords(number / 1000000) + " million ";
+                number %= 1000000;
+            }
+
+            if ((number / 1000) > 0)
+            {
+                words += NumberToWords(number / 1000) + " thousand ";
+                number %= 1000;
+            }
+
+            if ((number / 100) > 0)
+            {
+                words += NumberToWords(number / 100) + " hundred ";
+                number %= 100;
+            }
+
+            if (number > 0)
+            {
+                if (words != "")
+                    words += "and ";
+
+                var unitsMap = new[] { "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen" };
+                var tensMap = new[] { "zero", "ten", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety" };
+
+                if (number < 20)
+                    words += unitsMap[number];
+                else
+                {
+                    words += tensMap[number / 10];
+                    if ((number % 10) > 0)
+                        words += "-" + unitsMap[number % 10];
+                }
+            }
+
+            return words;
+        }
+
+    }
+
+    <style type="text/css">
+        @@media print {
+
+            #Btnhide {
+                display: none;
+            }
+        }
+    </style>
+
+
+
+</body>
+</html>

@@ -1,0 +1,258 @@
+﻿@model Accounting_Final_Details.Models.Product_Catagory
+@{
+    ViewBag.Title = "AddProduct_category";
+    //  Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+
+    if (Session["Role"] != null)
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    }
+
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>AddProduct_category</title>
+</head>
+<body>
+
+ 
+    <section class="section alert-section">
+        <div class="alert alert-info" style="background:#29d2e4;">
+            <div class="alert-container">
+
+                <i class="fa fa-info-circle"></i>
+                <b class="alert-info" style="background:#29d2e4">Info alert:</b> You've got some friends nearby, stop looking at your phone and find them...
+            </div>
+        </div>
+    </section>
+
+
+
+    @using (Html.BeginForm("AddProduct_category", "Admin", FormMethod.Post))
+    {
+        <fieldset class="box">
+            <legend class="box">Add New Product Category !</legend>
+
+            @Html.HiddenFor(model => model.C_ID, new { htmlAttributes = new { @class = "form-control" } })
+
+
+            <div class="form-row">
+
+                <div class="form-group col-md-4">
+                    <div class="">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <i class="far fa-list-alt" style="font-size:24px;padding-left:1px;padding-right:5px"></i>
+                                </span>
+                            </div>
+                            @Html.EditorFor(model => model.Category_Name, new { htmlAttributes = new { @class = "form-control Category_Name", placeholder = " Product Catagory Name ", required = "required", onchange = "CheckCategoryNameExistorNot()" } })
+                            <div class="d-flex align-items-center" style="">
+                                <i id="Valid" class="fas fa-check-circle text-success" style="display:none;   margin-left:10px;"></i>
+                                <i id="Invalid" class="fas fa-exclamation-circle text-danger" style="display:none;margin-left:10px;"></i>
+                            </div>
+                        </div>
+                        @Html.ValidationMessageFor(model => model.Category_Name, "", new { @class = "text-danger" })
+                        <div class="text-danger" style="display:none;" id="wrong"><i class="fas fa-exclamation fa-xs"></i> Your Category-Name already Used.</div>
+
+
+                    </div>
+                </div>@*column1 End*@
+
+                <div class="form-group col-md-3">
+                    <div class="">
+                        <button class="btn btn-info" onclick="Clear_DB_ID()" formaction="/Admin/Add_Product_Catagory"><i class="fas fa-plus"></i> Add</button>
+                        &nbsp;
+                        <button class="btn btn-info"><i class="fas fa-sync"></i> Update</button>
+                    </div>
+                </div>
+            </div>
+
+        </fieldset>
+    }
+
+    <style>
+        fieldset {
+            border: 1px solid #ddd;
+            border-left: 1px solid #ddd;
+            padding: 6px;
+            margin-bottom: 5px;
+            width: 100%;
+        }
+
+
+
+
+        legend {
+            /*padding: 0.2em 0.5em;
+                                        border: 2px solid #333;*/
+            width: auto;
+            font-size: 15px;
+            font-weight: 500;
+            /*margin-left: 10px;
+                                        color: #333;
+                                        font-size: 90%;
+                                        font-weight: bold;
+                                        text-align: left;
+                                        border-bottom-left-radius: 5px;
+                                        border-top-right-radius: 5px;*/
+        }
+
+
+
+        #main:hover .box {
+            border-color: #1b76c4;
+        }
+    </style>
+
+
+    <div class="card mb-4">
+        <div class="card-header"><i class="fas fa-table mr-1"></i>Product Category</div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+
+
+                    <thead>
+                        <tr>
+                            <th>
+                                ID
+                            </th>
+                            <th>
+                                Category Name
+                            </th>
+                            <th>
+                                Action
+                            </th>
+                        </tr>
+                    </thead>
+
+                    <tbody class="tbody">
+
+                        @foreach (var item in ViewBag.CatagoryList)
+                        {
+                            <tr>
+                                <td>
+                                    @item.C_ID
+                                </td>
+
+                                <td>
+                                    @item.Category_Name
+                                </td>
+                                <td>
+                                    <a class="text-info" href="#" onclick="Edit(@item.C_ID)"> <i class="fa fa-edit" style="font-size:23px"></i></a> &nbsp;
+                                    <a class="text-danger" href="/Admin/DeleteCatagory/@item.C_ID" onclick="return confirm('Are you sure?')"><i class="fas fa-trash-alt" style="font-size:23px"></i></a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+
+
+                </table>
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+    <script>
+
+        function Clear_DB_ID() {
+            $('#C_ID').val("");
+            //  CheckCategoryNameExistorNot();
+        }
+
+        function CheckCategoryNameExistorNot() {
+
+
+
+            var empObj = {
+                Category_Name: $('#Category_Name').val(),
+            };
+
+            $.ajax({
+                url: "/Admin/CategoryNameExistOrNot",
+                data: JSON.stringify(empObj),
+                type: "POST",
+                contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                success: function (result) {
+
+                    if (result == 0) {
+                        $('.Category_Name').val('');
+                        $('#Valid').hide();
+                        $('#Invalid').show();
+
+                        $('#wrong').show();
+
+
+                    }
+                    else {
+                        $('#wrong').hide();
+                        $('#Invalid').hide();
+                        $('#Valid').show();
+
+
+                    }
+                },
+            });
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+        function Edit(ID) {
+
+            $.ajax({
+
+                url: "/Admin/Fetch_Product_Catagory/" + ID,
+
+                typr: "GET",
+
+                contentType: "application/json;charset=UTF-8",
+
+                dataType: "json",
+
+                success: function (result) {
+
+                    $('#C_ID').val(result.C_ID);
+                    $('#Category_Name').val(result.Category_Name);
+
+                },
+
+            });
+
+            return false;
+
+        }
+
+    </script>
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,16 @@
+﻿@model Accounting_Final_Details.Models.District
+
+<option value="">select District</option>
+
+
+
+@*<option value="">select District</option>*@
+
+@if (ViewBag.DistrictList != null)
+{
+    foreach (var item in ViewBag.DistrictList)
+    {
+        <option value="@item.Value">@item.Text</option>
+    }
+
+}
